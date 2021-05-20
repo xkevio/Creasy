@@ -1,9 +1,12 @@
 package ovgu.creasy;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import java.util.Objects;
 
 public class Main extends Application {
 
@@ -12,7 +15,8 @@ public class Main extends Application {
     }
 
     public void start(Stage stage) throws Exception {
-        Scene initialScene = new Scene(new StackPane(), 640, 480);
+        Parent rootFXML = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("main_window.fxml")));
+        Scene initialScene = new Scene(rootFXML, 640, 480);
         stage.setScene(initialScene);
         stage.setTitle("Creasy");
         stage.show();
