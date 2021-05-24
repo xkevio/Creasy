@@ -12,7 +12,6 @@ public class MainWindow {
     @FXML
     public void onMenuImportAction(ActionEvent actionEvent) {
         System.out.println("Import");
-        model = new OrigamiModel();
     }
 
     @FXML
