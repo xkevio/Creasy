@@ -11,15 +11,15 @@ import javax.vecmath.Vector2d;
 import java.util.stream.Collectors;
 
 public class OripaTypeConverter {
-    public CreasePatternInterface convertToOripaCp(CreasePattern cp) {
+    public static CreasePatternInterface convertToOripaCp(CreasePattern cp) {
         return new CreasePatternFactory().createCreasePattern(
                 cp.getCreases().stream()
-                        .map(this::convertToOripaOriLine)
+                        .map(OripaTypeConverter::convertToOripaOriLine)
                         .collect(Collectors.toList())
         );
     }
 
-    public OriLine convertToOripaOriLine(Crease crease) {
+    public static OriLine convertToOripaOriLine(Crease crease) {
         return new OriLine(
                 convertToOripaVector(crease.getLine().getStart()),
                 convertToOripaVector(crease.getLine().getEnd()),
@@ -27,7 +27,7 @@ public class OripaTypeConverter {
         );
     }
 
-    public OriLine.Type convertToOripaType(Crease.Type type) {
+    public static OriLine.Type convertToOripaType(Crease.Type type) {
         return switch (type) {
             case MOUNTAIN -> OriLine.Type.MOUNTAIN;
             case EDGE -> OriLine.Type.CUT;
@@ -35,7 +35,7 @@ public class OripaTypeConverter {
         };
     }
 
-    public Vector2d convertToOripaVector(Point point) {
+    public static Vector2d convertToOripaVector(Point point) {
         return new Vector2d(point.getX(), point.getY());
     }
 }
