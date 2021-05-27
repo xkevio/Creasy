@@ -22,7 +22,7 @@ public class Line {
         if (t < 0 || t > 1) throw new ArithmeticException("t should be between 0 and 1!");
 
         return new Point(start.getX() + t * (end.getX() - start.getX()),
-                         start.getY() + t * (end.getY() - start.getX()));
+                         start.getY() + t * (end.getY() - start.getY()));
     }
 
     public Point getStart() {
