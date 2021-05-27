@@ -21,11 +21,8 @@ public class Line {
     public Point getPointAt(double t) {
         if (t < 0 || t > 1) throw new ArithmeticException("t should be between 0 and 1!");
 
-        Point at = new Point(0, 0);
-        at.setX(start.getX() + t * end.getX());
-        at.setY(start.getY() + t * end.getY());
-
-        return at;
+        return new Point(start.getX() + t * end.getX(),
+                         start.getY() + t * end.getY());
     }
 
     public Point getStart() {
