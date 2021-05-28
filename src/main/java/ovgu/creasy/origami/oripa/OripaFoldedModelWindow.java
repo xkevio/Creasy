@@ -21,6 +21,7 @@ public class OripaFoldedModelWindow {
     private CreasePatternInterface cp;
     private OrigamiModel model;
     private FoldedModel foldedModel;
+    // TODO: modify to work with JavaFX
     private JFrame window;
     private FoldabilityChecker foldabilityChecker;
     private Folder folder;
