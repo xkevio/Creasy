@@ -8,6 +8,9 @@ import ovgu.creasy.origami.OrigamiModel;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class MainWindow extends Component {
     public Canvas mainCanvas;
@@ -30,6 +33,7 @@ public class MainWindow extends Component {
             try {
                 filePath = openFileChooser.getSelectedFile().getPath();
                 lastPath = filePath;
+                write(lastPath);
                 System.out.println("Import completed! Filename: " + openFileChooser.getSelectedFile().getName());
                 // TODO: Crease Pattern via Oripa einfügen (Klassenaufruf + loadCP(filePath))
             }catch (Exception e) {
@@ -42,6 +46,19 @@ public class MainWindow extends Component {
         }
         else {
             System.out.println("No file selected!");
+        }
+    }
+
+    public static void write(String lastPath) {
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter("lastPath.txt");
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(lastPath + "\n");
+            bw.close();
+            fw.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
