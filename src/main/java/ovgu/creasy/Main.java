@@ -18,7 +18,7 @@ public class Main extends Application {
         Parent rootFXML = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("main_window.fxml")));
         Scene initialScene = new Scene(rootFXML, 640, 480);
         stage.setScene(initialScene);
-        stage.setTitle("Creasy");
+        stage.setTitle("Project Creasy - an easy way to understand Crease-Patterns");
         stage.show();
     }
 }
