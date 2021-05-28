@@ -28,7 +28,7 @@ public class MainWindow extends Component {
     @FXML
     public void onMenuImportAction(ActionEvent actionEvent) {
         int returnValue = openFileChooser.showOpenDialog(this);
-
+        // TODO: Checken ob eine .cp Datei ausgewählt wurde, wenn nein --> Fehlermeldung
         if (returnValue == JFileChooser.APPROVE_OPTION){
             try {
                 filePath = openFileChooser.getSelectedFile().getPath();
