@@ -40,6 +40,11 @@ public class OripaFoldedModelWindow {
         foldabilityChecker = new FoldabilityChecker();
     }
 
+    /**
+     * Tries to use Oripa to determine the folded Model. Returns whether
+     * it succeeded (= if the crease Pattern was globally flatfoldable)
+     * @return true if folding succeeded, false otherwise
+     */
     public boolean foldModel() {
         model = new OrigamiModelFactory().createOrigamiModel(cp, cp.getPaperSize());
         if (foldabilityChecker.testLocalFlatFoldability(model)) {
@@ -50,14 +55,18 @@ public class OripaFoldedModelWindow {
         return false;
     }
 
+    /**
+     * shows Oripa's Folded Model Frame. Should only be called
+     * after foldModel() has been called and succeeded (returned true)
+     */
     public void show() {
         EstimationResultFrame frame = new EstimationResultFrame();
         frame.setModel(foldedModel);
         if (window != null) {
             window.dispose();
         }
-        window = frame;
         frame.repaint();
         frame.setVisible(true);
+        window = frame;
     }
 }
