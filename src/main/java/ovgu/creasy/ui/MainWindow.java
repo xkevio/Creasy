@@ -29,7 +29,8 @@ public class MainWindow extends Component {
         if (returnValue == JFileChooser.APPROVE_OPTION){
             try {
                 filePath = openFileChooser.getSelectedFile().getPath();
-                System.out.println("Import completed!");
+                lastPath = filePath;
+                System.out.println("Import completed! Filename: " + openFileChooser.getSelectedFile().getName());
                 // TODO: Crease Pattern via Oripa einfügen (Klassenaufruf + loadCP(filePath))
             }catch (Exception e) {
                 JOptionPane.showMessageDialog(
