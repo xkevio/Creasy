@@ -1,9 +1,12 @@
 package ovgu.creasy.ui;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
 import ovgu.creasy.origami.OrigamiModel;
+import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,6 +15,7 @@ import java.io.IOException;
 
 public class MainWindow  {
     public Canvas mainCanvas;
+    public MenuItem foldedModelMenuItem;
     private OrigamiModel model;
 
     private final FileChooser openFileChooser;
@@ -30,6 +34,8 @@ public class MainWindow  {
         if (file.exists()) {
             // TODO read file and check if its a valid .cp
             // Perhaps make a static createFromFile(File file) method in CreasePattern
+            // after reading the file, if the file is valid:
+            foldedModelMenuItem.setDisable(false);
         } else {
             System.err.println("No file selected!");
         }
@@ -51,4 +57,17 @@ public class MainWindow  {
 
     @FXML
     private void initialize() {}
+
+    public void onShowFoldedModelAction(ActionEvent actionEvent) {
+        if (model == null) {
+            System.err.println("No Model to fold");
+        } else {
+            OripaFoldedModelWindow foldedModelWindow = new OripaFoldedModelWindow(model.getFinishedCp());
+            if (foldedModelWindow.foldModel()) {
+                foldedModelWindow.show();
+            } else {
+                System.err.println("Crease Pattern is invalid");
+            }
+        }
+    }
 }

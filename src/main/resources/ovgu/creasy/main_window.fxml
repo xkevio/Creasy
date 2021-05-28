@@ -13,9 +13,9 @@
               <MenuItem mnemonicParsing="false" onAction="#onMenuImportAction" text="Import" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
+          <Menu mnemonicParsing="false" text="View">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+              <MenuItem fx:id="foldedModelMenuItem" disable="true" mnemonicParsing="false" onAction="#onShowFoldedModelAction" text="Folded Model" />
             </items>
           </Menu>
         </menus>
