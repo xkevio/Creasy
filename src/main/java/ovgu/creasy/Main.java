@@ -22,7 +22,7 @@ public class Main extends Application {
         // stage.getIcons().add(new Image(start.class.getResourceAsStream("image.png")));
         stage.setScene(initialScene);
         stage.sizeToScene();
-        stage.setTitle("Project Creasy - an easy way to understand Crease-Patterns");
+        stage.setTitle("Creasy");
         stage.show();
     }
 }
