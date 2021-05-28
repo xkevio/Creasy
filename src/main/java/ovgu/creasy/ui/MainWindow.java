@@ -31,7 +31,7 @@ public class MainWindow  {
     @FXML
     public void onMenuImportAction() {
         File file = openFileChooser.showOpenDialog(mainCanvas.getScene().getWindow());
-        if (file.exists()) {
+        if (file != null && file.exists()) {
             // TODO read file and check if its a valid .cp
             // Perhaps make a static createFromFile(File file) method in CreasePattern
             // after reading the file, if the file is valid:
