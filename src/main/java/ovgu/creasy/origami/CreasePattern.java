@@ -68,6 +68,7 @@ public class CreasePattern {
             st.wordChars('.', '.');
             st.wordChars('0', '\u00FF');
             st.wordChars('-', '-');
+            st.wordChars('e', 'E');
             st.whitespaceChars(' ', ' ');
             st.whitespaceChars('\t', '\t');
             st.whitespaceChars('\n', '\n');
