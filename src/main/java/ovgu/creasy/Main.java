@@ -18,7 +18,7 @@ public class Main extends Application {
         Parent rootFXML = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("main_window.fxml")));
         // Szenen Bereich:
         Scene initialScene = new Scene(rootFXML, 640, 480);
-        // TODO: Icon / Logo des Projekts einfügen:
+        // TODO insert Icon / Logo:
         // stage.getIcons().add(new Image(start.class.getResourceAsStream("image.png")));
         stage.setScene(initialScene);
         stage.sizeToScene();
