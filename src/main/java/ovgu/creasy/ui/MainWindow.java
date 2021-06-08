@@ -104,6 +104,7 @@ public class MainWindow {
             if (foldedModelWindow.foldModel()) {
                 foldedModelWindow.show();
             } else {
+                foldedModelWindow.showError();
                 System.err.println("Crease Pattern is invalid");
             }
         }
