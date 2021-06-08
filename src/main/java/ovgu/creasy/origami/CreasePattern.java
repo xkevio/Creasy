@@ -1,17 +1,10 @@
 package ovgu.creasy.origami;
 
-import oripa.OriLineProxy;
-import oripa.DataSet;
 import ovgu.creasy.geom.Line;
 import ovgu.creasy.geom.Point;
-import ovgu.creasy.origami.Crease;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
-import java.io.IOException;
-import java.io.StreamTokenizer;
-import java.sql.SQLOutput;
+import java.io.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -33,7 +26,8 @@ public class CreasePattern {
     }
 
     public CreasePattern() {
-
+        this.creases = new HashSet<>();
+        this.points = new HashSet<>();
     }
 
     public void addCrease(Crease crease){
@@ -84,8 +78,10 @@ public class CreasePattern {
                 switch (Integer.parseInt(st.sval)) {
                     case 1:
                         type = Crease.Type.EDGE;
+                        break;
                     case 2:
                         type = Crease.Type.MOUNTAIN;
+                        break;
                     case 3:
                         type = Crease.Type.VALLEY;
                         break;

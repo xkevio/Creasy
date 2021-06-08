@@ -5,20 +5,16 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
-import org.apache.logging.log4j.util.SystemPropertiesPropertySource;
-import ovgu.creasy.origami.Crease;
 import ovgu.creasy.origami.CreasePattern;
 import ovgu.creasy.origami.OrigamiModel;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
-import java.sql.SQLOutput;
 
 public class MainWindow {
     public Canvas mainCanvas;
@@ -46,6 +42,7 @@ public class MainWindow {
                 cp = CreasePattern.createFromFile(file);
                 System.out.println(cp.getPoints());
                 System.out.println(cp.getCreases());
+                model = new OrigamiModel(cp);
 
                 // after reading the file, if the file is valid:
                 foldedModelMenuItem.setDisable(false);
