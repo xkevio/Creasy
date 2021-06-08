@@ -12,7 +12,9 @@ import oripa.domain.fold.subface.FacesToCreasePatternConverter;
 import oripa.domain.fold.subface.ParentFacesCollector;
 import oripa.domain.fold.subface.SplitFacesToSubFacesConverter;
 import oripa.domain.fold.subface.SubFacesFactory;
+import oripa.util.gui.ChildFrameManager;
 import oripa.view.estimation.EstimationResultFrame;
+import oripa.view.foldability.FoldabilityCheckFrameFactory;
 import ovgu.creasy.origami.CreasePattern;
 
 import javax.swing.*;
@@ -50,7 +52,7 @@ public class OripaFoldedModelWindow {
         if (foldabilityChecker.testLocalFlatFoldability(model)) {
             foldedModel = folder.fold(model, true);
             int solutionNum = foldedModel.getFoldablePatternCount();
-            if (solutionNum < 1) return false;
+            return solutionNum >= 1;
         }
         return false;
     }
@@ -68,5 +70,11 @@ public class OripaFoldedModelWindow {
         frame.repaint();
         frame.setVisible(true);
         window = frame;
+    }
+
+    // Temporary, useful for debuggin
+    public void showError() {
+        JFrame f = new FoldabilityCheckFrameFactory(new ChildFrameManager()).createFrame(null, model, cp, true);
+        f.setVisible(true);
     }
 }
