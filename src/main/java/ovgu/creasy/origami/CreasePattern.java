@@ -62,6 +62,7 @@ public class CreasePattern {
      */
     public void drawOnCanvas(Canvas canvas) {
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+        graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         graphicsContext.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
         graphicsContext.setLineWidth(2);
@@ -79,6 +80,8 @@ public class CreasePattern {
             Point end = crease.getLine().getEnd();
             graphicsContext.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
         }
+
+        graphicsContext.translate(-canvas.getWidth() / 2, -canvas.getHeight() / 2);
     }
 
     public static CreasePattern createFromFile(File file) {
@@ -144,6 +147,7 @@ public class CreasePattern {
                 cp.addPoints(point1, point2);
 
             }
+            reader.close();
         } catch (IOException e) {
             e.printStackTrace();
             return null;
