@@ -1,5 +1,7 @@
 package ovgu.creasy.geom;
 
+import java.util.Objects;
+
 /**
  * 2d Line segment
  */
@@ -39,5 +41,26 @@ public class Line {
 
     public void setEnd(Point end) {
         this.end = end;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Line line = (Line) o;
+        return Objects.equals(start, line.start) && Objects.equals(end, line.end);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, end);
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "start=" + start +
+                ", end=" + end +
+                '}';
     }
 }
