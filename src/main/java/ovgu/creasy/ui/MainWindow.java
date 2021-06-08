@@ -13,8 +13,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Paths;
 
 public class MainWindow {
     public Canvas mainCanvas;
@@ -37,12 +35,14 @@ public class MainWindow {
         File file = openFileChooser.showOpenDialog(mainCanvas.getScene().getWindow());
         filePath = file.getPath();
 
-        if (file != null && file.exists() && isPathValid(filePath) && isValidFilePath(filePath)) {
+        if (file.exists()) {
             try {
                 cp = CreasePattern.createFromFile(file);
                 System.out.println(cp.getPoints());
                 System.out.println(cp.getCreases());
                 model = new OrigamiModel(cp);
+
+                cp.drawOnCanvas(mainCanvas);
 
                 // after reading the file, if the file is valid:
                 foldedModelMenuItem.setDisable(false);
@@ -55,27 +55,6 @@ public class MainWindow {
         }
     }
 
-    // make sure the path is valid
-    public static boolean isPathValid(String path) {
-        try {
-            Paths.get(path);
-        } catch (InvalidPathException ex) {
-            return false;
-        }
-        return true;
-    }
-
-    // make sure path filename is valid
-    public static boolean isValidFilePath(String path) {
-        File f = new File(path);
-        try {
-            f.getCanonicalPath();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
     // probably not needed
     // writes last filepath to a .txt
