@@ -1,5 +1,8 @@
 package ovgu.creasy.origami;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import ovgu.creasy.geom.Line;
 import ovgu.creasy.geom.Point;
 
@@ -49,6 +52,33 @@ public class CreasePattern {
 
     public Set<Point> getPoints() {
         return points;
+    }
+
+    /**
+     * Draws the loaded Crease Pattern on the current canvas by
+     * iterating over all Creases and choosing the colors based
+     * on the type of Line
+     * @param canvas the Canvas to draw the Crease Pattern on
+     */
+    public void drawOnCanvas(Canvas canvas) {
+        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+
+        graphicsContext.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
+        graphicsContext.setLineWidth(2);
+
+        for (Crease crease : creases) {
+            Color currentColor = switch (crease.getType()) {
+                case EDGE -> Color.BLACK;
+                case VALLEY -> Color.BLUE;
+                case MOUNTAIN -> Color.RED;
+            };
+
+            graphicsContext.setStroke(currentColor);
+
+            Point start = crease.getLine().getStart();
+            Point end = crease.getLine().getEnd();
+            graphicsContext.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
+        }
     }
 
     public static CreasePattern createFromFile(File file) {
