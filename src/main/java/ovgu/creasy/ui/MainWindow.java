@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import ovgu.creasy.origami.CreasePattern;
 import ovgu.creasy.origami.OrigamiModel;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
@@ -22,7 +23,7 @@ public class MainWindow {
     private final FileChooser openFileChooser;
     private String filePath = "";
     private String lastPath = "";
-    CreasePattern cp;
+    private CreasePattern cp;
 
     public MainWindow() {
         openFileChooser = new FileChooser();
@@ -38,6 +39,8 @@ public class MainWindow {
         if (file.exists()) {
             try {
                 cp = CreasePattern.createFromFile(file);
+                ((Stage) mainCanvas.getScene().getWindow()).setTitle(filePath + " - Creasy");
+
                 System.out.println(cp.getPoints());
                 System.out.println(cp.getCreases());
                 model = new OrigamiModel(cp);
