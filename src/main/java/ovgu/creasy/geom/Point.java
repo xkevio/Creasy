@@ -1,5 +1,7 @@
 package ovgu.creasy.geom;
 
+import java.util.Objects;
+
 /**
  * 2d Point with double precision floating point coordinates
  */
@@ -34,5 +36,18 @@ public class Point {
                 "x=" + x +
                 ", y=" + y +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return Double.compare(point.x, x) == 0 && Double.compare(point.y, y) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

@@ -2,6 +2,8 @@ package ovgu.creasy.origami;
 
 import ovgu.creasy.geom.Line;
 
+import java.util.Objects;
+
 /**
  * A single crease in a Crease Pattern
  */
@@ -37,5 +39,26 @@ public class Crease {
 
     public Type getType() {
         return type;
+    }
+
+    @Override
+    public String toString() {
+        return "Crease{" +
+                "line=" + line +
+                ", type=" + type +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Crease crease = (Crease) o;
+        return Objects.equals(line, crease.line) && type == crease.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(line, type);
     }
 }
