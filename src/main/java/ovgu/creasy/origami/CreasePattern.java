@@ -42,10 +42,6 @@ public class CreasePattern {
         this.points.add(y);
     }
 
-    public void addLine() {
-        return;
-    }
-
     public Set<Crease> getCreases() {
         return creases;
     }
