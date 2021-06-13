@@ -50,7 +50,8 @@ public class MainWindow {
                 // after reading the file, if the file is valid:
                 foldedModelMenuItem.setDisable(false);
             } catch (Exception e) {
-                System.err.println("Error loading File!");
+                e.printStackTrace();
+                System.err.println("Error loading file " + filePath + "!");
             }
 
         } else {
@@ -75,10 +76,7 @@ public class MainWindow {
     }
 
     @FXML
-    private void initialize() {
-    }
-
-    public void onShowFoldedModelAction(ActionEvent actionEvent) {
+    public void onShowFoldedModelAction() {
         if (model == null) {
             System.err.println("No Model to fold");
         } else {
