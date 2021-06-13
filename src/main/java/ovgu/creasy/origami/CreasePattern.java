@@ -87,54 +87,47 @@ public class CreasePattern {
     public static CreasePattern createFromFile(File file) {
         CreasePattern cp = new CreasePattern();
         try {
-            int token;
             Reader reader = new FileReader(file);
             StreamTokenizer st = new StreamTokenizer(reader);
             st.resetSyntax();
+
             st.wordChars('0', '9');
             st.wordChars('.', '.');
-            st.wordChars('0', '\u00FF');
             st.wordChars('-', '-');
-            st.wordChars('e', 'E');
+            st.wordChars('E', 'E');
+
             st.whitespaceChars(' ', ' ');
             st.whitespaceChars('\t', '\t');
             st.whitespaceChars('\n', '\n');
             st.whitespaceChars('\r', '\r');
 
             // while end of file is not reached:
-            while ((token = st.nextToken()) != StreamTokenizer.TT_EOF) {
+            while (st.nextToken() != StreamTokenizer.TT_EOF) {
                 Point point1 = new Point(0, 0);
                 Point point2 = new Point(0, 0);
-                Crease.Type type;
+
+                Crease.Type type = switch (Integer.parseInt(st.sval)) {
+                    case 1 -> Crease.Type.EDGE;
+                    case 2 -> Crease.Type.MOUNTAIN;
+                    case 3 -> Crease.Type.VALLEY;
+                    default -> throw new IllegalStateException("Unexpected value: " + Integer.parseInt(st.sval));
+                };
 
                 // get line type - 1=edge, 2=mountain, 3=valley
-                switch (Integer.parseInt(st.sval)) {
-                    case 1:
-                        type = Crease.Type.EDGE;
-                        break;
-                    case 2:
-                        type = Crease.Type.MOUNTAIN;
-                        break;
-                    case 3:
-                        type = Crease.Type.VALLEY;
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + Integer.parseInt(st.sval));
-                }
 
                 // read data for point 1
-                token = st.nextToken();
+                st.nextToken();
                 point1.setX(Double.parseDouble(st.sval));
-                token = st.nextToken();
+                st.nextToken();
                 point1.setY(Double.parseDouble(st.sval));
-                point1.toString();
+                // point1.toString();
 
                 // read data for point 2
-                token = st.nextToken();
+                st.nextToken();
                 point2.setX(Double.parseDouble(st.sval));
-                token = st.nextToken();
+                st.nextToken();
                 point2.setY(Double.parseDouble(st.sval));
-                point2.toString();
+                // point2.toString();
 
                 // create line with data
                 Line line = new Line(point1, point2);
