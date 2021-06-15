@@ -10,10 +10,12 @@ import java.io.*;
 import java.util.*;
 
 /**
- * A collection of creases that, when folded, create an origami Model
+ * A collection of creases that, when folded, create an origami Model.
+ * Merges points closer than EPS, automatically updating new creases
+ * that are added
  */
 public class CreasePattern {
-    private double EPS = 0.000001;
+    private static final double EPS = 0.000001;
     /**
      * all creases in the Crease Pattern
      */
@@ -40,7 +42,7 @@ public class CreasePattern {
     }
 
     public void addCrease(Crease crease){
-        addAndRoundPoints(crease);
+        addOrMergePoints(crease);
         this.creases.add(crease);
         addToAdjacentCreases(crease);
     }
@@ -66,6 +68,8 @@ public class CreasePattern {
         double newAngle = getAngle(startOrEnd, newCrease);
         double currAngle;
         boolean done = false;
+        // finds the first crease with an angle smaller than that of the new crease,
+        // then inserts the new crease right before that crease
         for (int i = 0; i < adjCreasesStart.size(); i++) {
             Crease existingCrease = adjCreasesStart.get(i);
             currAngle = getAngle(startOrEnd, existingCrease);
@@ -75,6 +79,7 @@ public class CreasePattern {
                 break;
             }
         }
+        // if no crease with a smaller angle exists, insert at the end
         if (!done) {
             adjCreasesStart.add(newCrease);
         }
@@ -92,7 +97,7 @@ public class CreasePattern {
      * adds both points of the Crease or replaces them with very close points (distance <= EPS)
      * if possible
      */
-    private void addAndRoundPoints(Crease crease) {
+    private void addOrMergePoints(Crease crease) {
         crease.getLine().setEnd(addPoint(crease.getLine().getEnd()));
         crease.getLine().setStart(addPoint(crease.getLine().getStart()));
     }

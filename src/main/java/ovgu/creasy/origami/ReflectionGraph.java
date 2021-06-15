@@ -4,6 +4,9 @@ import ovgu.creasy.geom.Point;
 
 import java.util.*;
 
+/**
+ * Explained in chapter 3.1 of the paper (pages 18 - 20)
+ */
 public class ReflectionGraph {
     private static final double EPS = 0.0000001;
     private CreasePattern cp;
@@ -17,14 +20,21 @@ public class ReflectionGraph {
         }
     }
 
+    /**
+     * Reflection creases are explained in chapter 3.1.1
+     *
+     * Finds all reflection crease pairs in adjacentCreases around commonPoint and
+     * puts them into reflectionCreases
+     */
     private void findReflectionCreases(List<Crease> adjacentCreases, Point commonPoint) {
-        if (adjacentCreases.stream().anyMatch(crease -> crease.getType()== Crease.Type.EDGE)) {
-            return;
-        }
         for (int i = 0; i < adjacentCreases.size(); i++) {
-            System.out.println("line: " + adjacentCreases.get(i));
+            if (adjacentCreases.get(i).getType() == Crease.Type.EDGE) {
+                continue;
+            }
             double alternatingAngle = 0;
             int j = (i+1) % adjacentCreases.size();
+            // iterate over all creases but adjacentCreases[i], starting at i+1 and wrapping
+            // around to the beginning when the end is reached
             while (j != i) {
                 double angle = getAngle(
                         getPrevious(j, adjacentCreases),
@@ -36,6 +46,7 @@ public class ReflectionGraph {
                     alternatingAngle -= angle;
                 }
                 System.out.println(alternatingAngle);
+                // see 3.1.1 for definition of reflection creases
                 if (Math.abs(alternatingAngle) <= EPS
                         && adjacentCreases.get(i).getType() == adjacentCreases.get(j).getType().opposite()) {
                     addReflectionCrease(adjacentCreases.get(i), adjacentCreases.get(j));
@@ -46,6 +57,9 @@ public class ReflectionGraph {
         }
     }
 
+    /**
+     * @return the (index-1)-th element of creases, wrapping around if index == 0
+     */
     private Crease getPrevious(int index, List<Crease> creases) {
         return creases.get((index+creases.size()-1)%creases.size());
     }
