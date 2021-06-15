@@ -25,6 +25,8 @@ public class ReflectionGraph {
      *
      * Finds all reflection crease pairs in adjacentCreases around commonPoint and
      * puts them into reflectionCreases
+     *
+     * adjacentCreases is assumed to be sorted by angle
      */
     private void findReflectionCreases(List<Crease> adjacentCreases, Point commonPoint) {
         for (int i = 0; i < adjacentCreases.size(); i++) {
@@ -34,7 +36,7 @@ public class ReflectionGraph {
             double alternatingAngle = 0;
             int j = (i+1) % adjacentCreases.size();
             // iterate over all creases but adjacentCreases[i], starting at i+1 and wrapping
-            // around to the beginning when the end is reached
+            // around to the beginning when the end of the array is reached
             while (j != i) {
                 double angle = getAngle(
                         getPrevious(j, adjacentCreases),
