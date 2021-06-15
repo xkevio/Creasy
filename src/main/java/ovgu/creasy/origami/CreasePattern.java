@@ -25,7 +25,7 @@ public class CreasePattern {
 
     /**
      * for any Point p in points, this contains a List of creases
-     * that end or start in p
+     * that end or start in p, sorted by angle
      */
     private HashMap<Point, List<Crease>> adjacentCreases;
 
@@ -45,9 +45,47 @@ public class CreasePattern {
         addToAdjacentCreases(crease);
     }
 
+    public List<Crease> getAdjacentCreases(Point p) {
+        if (!adjacentCreases.containsKey(p)) {
+            return new ArrayList<>();
+        }
+        return Collections.unmodifiableList(adjacentCreases.get(p));
+    }
+
     private void addToAdjacentCreases(Crease crease) {
-        this.adjacentCreases.get(crease.getLine().getStart()).add(crease);
-        this.adjacentCreases.get(crease.getLine().getEnd()).add(crease);
+        addToAdjacentCreases(crease.getLine().getStart(), crease);
+        addToAdjacentCreases(crease.getLine().getEnd(), crease);
+    }
+
+    /**
+     * Adds newCrease to the adjacentCreases entry of startOrEnd (which is either the start or end point of
+     * newCrease), keeping the sorting order intact
+     */
+    private void addToAdjacentCreases(Point startOrEnd, Crease newCrease) {
+        List<Crease> adjCreasesStart = adjacentCreases.get(startOrEnd);
+        double newAngle = getAngle(startOrEnd, newCrease);
+        double currAngle;
+        boolean done = false;
+        for (int i = 0; i < adjCreasesStart.size(); i++) {
+            Crease existingCrease = adjCreasesStart.get(i);
+            currAngle = getAngle(startOrEnd, existingCrease);
+            if (newAngle > currAngle) {
+                adjCreasesStart.add(i, newCrease);
+                done = true;
+                break;
+            }
+        }
+        if (!done) {
+            adjCreasesStart.add(newCrease);
+        }
+    }
+
+    private double getAngle(Point startOrEnd, Crease crease) {
+        if (crease.getLine().getStart().equals(startOrEnd)) {
+            return crease.getLine().getStart().clockwiseAngle(crease.getLine().getEnd());
+        } else {
+            return crease.getLine().getEnd().clockwiseAngle(crease.getLine().getStart());
+        }
     }
 
     /**
