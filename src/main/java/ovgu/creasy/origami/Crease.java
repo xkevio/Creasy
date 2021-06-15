@@ -25,7 +25,15 @@ public class Crease {
         /**
          * Edge of the paper/cut line, usually shown in black
          */
-        EDGE
+        EDGE;
+
+        public Type opposite()  {
+            return switch (this) {
+                case VALLEY -> MOUNTAIN;
+                case MOUNTAIN -> VALLEY;
+                default -> null;
+            };
+        }
     }
 
     public Crease(Line line, Type type) {

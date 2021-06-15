@@ -32,11 +32,11 @@ public class CreasePattern {
     public CreasePattern(Set<Crease> creases, Set<Point> points) {
         this.creases = creases;
         this.points = points;
+        this.adjacentCreases = new HashMap<>();
     }
 
     public CreasePattern() {
-        this.creases = new HashSet<>();
-        this.points = new HashSet<>();
+        this(new HashSet<>(), new HashSet<>());
     }
 
     public void addCrease(Crease crease){
