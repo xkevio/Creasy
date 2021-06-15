@@ -30,6 +30,10 @@ public class Point {
         this.y = y;
     }
 
+    public double distance(Point other) {
+        return Math.sqrt(Math.pow(other.y-y, 2) + Math.pow(other.x-x, 2));
+    }
+
     @Override
     public String toString() {
         return "Point{" +
@@ -50,4 +54,5 @@ public class Point {
     public int hashCode() {
         return Objects.hash(x, y);
     }
+
 }
