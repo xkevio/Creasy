@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class ReflectionPathBuilder {
-    private List<Crease> creases;
+    private ArrayList<Crease> creases;
     private Point currentPoint;
     private boolean done;
 
@@ -31,7 +31,7 @@ public class ReflectionPathBuilder {
     }
 
     private ReflectionPathBuilder(List<Crease> creases, Point currentPoint) {
-        this.creases = creases.stream().toList(); // copy the list
+        this.creases = new ArrayList<>(creases);
         this.currentPoint = currentPoint;
     }
 

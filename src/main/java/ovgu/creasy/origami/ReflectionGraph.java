@@ -103,33 +103,36 @@ public class ReflectionGraph {
                 .flatMap(Collection::stream)
                 .filter(point -> isLeafNode(point, subgraph))
                 .collect(Collectors.toList());
-        Point start = leafNodes.get(0);
-        // because start is a leaf node, there is only one adjacent crease in the subgraph
-        Crease startingCrease = getAdjacentCreasesInSubgraph(start, subgraph).get(0);
-        List<ReflectionPathBuilder> paths = new ArrayList<>();
+        Set<ReflectionPath> reflectionPaths = new HashSet<>();
+        for (Point leafNode : leafNodes) {
+            // because the point is a leaf node, there is only one adjacent crease in the subgraph
+            Crease startingCrease = getAdjacentCreasesInSubgraph(leafNode, subgraph).get(0);
+            List<ReflectionPathBuilder> paths = new ArrayList<>();
 
-        paths.add(new ReflectionPathBuilder(startingCrease, start));
-        while (paths.stream().anyMatch(path -> !path.isDone())) {
-            for (int i = 0; i < paths.size(); i++) {
-                ReflectionPathBuilder path = paths.get(i);
-                Crease lastCrease = path.getLastCrease();
-                path.setCurrentPoint(lastCrease.getLine().getOppositePoint(path.getCurrentPoint()));
-                List<Crease> nextCreases = getAdjacentCreasesInSubgraph(path.getCurrentPoint(), subgraph).stream()
-                        .filter(crease -> !path.getCreases().contains(crease))
-                        .collect(Collectors.toList());
-                if (nextCreases.size() == 0) {
-                    path.setDone(true);
-                    continue;
-                }
-                ReflectionPathBuilder tmpPath = path.copy();
-                path.addCrease(nextCreases.get(0));
-                for (int j = 1; j < nextCreases.size(); j++) {
-                    ReflectionPathBuilder newPath = tmpPath.copy();
-                    newPath.addCrease(nextCreases.get(j));
+            paths.add(new ReflectionPathBuilder(startingCrease, leafNode));
+            while (paths.stream().anyMatch(path -> !path.isDone())) {
+                for (ReflectionPathBuilder path : paths) {
+                    Crease lastCrease = path.getLastCrease();
+                    path.setCurrentPoint(lastCrease.getLine().getOppositePoint(path.getCurrentPoint()));
+                    List<Crease> nextCreases = getAdjacentCreasesInSubgraph(path.getCurrentPoint(), subgraph).stream()
+                            .filter(crease -> !path.getCreases().contains(crease))
+                            .collect(Collectors.toList());
+                    if (nextCreases.size() == 0) {
+                        path.setDone(true);
+                        continue;
+                    }
+                    ReflectionPathBuilder tmpPath = path.copy();
+                    path.addCrease(nextCreases.get(0));
+                    for (int j = 1; j < nextCreases.size(); j++) {
+                        ReflectionPathBuilder newPath = tmpPath.copy();
+                        newPath.addCrease(nextCreases.get(j));
+                    }
                 }
             }
+            reflectionPaths.addAll(paths.stream().map(ReflectionPathBuilder::build).collect(Collectors.toList()));
         }
-        return paths.stream().map(ReflectionPathBuilder::build).collect(Collectors.toList());
+
+        return reflectionPaths;
     }
 
     private List<Crease> getAdjacentCreasesInSubgraph(Point p, Collection<Crease> subgraph) {
