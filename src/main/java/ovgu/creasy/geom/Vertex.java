@@ -5,7 +5,7 @@ import ovgu.creasy.geom.*;
 
 import java.util.Objects;
 
-public class Vertices {
+public class Vertex {
     private final Point point;
     private final Type type;
 
@@ -21,7 +21,7 @@ public class Vertices {
      * @param point is a point in the x-y plane representing the position of the vertex after the model is folded
      * @param type  is the type of the vertex
      */
-    public Vertices(Point point, Type type) {
+    public Vertex(Point point, Type type) {
         this.point = point;
         this.type = type;
     }

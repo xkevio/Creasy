@@ -1,7 +1,6 @@
 package ovgu.creasy.origami;
 
 import ovgu.creasy.geom.*;
-import ovgu.creasy.origami.*;
 
 import java.util.*;
 
@@ -11,7 +10,7 @@ import java.util.*;
  * Explained in chapter 4.2 of the paper (pages 28 - 36)
  */
 public class ExtendedCreasePattern {
-    private Set<Vertices> xV;
+    private Set<Vertex> xV;
     private Set<ExtendedCrease> xC;
     private Set<List> xL;
 
@@ -20,7 +19,7 @@ public class ExtendedCreasePattern {
      * @param xC is the set of directed edges of the extended graph. Each xC ist called extended creases.
      * @param xL is a set of ordered, circular lists of edges parting from each vertex xV
      */
-    public ExtendedCreasePattern(Set<Vertices> xV, Set<ExtendedCrease> xC, Set<List> xL) {
+    public ExtendedCreasePattern(Set<Vertex> xV, Set<ExtendedCrease> xC, Set<List> xL) {
         this.xV = xV;
         this.xC = xC;
         this.xL = xL;

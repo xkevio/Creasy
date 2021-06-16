@@ -10,8 +10,8 @@ import java.util.Objects;
  * ('start' & 'end' must be a part of extended vertices.
  */
 public class ExtendedCrease {
-    private final Vertices start;
-    private final Vertices end;
+    private final Vertex start;
+    private final Vertex end;
     private final Type type;
     private final Boolean active;
 
@@ -29,18 +29,18 @@ public class ExtendedCrease {
      * @param type   is the crease assignment of the first crease in the reflection path
      * @param active is boolean indication whether the extended crease is active or not
      */
-    public ExtendedCrease(Vertices start, Vertices end, Type type, Boolean active) {
+    public ExtendedCrease(Vertex start, Vertex end, Type type, Boolean active) {
         this.start = start;
         this.end = end;
         this.type = type;
         this.active = active;
     }
 
-    public Vertices getStartVertices() {
+    public Vertex getStartVertices() {
         return start;
     }
 
-    public Vertices getEndVertices() {
+    public Vertex getEndVertices() {
         return end;
     }
 
