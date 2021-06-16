@@ -1,8 +1,9 @@
 package ovgu.creasy.origami;
 
-import ovgu.creasy.geom.*;
+import ovgu.creasy.geom.Vertex;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Extended Crease Pattern, adds information about Reflection Creases
@@ -30,7 +31,7 @@ public class ExtendedCreasePattern {
 
     public ExtendedCreasePattern buildExtendedGraph(CreasePattern cp) {
         ExtendedCreasePattern xCP = new ExtendedCreasePattern();
-        ReflectionGraph reflGraph = new ReflectionGraph(cp);
+        ReflectionGraphFactory reflGraph = new ReflectionGraphFactory(cp);
         /**
          * TODO:
          * copy each Vertex (from given CP) to extended Vertex
