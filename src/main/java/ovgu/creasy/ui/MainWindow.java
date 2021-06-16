@@ -1,9 +1,9 @@
 package ovgu.creasy.ui;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ovgu.creasy.origami.CreasePattern;
@@ -18,12 +18,21 @@ import java.io.IOException;
 public class MainWindow {
     public Canvas mainCanvas;
     public MenuItem foldedModelMenuItem;
+    public SplitPane splitpane;
+
     private OrigamiModel model;
 
     private final FileChooser openFileChooser;
     private String filePath = "";
     private String lastPath = "";
     private CreasePattern cp;
+
+    @FXML
+    private Canvas canvas1;
+    @FXML
+    private Canvas canvas2;
+    @FXML
+    private Canvas canvas3;
 
     public MainWindow() {
         openFileChooser = new FileChooser();
@@ -45,7 +54,10 @@ public class MainWindow {
                 System.out.println(cp.getCreases());
                 model = new OrigamiModel(cp);
 
-                cp.drawOnCanvas(mainCanvas);
+                cp.drawOnCanvas(mainCanvas, 1, 1);
+                cp.drawOnCanvas(canvas1, 0.5, 0.5);
+                cp.drawOnCanvas(canvas2, 0.5, 0.5);
+                cp.drawOnCanvas(canvas3, 0.5, 0.5);
 
                 // after reading the file, if the file is valid:
                 foldedModelMenuItem.setDisable(false);
@@ -73,6 +85,12 @@ public class MainWindow {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    public void initialize() {
+        SplitPane.Divider divider = splitpane.getDividers().get(0);
+        divider.positionProperty().addListener((observable, oldvalue, newvalue) -> divider.setPosition(0.65));
     }
 
     @FXML
