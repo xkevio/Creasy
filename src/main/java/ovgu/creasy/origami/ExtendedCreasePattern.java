@@ -16,7 +16,6 @@ public class ExtendedCreasePattern {
     private Set<List> xL;
 
     /**
-     *
      * @param xV is the set of extended vertices
      * @param xC is the set of directed edges of the extended graph. Each xC ist called extended creases.
      * @param xL is a set of ordered, circular lists of edges parting from each vertex xV
