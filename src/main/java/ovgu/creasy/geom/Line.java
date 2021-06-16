@@ -43,6 +43,15 @@ public class Line {
         this.end = end;
     }
 
+    public Point getOppositePoint(Point startOrEnd) {
+        if (startOrEnd.equals(this.start)) {
+            return this.end;
+        } else if (startOrEnd.equals(this.end)) {
+            return this.start;
+        }
+        return null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
