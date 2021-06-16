@@ -154,6 +154,14 @@ public class CreasePattern {
         graphicsContext.translate(-canvas.getWidth() / 2, -canvas.getHeight() / 2);
     }
 
+    /**
+     * Creates CreasePattern from the file given by
+     * reading through it line by line and assigning the correct
+     * CreaseTypes and coordinates to the returned CreasePattern,
+     * utilizes StreamTokenizer
+     * @param file the .cp file in which the CreasePattern is described
+     * @return a CreasePattern based on the instructions in the file
+     */
     public static CreasePattern createFromFile(File file) {
         CreasePattern cp = new CreasePattern();
         try {
