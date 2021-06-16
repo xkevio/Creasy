@@ -129,14 +129,17 @@ public class CreasePattern {
      * iterating over all Creases and choosing the colors based
      * on the type of Line
      * @param canvas the Canvas to draw the Crease Pattern on
+     * @param scaleX scales the GraphicsContext in the x amount (default = 1)
+     * @param scaleY scales the GraphicsContext in the y amount (default = 1)
      */
-    public void drawOnCanvas(Canvas canvas) {
+    public void drawOnCanvas(Canvas canvas, double scaleX, double scaleY) {
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         graphicsContext.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
         graphicsContext.setLineWidth(2);
 
+        graphicsContext.scale(scaleX, scaleY);
         for (Crease crease : creases) {
             Color currentColor = switch (crease.getType()) {
                 case EDGE -> Color.BLACK;
@@ -154,6 +157,14 @@ public class CreasePattern {
         graphicsContext.translate(-canvas.getWidth() / 2, -canvas.getHeight() / 2);
     }
 
+    /**
+     * Creates CreasePattern from the file given by
+     * reading through it line by line and assigning the correct
+     * CreaseTypes and coordinates to the returned CreasePattern,
+     * utilizes StreamTokenizer
+     * @param file the .cp file in which the CreasePattern is described
+     * @return a CreasePattern based on the instructions in the file
+     */
     public static CreasePattern createFromFile(File file) {
         CreasePattern cp = new CreasePattern();
         try {

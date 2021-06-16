@@ -16,10 +16,11 @@ public class Main extends Application {
 
     public void start(Stage stage) throws Exception {
         Parent rootFXML = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("main_window.fxml")));
-        // Szenen Bereich:
-        Scene initialScene = new Scene(rootFXML, 640, 480);
+
+        Scene initialScene = new Scene(rootFXML);
         // TODO insert Icon / Logo:
         // stage.getIcons().add(new Image(start.class.getResourceAsStream("image.png")));
+
         stage.setScene(initialScene);
         stage.sizeToScene();
         stage.setTitle("Creasy");
