@@ -6,12 +6,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Explained in chapter 3.1 of the paper (pages 18 - 20)
+ * Creates Reflection graphs, Explained in chapter 3.1 of the paper (pages 18 - 20)
  */
 public class ReflectionGraphFactory {
     private static final double EPS = 0.0000001;
     private final Map<Crease, Collection<Crease>> reflectionCreases;
-    private CreasePattern cp;
+    private final CreasePattern cp;
 
     public ReflectionGraphFactory(CreasePattern cp) {
         this.cp = cp;
@@ -66,31 +66,32 @@ public class ReflectionGraphFactory {
      * @return A collection of all connected subgraphs of the Reflection graph
      */
     public Collection<ReflectionGraph> getAllReflectionGraphs() {
-        Collection<ReflectionGraph> subGraphs = new ArrayList<>();
+        Collection<ReflectionGraph> reflectionGraphs = new ArrayList<>();
         Set<Crease> done = new HashSet<>();
 
-        // Iterate over all creases and add all
+        // Iterate over all creases and fina all creases connected through reflection Creases
         for (Crease crease : cp.getCreases()) {
+            // Edge creases are skipped because they do not represent an actual fold
             if (crease.getType()== Crease.Type.EDGE || done.contains(crease)) {
                 continue;
             }
-            ReflectionGraph connected = new ReflectionGraph();
-            connected.add(crease);
+            ReflectionGraph graph = new ReflectionGraph(cp);
+            graph.addCrease(crease);
             boolean allDone = false;
             while (!allDone) {
-                allDone = true;
-                for (Crease connectedCrease : connected) {
+                allDone = true; // when all the creases are in done, this will stay true and end the loop
+                for (Crease connectedCrease : graph.getCreases()) {
                     if (done.contains(connectedCrease)) {
                         continue;
                     }
                     allDone = false;
                     done.add(connectedCrease);
-                    connected.addAll(getReflectionCreases(connectedCrease));
+                    graph.addAllCreases(getReflectionCreases(connectedCrease));
                 }
             }
-            subGraphs.add(connected);
+            reflectionGraphs.add(graph);
         }
-        return subGraphs;
+        return reflectionGraphs;
     }
 
     /**
@@ -99,52 +100,37 @@ public class ReflectionGraphFactory {
      * @return A Collection of all locally maximal Reflection paths in the reflectionGraph (see page 29 for explanation of local maxima)
      */
     public Collection<ReflectionPath> getLocalMaxima(ReflectionGraph reflectionGraph) {
-        List<Point> leafNodes = reflectionGraph.stream()
-                .map(crease -> Arrays.asList(crease.getLine().getEnd(), crease.getLine().getStart()))
-                .flatMap(Collection::stream)
-                .filter(point -> isLeafNode(point, reflectionGraph))
-                .collect(Collectors.toList());
+        Set<Point> leafNodes = reflectionGraph.getLeafNodes();
         Set<ReflectionPath> reflectionPaths = new HashSet<>();
         for (Point leafNode : leafNodes) {
             // because the point is a leaf node, there is only one adjacent crease in the reflectionGraph
-            Crease startingCrease = getAdjacentCreasesInReflectionGraph(leafNode, reflectionGraph).get(0);
-            List<ReflectionPathBuilder> paths = new ArrayList<>();
+            Crease startingCrease = reflectionGraph.getAdjacentCreases(leafNode).get(0);
+            List<ReflectionPathBuilder> pathBuilders = new ArrayList<>();
 
-            paths.add(new ReflectionPathBuilder(startingCrease, leafNode));
-            while (paths.stream().anyMatch(path -> !path.isDone())) {
-                for (ReflectionPathBuilder path : paths) {
-                    Crease lastCrease = path.getLastCrease();
-                    path.setCurrentPoint(lastCrease.getLine().getOppositePoint(path.getCurrentPoint()));
-                    List<Crease> nextCreases = getAdjacentCreasesInReflectionGraph(path.getCurrentPoint(), reflectionGraph).stream()
-                            .filter(crease -> !path.getCreases().contains(crease))
+            pathBuilders.add(new ReflectionPathBuilder(startingCrease, leafNode));
+            while (pathBuilders.stream().anyMatch(path -> !path.isDone())) {
+                for (ReflectionPathBuilder pathBuilder : pathBuilders) {
+                    Crease lastCrease = pathBuilder.getLastCrease();
+                    pathBuilder.setCurrentPoint(lastCrease.getLine().getOppositePoint(pathBuilder.getCurrentPoint()));
+                    List<Crease> nextCreases = reflectionGraph.getAdjacentCreases(pathBuilder.getCurrentPoint()).stream()
+                            .filter(crease -> !pathBuilder.getCreases().contains(crease))
                             .collect(Collectors.toList());
                     if (nextCreases.size() == 0) {
-                        path.setDone(true);
+                        pathBuilder.setDone(true);
                         continue;
                     }
-                    ReflectionPathBuilder tmpPath = path.copy();
-                    path.addCrease(nextCreases.get(0));
+                    ReflectionPathBuilder tmpPath = pathBuilder.copy();
+                    pathBuilder.addCrease(nextCreases.get(0));
                     for (int j = 1; j < nextCreases.size(); j++) {
                         ReflectionPathBuilder newPath = tmpPath.copy();
                         newPath.addCrease(nextCreases.get(j));
                     }
                 }
             }
-            reflectionPaths.addAll(paths.stream().map(ReflectionPathBuilder::build).collect(Collectors.toList()));
+            reflectionPaths.addAll(pathBuilders.stream().map(ReflectionPathBuilder::build).collect(Collectors.toList()));
         }
 
         return reflectionPaths;
-    }
-
-    private List<Crease> getAdjacentCreasesInReflectionGraph(Point p, ReflectionGraph reflectionGraph) {
-        return cp.getAdjacentCreases(p).stream()
-                .filter(reflectionGraph::contains).collect(Collectors.toList());
-    }
-
-    private boolean isLeafNode(Point p, Collection<Crease> subgraph) {
-        List<Crease> adjacentCreases = cp.getAdjacentCreases(p);
-        long adjacentLinesInSubgraph = adjacentCreases.stream().filter(subgraph::contains).count();
-        return adjacentLinesInSubgraph == 1;
     }
 
     /**
