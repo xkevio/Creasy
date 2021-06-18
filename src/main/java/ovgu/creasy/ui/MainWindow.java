@@ -4,7 +4,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.SplitPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -21,7 +20,7 @@ public class MainWindow {
 
     public Canvas mainCanvas;
     public MenuItem foldedModelMenuItem;
-    public SplitPane splitpane;
+
 
     private OrigamiModel model;
 
@@ -89,8 +88,7 @@ public class MainWindow {
 
     @FXML
     public void initialize() {
-        SplitPane.Divider divider = splitpane.getDividers().get(0);
-        divider.positionProperty().addListener((observable, oldvalue, newvalue) -> divider.setPosition(0.65));
+
     }
 
     @FXML
