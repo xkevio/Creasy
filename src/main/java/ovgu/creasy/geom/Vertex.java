@@ -1,13 +1,10 @@
 package ovgu.creasy.geom;
 
-import ovgu.creasy.origami.*;
-import ovgu.creasy.geom.*;
-
 import java.util.Objects;
 
 public class Vertex {
-    private final Point point;
-    private final Type type;
+    private Point point;
+    private Type type;
 
     public enum Type {
         INTERNAL,
@@ -26,6 +23,22 @@ public class Vertex {
         this.type = type;
     }
 
+    public Point getPoint() {
+        return point;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setPoint(Point point) {
+        this.point = point;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "Vertex{" +
@@ -36,6 +49,6 @@ public class Vertex {
 
     @Override
     public int hashCode() {
-        return Objects.hash(point.getX(), point.getY());
+        return Objects.hash(point, type);
     }
 }
