@@ -194,8 +194,6 @@ public class CreasePattern {
                     default -> throw new IllegalStateException("Unexpected value: " + Integer.parseInt(st.sval));
                 };
 
-                // get line type - 1=edge, 2=mountain, 3=valley
-
                 // read data for point 1
                 st.nextToken();
                 point1.setX(Double.parseDouble(st.sval));
