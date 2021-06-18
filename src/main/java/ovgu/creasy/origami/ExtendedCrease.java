@@ -2,18 +2,20 @@ package ovgu.creasy.origami;
 
 import ovgu.creasy.geom.*;
 
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * A single extended crease in a Extended Crease Pattern
  * Each extended crease represents the local maximum reflection that starts in 'start' and ends in 'end'
- * ('start' & 'end' must be a part of extended vertices.
+ * ('start' & 'end' must be a part of extended vertices)
  */
 public class ExtendedCrease {
-    private final Vertex start;
-    private final Vertex end;
-    private final Type type;
-    private final Boolean active;
+    private Vertex start;
+    private Vertex end;
+    private Type type;
+    private Boolean active;
 
     public enum Type {
         MOUNTAIN,
@@ -27,7 +29,7 @@ public class ExtendedCrease {
      * @param start  is the start point for a reflection path
      * @param end    is the end point for a reflection path
      * @param type   is the crease assignment of the first crease in the reflection path
-     * @param active is boolean indication whether the extended crease is active or not
+     * @param active is a boolean indication whether the extended crease is active or not
      */
     public ExtendedCrease(Vertex start, Vertex end, Type type, Boolean active) {
         this.start = start;
@@ -36,25 +38,31 @@ public class ExtendedCrease {
         this.active = active;
     }
 
-    public Vertex getStartVertices() {
+    public Vertex getStartVertex() {
         return start;
     }
 
-    public Vertex getEndVertices() {
+    public Vertex getEndVertex() {
         return end;
     }
 
     public Type getType() { return type; }
 
-    public Boolean getActive() {
+    public boolean getActive() {
         return active;
     }
+
+    public void setActive(Boolean active) { this.active = true; }
+
+    public void setStartVertex(Vertex vertex){ this.start = vertex; }
+
+    public void setEndVertex(Vertex vertex){ this.end = vertex; }
 
     @Override
     public String toString() {
         return "ExtendedCrease{" +
-                "StartVertice=" + start +
-                "EndVertice=" + end +
+                "StartVertex=" + start +
+                "EndVertex=" + end +
                 "type=" + type +
                 ", active?" + active +
                 '}';
