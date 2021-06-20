@@ -2,9 +2,7 @@ package ovgu.creasy.origami;
 
 import ovgu.creasy.geom.*;
 
-import java.util.Collections;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * A single extended crease in a Extended Crease Pattern
@@ -15,7 +13,7 @@ public class ExtendedCrease {
     private Vertex start;
     private Vertex end;
     private Type type;
-    private Boolean active;
+    private boolean active;
 
     public enum Type {
         MOUNTAIN,
@@ -31,7 +29,7 @@ public class ExtendedCrease {
      * @param type   is the crease assignment of the first crease in the reflection path
      * @param active is a boolean indication whether the extended crease is active or not
      */
-    public ExtendedCrease(Vertex start, Vertex end, Type type, Boolean active) {
+    public ExtendedCrease(Vertex start, Vertex end, Type type, boolean active) {
         this.start = start;
         this.end = end;
         this.type = type;
@@ -52,7 +50,7 @@ public class ExtendedCrease {
         return active;
     }
 
-    public void setActive(Boolean active) { this.active = true; }
+    public void setActive(boolean active) { this.active = true; }
 
     public void setStartVertex(Vertex vertex){ this.start = vertex; }
 
