@@ -2,6 +2,9 @@ package ovgu.creasy.geom;
 
 import java.util.Objects;
 
+/**
+ * Type that stores position and vertex type
+ */
 public class Vertex {
     private Point point;
     private Type type;
