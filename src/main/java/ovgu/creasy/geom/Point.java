@@ -31,7 +31,7 @@ public class Point {
     }
 
     public double distance(Point other) {
-        return Math.sqrt(Math.pow(other.y-y, 2) + Math.pow(other.x-x, 2));
+        return Math.sqrt(((other.x-x) * (other.x-x)) + ((other.y-y) * (other.y-y)));
     }
 
     /**
