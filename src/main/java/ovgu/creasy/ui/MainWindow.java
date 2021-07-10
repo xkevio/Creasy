@@ -87,11 +87,6 @@ public class MainWindow {
     }
 
     @FXML
-    public void initialize() {
-
-    }
-
-    @FXML
     public void onShowFoldedModelAction() {
         if (model == null) {
             System.err.println("No Model to fold");
