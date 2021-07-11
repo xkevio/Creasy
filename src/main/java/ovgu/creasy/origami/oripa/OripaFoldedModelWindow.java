@@ -68,6 +68,7 @@ public class OripaFoldedModelWindow {
      */
     public void show() {
         EstimationResultFrame frame = new EstimationResultFrame();
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setModel(foldedModel);
         if (window != null) {
             window.dispose();

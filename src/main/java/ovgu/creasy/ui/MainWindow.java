@@ -12,7 +12,6 @@ import ovgu.creasy.origami.CreasePattern;
 import ovgu.creasy.origami.OrigamiModel;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
 
-import javax.swing.*;
 import java.io.File;
 
 public class MainWindow {
@@ -21,8 +20,7 @@ public class MainWindow {
 
     public Canvas mainCanvas;
     public MenuItem foldedModelMenuItem;
-
-
+    
     private OrigamiModel model;
 
     private String filePath = "";
