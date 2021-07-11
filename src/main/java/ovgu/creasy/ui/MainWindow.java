@@ -44,8 +44,8 @@ public class MainWindow {
      *
      * @param parent the VBox or HBox in which to add the Canvases to
      * @param amount the amount of Canvases needed
-     * @param width  width of the Canvas (default = 263)
-     * @param height height of the Canvas (default = 263)
+     * @param width  width of the Canvas
+     * @param height height of the Canvas
      */
     private static void createCanvases(Parent parent, int amount, int width, int height) {
         for (int i = 0; i < amount; ++i) {
@@ -70,7 +70,7 @@ public class MainWindow {
                 cp.drawOnCanvas(mainCanvas, 1, 1);
 
                 // should be called when the algorithm is executed, aka once the amount of steps is known
-                createCanvases(vbox, 10, 263, 263);
+                createCanvases(vbox, 10, 250, 250);
                 for (var c : vbox.getChildren()) {
                     cp.drawOnCanvas((Canvas) c, 0.5, 0.5);
                 }
