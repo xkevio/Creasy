@@ -27,7 +27,7 @@
             </Menu>
          </menus>
       </MenuBar>
-      <GridPane prefHeight="653.0" prefWidth="858.0" VBox.vgrow="ALWAYS">
+      <GridPane fx:id="mainGrid" prefHeight="653.0" prefWidth="858.0" VBox.vgrow="ALWAYS">
          <columnConstraints>
             <ColumnConstraints percentWidth="70.0" />
             <ColumnConstraints maxWidth="424.0" minWidth="10.0" percentWidth="30.0" prefWidth="253.0" />
@@ -36,20 +36,16 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
          </rowConstraints>
          <children>
-            <GridPane>
+            <GridPane fx:id="canvasGrid">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="ALWAYS" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints minHeight="10.0" percentHeight="70.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" percentHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints percentHeight="70.0" vgrow="ALWAYS" />
+                <RowConstraints percentHeight="30.0" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <VBox prefHeight="200.0" prefWidth="100.0">
-                     <children>
-                        <Canvas fx:id="mainCanvas" height="450.0" width="595.0" />
-                     </children>
-                  </VBox>
+                  <VBox fx:id="canvasVBox" />
                   <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />

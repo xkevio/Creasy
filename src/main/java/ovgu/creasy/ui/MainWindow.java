@@ -6,10 +6,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import ovgu.creasy.origami.CreasePattern;
 import ovgu.creasy.origami.OrigamiModel;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
@@ -20,9 +22,9 @@ public class MainWindow {
 
     private final FileChooser openFileChooser;
 
-    public Canvas mainCanvas;
+    public ResizableCanvas mainCanvas;
     public MenuItem foldedModelMenuItem;
-    
+
     private OrigamiModel model;
 
     private String filePath = "";
@@ -31,6 +33,12 @@ public class MainWindow {
 
     @FXML
     private VBox vbox;
+    @FXML
+    private VBox canvasVBox;
+    @FXML
+    private GridPane mainGrid;
+    @FXML
+    private GridPane canvasGrid;
 
     public MainWindow() {
         openFileChooser = new FileChooser();
@@ -105,5 +113,27 @@ public class MainWindow {
                 System.err.println("Crease Pattern is invalid");
             }
         }
+    }
+
+    @FXML
+    public void initialize() {
+        mainCanvas = new ResizableCanvas(canvasVBox.getWidth(), canvasVBox.getHeight());
+        mainCanvas.setManaged(false);
+        canvasVBox.getChildren().add(mainCanvas);
+
+        mainCanvas.widthProperty().bind(canvasVBox.widthProperty());
+        mainCanvas.heightProperty().bind(canvasVBox.heightProperty());
+
+        mainCanvas.widthProperty().addListener((observableValue, number, t1) -> {
+            if (cp != null) {
+                cp.drawOnCanvas(mainCanvas, 1, 1);
+            }
+        });
+
+        mainCanvas.heightProperty().addListener((observableValue, number, t1) -> {
+            if (cp != null) {
+                cp.drawOnCanvas(mainCanvas, 1, 1);
+            }
+        });
     }
 }
