@@ -3,6 +3,8 @@ package ovgu.creasy.ui;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -88,7 +90,12 @@ public class MainWindow {
     @FXML
     public void onShowFoldedModelAction() throws Exception {
         if (model == null) {
-            System.err.println("No Model to fold");
+            Alert error = new Alert(Alert.AlertType.ERROR, "There is no model to fold, perhaps it wasn't loaded correctly", ButtonType.OK);
+            error.setTitle("Model is not loaded");
+            error.setHeaderText("Error while folding model");
+            error.showAndWait();
+
+            // System.err.println("No Model to fold");
         } else {
             OripaFoldedModelWindow foldedModelWindow = new OripaFoldedModelWindow(model.getFinishedCp());
             if (foldedModelWindow.foldModel()) {
