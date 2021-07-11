@@ -20,15 +20,20 @@ import ovgu.creasy.origami.CreasePattern;
 import javax.swing.*;
 
 public class OripaFoldedModelWindow {
-    private CreasePatternInterface cp;
+
+    private final CreasePatternInterface cp;
     private OrigamiModel model;
     private FoldedModel foldedModel;
+
     // TODO: modify to work with JavaFX
     private JFrame window;
-    private FoldabilityChecker foldabilityChecker;
-    private Folder folder;
+    private final FoldabilityChecker foldabilityChecker;
+    private final Folder folder;
 
-    public OripaFoldedModelWindow(CreasePattern cp) {
+    public OripaFoldedModelWindow(CreasePattern cp) throws Exception {
+        // temporary
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
         this.cp = OripaTypeConverter.convertToOripaCp(cp);
         window = new EstimationResultFrame();
         folder = new Folder(
@@ -72,7 +77,7 @@ public class OripaFoldedModelWindow {
         window = frame;
     }
 
-    // Temporary, useful for debuggin
+    // Temporary, useful for debugging
     public void showError() {
         JFrame f = new FoldabilityCheckFrameFactory(new ChildFrameManager()).createFrame(null, model, cp, true);
         f.setVisible(true);

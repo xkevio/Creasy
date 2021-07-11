@@ -12,6 +12,7 @@ import ovgu.creasy.origami.CreasePattern;
 import ovgu.creasy.origami.OrigamiModel;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
 
+import javax.swing.*;
 import java.io.File;
 
 public class MainWindow {
@@ -87,7 +88,7 @@ public class MainWindow {
     }
 
     @FXML
-    public void onShowFoldedModelAction() {
+    public void onShowFoldedModelAction() throws Exception {
         if (model == null) {
             System.err.println("No Model to fold");
         } else {
