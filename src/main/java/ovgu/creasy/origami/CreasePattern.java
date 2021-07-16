@@ -153,6 +153,7 @@ public class CreasePattern {
 
             Point start = crease.getLine().getStart();
             Point end = crease.getLine().getEnd();
+
             graphicsContext.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
         }
 

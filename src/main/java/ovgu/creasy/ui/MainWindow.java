@@ -24,6 +24,8 @@ public class MainWindow {
 
     public ResizableCanvas mainCanvas;
     public MenuItem foldedModelMenuItem;
+    public MenuItem zoomInMenuItem;
+    public MenuItem zoomOutMenuItem;
 
     private OrigamiModel model;
 
@@ -85,6 +87,8 @@ public class MainWindow {
 
                 // after reading the file, if the file is valid:
                 foldedModelMenuItem.setDisable(false);
+                zoomInMenuItem.setDisable(false);
+                zoomOutMenuItem.setDisable(false);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Error loading file " + filePath + "!");
@@ -113,6 +117,16 @@ public class MainWindow {
                 System.err.println("Crease Pattern is invalid");
             }
         }
+    }
+
+    @FXML
+    public void onZoomInMenuItem() {
+        cp.drawOnCanvas(mainCanvas, mainCanvas.getScaleX() * 1.1, mainCanvas.getScaleY() * 1.1);
+    }
+
+    @FXML
+    public void onZoomOutMenuItem() {
+        cp.drawOnCanvas(mainCanvas, mainCanvas.getScaleX() * 0.9, mainCanvas.getScaleY() * 0.9);
     }
 
     @FXML

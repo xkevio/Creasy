@@ -23,6 +23,8 @@
             <Menu mnemonicParsing="false" text="View">
                <items>
                   <MenuItem fx:id="foldedModelMenuItem" disable="true" mnemonicParsing="false" onAction="#onShowFoldedModelAction" text="Folded Model" />
+                  <MenuItem fx:id="zoomInMenuItem" disable="true" mnemonicParsing="false" onAction="#onZoomInMenuItem" text="Zoom In" accelerator="PLUS"/>
+                  <MenuItem fx:id="zoomOutMenuItem" disable="true" mnemonicParsing="false" onAction="#onZoomOutMenuItem" text="Zoom Out" accelerator="MINUS"/>
                </items>
             </Menu>
          </menus>
