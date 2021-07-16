@@ -94,17 +94,19 @@ public class CreasePattern {
     }
 
     /**
-     * adds both points of the Crease or replaces them with very close points (distance <= EPS)
+     * Adds both points of the Crease or replaces them with very close points (distance <= EPS)
      * if possible
+     * @param crease the Crease of which the start and end point get added or replaced
      */
     private void addOrMergePoints(Crease crease) {
-        crease.getLine().setEnd(addPoint(crease.getLine().getEnd()));
         crease.getLine().setStart(addPoint(crease.getLine().getStart()));
+        crease.getLine().setEnd(addPoint(crease.getLine().getEnd()));
     }
 
     /**
-     * returns a very near Point if one exists (distance <= EPS). If none exists,
-     * adds p to points and returns p
+     * Either adds p to the points Set or returns a very near Point to p
+     * @param p the point to be added and returned if no other point is closer
+     * @return a very near Point if one exists (distance <= EPS) or p
      */
     private Point addPoint(Point p) {
         Optional<Point> nearPoint = points.stream().filter(point -> point.distance(p) <= EPS).findAny();
