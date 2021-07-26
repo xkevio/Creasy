@@ -4,6 +4,7 @@ import ovgu.creasy.geom.Point;
 import ovgu.creasy.geom.Vertex;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Extended Crease Pattern, adds information about Reflection Creases
@@ -44,11 +45,13 @@ public class ExtendedCreasePattern {
         Point defaultPoint = new Point(0,0);
 
         // copy each Vertex (from given CP) to extended Vertex
-        Set<Vertex> vertices = copyVertices(cp);
+        Map<Point, Vertex> vertexMap = copyVertices(cp);
+        Set<Vertex> vertices = new HashSet<>(vertexMap.values());
+
 
         // From each Crease (from given CP) construct extended Crease
-        Set<ExtendedCrease> extendedCreases = createExtendedCreases(cp, false);
-        Set<ExtendedCrease> extendedCreasesReversed = createExtendedCreases(cp, true);
+        Set<ExtendedCrease> extendedCreases = createExtendedCreases(cp, vertexMap, false);
+        Set<ExtendedCrease> extendedCreasesReversed = createExtendedCreases(cp, vertexMap, true);
 
         // construct a set of ordered circular lists of edges parting from each vertex xV
         Set<List<Vertex>> xL = createList(vertices);
@@ -96,22 +99,37 @@ public class ExtendedCreasePattern {
         return lists;
     }
 
-    // TODO
-    private Set<ExtendedCrease> createExtendedCreases(CreasePattern cp, boolean reverse) {
+    private Set<ExtendedCrease> createExtendedCreases(CreasePattern cp, Map<Point, Vertex> extendedVertices, boolean reverse) {
         Set<ExtendedCrease> xC = new HashSet<>();
 
         // if reverse == false --> xC = (v1, v2, a, false)
         // if reverse == true --> xC = (v2, v1, a, false)
-
-        return xC;
+       return cp.getCreases().stream().map(c -> {
+            Point start = reverse? c.getLine().getEnd() : c.getLine().getStart();
+            Point end = reverse? c.getLine().getStart() : c.getLine().getEnd();
+            ExtendedCrease.Type type = switch (c.getType()) {
+                case VALLEY -> ExtendedCrease.Type.VALLEY;
+                case MOUNTAIN -> ExtendedCrease.Type.MOUNTAIN;
+                default -> ExtendedCrease.Type.DONTCARE;
+            };
+            return new ExtendedCrease(extendedVertices.get(start), extendedVertices.get(end), type, false);
+        }).collect(Collectors.toSet());
     }
 
-    // TODO
-    private Set<Vertex> copyVertices(CreasePattern cp) {
-        Set<Vertex> vertices = new HashSet<>();
+    private Map<Point, Vertex> copyVertices(CreasePattern cp) {
+        HashMap<Point, Vertex> vertices = new HashMap<>();
 
-        // TODO figure out correct vertex type
-        cp.getPoints().forEach(point -> vertices.add(new Vertex(point, Vertex.Type.VIRTUAL)));
+        cp.getPoints().forEach(point -> {
+            Vertex.Type type;
+            if (cp.getAdjacentCreases(point).stream()
+                    .anyMatch(c -> c.getType() == Crease.Type.EDGE)
+            ) {
+                type = Vertex.Type.BORDER;
+            } else {
+                type = Vertex.Type.INTERNAL;
+            }
+            vertices.put(point, new Vertex(point, type));
+        });
 
         return vertices;
     }
