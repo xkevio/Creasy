@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 public class ExtendedCreasePattern {
     private Set<Vertex> xV;
     private Set<ExtendedCrease> xC;
-    private Set<List<Vertex>> xL;
+    private Map<Vertex, List<ExtendedCrease>> xL;
 
     /**
      * @param xV is the set of extended vertices
      * @param xC is the set of directed edges of the extended graph. Each xC ist called extended creases
      * @param xL is a set of ordered, circular lists of edges parting from each vertex xV
      */
-    public ExtendedCreasePattern(Set<Vertex> xV, Set<ExtendedCrease> xC, Set<List<Vertex>> xL) {
+    public ExtendedCreasePattern(Set<Vertex> xV, Set<ExtendedCrease> xC, Map<Vertex, List<ExtendedCrease>> xL) {
         this.xV = xV;
         this.xC = xC;
         this.xL = xL;
@@ -38,7 +38,7 @@ public class ExtendedCreasePattern {
         return Collections.unmodifiableSet(xC);
     }
 
-    public Set<List<Vertex>> getListOfVertices() { return Collections.unmodifiableSet(xL); }
+    public Map<Vertex, List<ExtendedCrease>> getListOfVertices() { return Collections.unmodifiableMap(xL); }
 
     public ExtendedCreasePattern buildExtendedGraph(CreasePattern cp) {
         ReflectionGraphFactory reflGraph = new ReflectionGraphFactory(cp);
@@ -52,9 +52,12 @@ public class ExtendedCreasePattern {
         // From each Crease (from given CP) construct extended Crease
         Set<ExtendedCrease> extendedCreases = createExtendedCreases(cp, vertexMap, false);
         Set<ExtendedCrease> extendedCreasesReversed = createExtendedCreases(cp, vertexMap, true);
+        Set<ExtendedCrease> inactiveExtendedCreases = new HashSet<>();
+        inactiveExtendedCreases.addAll(extendedCreases);
+        inactiveExtendedCreases.addAll(extendedCreasesReversed);
 
         // construct a set of ordered circular lists of edges parting from each vertex xV
-        Set<List<Vertex>> xL = createList(vertices);
+        Map<Vertex, List<ExtendedCrease>> xL = createList(vertices);
 
         // set of all reflection graphs
         Collection<ReflectionGraph> reflectionGraphs = reflGraph.getAllReflectionGraphs();
@@ -64,17 +67,25 @@ public class ExtendedCreasePattern {
             Collection<ReflectionPath> A = reflGraph.getLocalMaxima(reflectionGraph);
             // global maximum in A
             ReflectionPath y = getGlobalMaxima(A);
-            // terminal vertices of y TODO
-            Vertex x1, x2;
-            // Extended Crease in y with xC1.getStartVertex() == xV1 TODO
-            ExtendedCrease xC1 = null;
-            // Extended Crease in y with xC2.getStartVertex() == xV2 TODO
-            ExtendedCrease xC2 = null;
+            // terminal vertices of y
+            Vertex xV1 = vertexMap.get(y.getStartingPoint());
+            Vertex xV2 = vertexMap.get(y.getEndPoint());
+            // Extended Crease in y with xC1.getStartVertex() == xV1
+            // TODO: maybe make more efficient
+            ExtendedCrease xC1 = inactiveExtendedCreases.stream()
+                    .filter(c -> c.getStartVertex().equals(xV1))
+                    .filter(c -> y.getPoints().contains(c.getEndVertex().getPoint()))
+                    .findFirst().get();
+            // Extended Crease in y with xC2.getStartVertex() == xV2
+            ExtendedCrease xC2 = inactiveExtendedCreases.stream()
+                    .filter(c -> c.getStartVertex().equals(xV2))
+                    .filter(c -> y.getPoints().contains(c.getEndVertex().getPoint()))
+                    .findFirst().get();
             // activate xC1 and xC2
             xC1.setActive(true);
             xC2.setActive(true);
-
-            Vertex xV1 = null, xV2 = null;
+            inactiveExtendedCreases.remove(xC1);
+            inactiveExtendedCreases.remove(xC2);
 
             if (xV1.getPoint() == xV2.getPoint() && xC1.getType() != xC2.getType()) {
                 Vertex newVertex = new Vertex(defaultPoint, Vertex.Type.VIRTUAL);
@@ -94,8 +105,8 @@ public class ExtendedCreasePattern {
         return xCP;
     }
     // TODO
-    private Set<List<Vertex>> createList(Set<Vertex> vertices) {
-        Set<List<Vertex>> lists = new HashSet<>();
+    private Map<Vertex, List<ExtendedCrease>> createList(Set<Vertex> vertices) {
+        Map<Vertex, List<ExtendedCrease>> lists = new HashMap<>();
         return lists;
     }
 
@@ -134,9 +145,7 @@ public class ExtendedCreasePattern {
         return vertices;
     }
 
-    // TODO
-    private ReflectionPath getGlobalMaxima(Collection<ReflectionPath> reflectionPath) {
-        ReflectionPath globalMaxima = null;
-        return globalMaxima;
+    private ReflectionPath getGlobalMaxima(Collection<ReflectionPath> reflectionPaths) {
+        return reflectionPaths.stream().max(Comparator.comparingInt(ReflectionPath::length)).orElse(null);
     }
 }
