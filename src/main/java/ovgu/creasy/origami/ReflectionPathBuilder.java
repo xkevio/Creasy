@@ -10,6 +10,7 @@ import java.util.Objects;
 public class ReflectionPathBuilder {
     private ArrayList<Crease> creases;
     private Point currentPoint;
+    private Point startingPoint;
     private boolean done;
 
     public boolean isDone() {
@@ -28,6 +29,7 @@ public class ReflectionPathBuilder {
         this.creases = new ArrayList<>();
         this.creases.add(crease);
         currentPoint = startingPoint;
+        this.startingPoint = startingPoint;
     }
 
     private ReflectionPathBuilder(List<Crease> creases, Point currentPoint) {
@@ -73,6 +75,6 @@ public class ReflectionPathBuilder {
     }
 
     public ReflectionPath build() {
-        return new ReflectionPath(creases);
+        return new ReflectionPath(creases, startingPoint, currentPoint);
     }
 }

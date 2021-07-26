@@ -1,5 +1,7 @@
 package ovgu.creasy.origami;
 
+import ovgu.creasy.geom.Point;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,11 +10,15 @@ import java.util.Objects;
 public class ReflectionPath {
     private List<Crease> creases;
     private List<Crease> reversedCreases;
+    private Point startingPoint;
+    private Point endPoint;
 
-    public ReflectionPath(ArrayList<Crease> creases) {
+    public ReflectionPath(ArrayList<Crease> creases, Point startingPoint, Point endPoint) {
         this.creases = creases;
         this.reversedCreases = new ArrayList<>(creases);
         Collections.reverse(this.reversedCreases);
+        this.startingPoint = startingPoint;
+        this.endPoint = endPoint;
     }
 
     public List<Crease> getCreases() {
