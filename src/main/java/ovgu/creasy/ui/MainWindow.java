@@ -1,5 +1,6 @@
 package ovgu.creasy.ui;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
@@ -23,9 +24,11 @@ public class MainWindow {
     private final FileChooser openFileChooser;
 
     public ResizableCanvas mainCanvas;
+
     public MenuItem foldedModelMenuItem;
     public MenuItem zoomInMenuItem;
     public MenuItem zoomOutMenuItem;
+    public MenuItem resetMenuItem;
 
     private OrigamiModel model;
 
@@ -37,10 +40,6 @@ public class MainWindow {
     private VBox vbox;
     @FXML
     private VBox canvasVBox;
-    @FXML
-    private GridPane mainGrid;
-    @FXML
-    private GridPane canvasGrid;
 
     public MainWindow() {
         openFileChooser = new FileChooser();
@@ -81,14 +80,13 @@ public class MainWindow {
 
                 // should be called when the algorithm is executed, aka once the amount of steps is known
                 createCanvases(vbox, 10, 250, 250);
-                for (var c : vbox.getChildren()) {
-                    cp.drawOnCanvas((Canvas) c, 0.5, 0.5);
-                }
+                vbox.getChildren().forEach(c -> cp.drawOnCanvas((Canvas) c, 0.5, 0.5));
 
                 // after reading the file, if the file is valid:
                 foldedModelMenuItem.setDisable(false);
                 zoomInMenuItem.setDisable(false);
                 zoomOutMenuItem.setDisable(false);
+                resetMenuItem.setDisable(false);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Error loading file " + filePath + "!");
@@ -130,6 +128,11 @@ public class MainWindow {
     }
 
     @FXML
+    public void onMenuResetAction() {
+        resetGUI();
+    }
+
+    @FXML
     public void initialize() {
         mainCanvas = new ResizableCanvas(canvasVBox.getWidth(), canvasVBox.getHeight());
         mainCanvas.setManaged(false);
@@ -150,4 +153,18 @@ public class MainWindow {
             }
         });
     }
+
+    private void resetGUI() {
+        mainCanvas.getGraphicsContext2D().clearRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
+        ((Stage) mainCanvas.getScene().getWindow()).setTitle("Creasy");
+        vbox.getChildren().forEach(c -> ((Canvas) c).getGraphicsContext2D().clearRect(0, 0, ((Canvas) c).getWidth(), ((Canvas) c).getHeight()));
+
+        foldedModelMenuItem.setDisable(true);
+        zoomInMenuItem.setDisable(true);
+        zoomOutMenuItem.setDisable(true);
+        resetMenuItem.setDisable(true);
+
+        cp = null;
+    }
+
 }

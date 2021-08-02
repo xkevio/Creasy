@@ -157,6 +157,7 @@ public class CreasePattern {
             graphicsContext.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
         }
 
+        graphicsContext.scale(1 / scaleX, 1 / scaleY);
         graphicsContext.translate(-canvas.getWidth() / 2, -canvas.getHeight() / 2);
     }
 
