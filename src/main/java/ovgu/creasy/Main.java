@@ -1,10 +1,12 @@
 package ovgu.creasy;
 
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import ovgu.creasy.ui.MainWindow;
 
 import java.util.Objects;
 
@@ -15,7 +17,10 @@ public class Main extends Application {
     }
 
     public void start(Stage stage) throws Exception {
-        Parent rootFXML = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("main_window.fxml")));
+        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("main_window.fxml")));
+        Parent rootFXML = loader.load();
+
+        ((MainWindow) loader.getController()).setHostServices(getHostServices());
 
         Scene initialScene = new Scene(rootFXML);
         // TODO insert Icon / Logo:
