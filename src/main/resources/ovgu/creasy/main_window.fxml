@@ -30,6 +30,13 @@
                   <MenuItem fx:id="zoomOutMenuItem" accelerator="MINUS" disable="true" mnemonicParsing="false" onAction="#onZoomOutMenuItem" text="Zoom Out" />
                </items>
             </Menu>
+            <Menu mnemonicParsing="false" text="Examples">
+               <items>
+                   <MenuItem mnemonicParsing="false" onAction="#onLoadExampleBird" text="Bird" />
+                   <MenuItem mnemonicParsing="false" onAction="#onLoadExamplePenguin" text="Penguin" />
+                   <MenuItem mnemonicParsing="false" onAction="#onLoadExampleCrane" text="Crane" />
+               </items>
+            </Menu>
          </menus>
       </MenuBar>
       <GridPane fx:id="mainGrid" prefHeight="653.0" prefWidth="858.0" VBox.vgrow="ALWAYS">

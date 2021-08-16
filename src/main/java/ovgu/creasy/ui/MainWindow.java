@@ -1,23 +1,23 @@
 package ovgu.creasy.ui;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.Window;
+import ovgu.creasy.Main;
 import ovgu.creasy.origami.CreasePattern;
 import ovgu.creasy.origami.OrigamiModel;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 public class MainWindow {
 
@@ -33,7 +33,7 @@ public class MainWindow {
     private OrigamiModel model;
 
     private String filePath = "";
-    private String lastPath = "";
+    private final String lastPath = "";
     private CreasePattern cp;
 
     @FXML
@@ -62,6 +62,27 @@ public class MainWindow {
         }
     }
 
+    private void setupGUI(InputStream is, String filePath) {
+        cp = CreasePattern.createFromFile(is);
+        ((Stage) mainCanvas.getScene().getWindow()).setTitle(filePath + " - Creasy");
+
+        System.out.println(cp.getPoints());
+        System.out.println(cp.getCreases());
+        model = new OrigamiModel(cp);
+
+        cp.drawOnCanvas(mainCanvas, 1, 1);
+
+        // should be called when the algorithm is executed, aka once the amount of steps is known
+        createCanvases(vbox, 10, 250, 250);
+        vbox.getChildren().forEach(c -> cp.drawOnCanvas((Canvas) c, 0.5, 0.5));
+
+        // after reading the file, if the file is valid:
+        foldedModelMenuItem.setDisable(false);
+        zoomInMenuItem.setDisable(false);
+        zoomOutMenuItem.setDisable(false);
+        resetMenuItem.setDisable(false);
+    }
+
     @FXML
     public void onMenuImportAction() {
         File file = openFileChooser.showOpenDialog(mainCanvas.getScene().getWindow());
@@ -69,29 +90,11 @@ public class MainWindow {
 
         if (file.exists()) {
             try {
-                cp = CreasePattern.createFromFile(file);
-                ((Stage) mainCanvas.getScene().getWindow()).setTitle(filePath + " - Creasy");
-
-                System.out.println(cp.getPoints());
-                System.out.println(cp.getCreases());
-                model = new OrigamiModel(cp);
-
-                cp.drawOnCanvas(mainCanvas, 1, 1);
-
-                // should be called when the algorithm is executed, aka once the amount of steps is known
-                createCanvases(vbox, 10, 250, 250);
-                vbox.getChildren().forEach(c -> cp.drawOnCanvas((Canvas) c, 0.5, 0.5));
-
-                // after reading the file, if the file is valid:
-                foldedModelMenuItem.setDisable(false);
-                zoomInMenuItem.setDisable(false);
-                zoomOutMenuItem.setDisable(false);
-                resetMenuItem.setDisable(false);
+                setupGUI(new FileInputStream(file), filePath);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Error loading file " + filePath + "!");
             }
-
         } else {
             System.err.println("No file selected or path is invalid!");
         }
@@ -157,7 +160,8 @@ public class MainWindow {
     private void resetGUI() {
         mainCanvas.getGraphicsContext2D().clearRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
         ((Stage) mainCanvas.getScene().getWindow()).setTitle("Creasy");
-        vbox.getChildren().forEach(c -> ((Canvas) c).getGraphicsContext2D().clearRect(0, 0, ((Canvas) c).getWidth(), ((Canvas) c).getHeight()));
+        vbox.getChildren().forEach(c -> ((Canvas) c).getGraphicsContext2D().
+                clearRect(0, 0, ((Canvas) c).getWidth(), ((Canvas) c).getHeight()));
 
         foldedModelMenuItem.setDisable(true);
         zoomInMenuItem.setDisable(true);
@@ -167,4 +171,21 @@ public class MainWindow {
         cp = null;
     }
 
+    @FXML
+    public void onLoadExampleBird() {
+        InputStream is = Main.class.getResourceAsStream("example/bird.cp");
+        setupGUI(is, "example/bird.cp");
+    }
+
+    @FXML
+    public void onLoadExamplePenguin() {
+        InputStream is = Main.class.getResourceAsStream("example/penguin_hideo_komatsu.cp");
+        setupGUI(is, "example/penguin_hideo_komatsu.cp");
+    }
+
+    @FXML
+    public void onLoadExampleCrane() {
+        InputStream is = Main.class.getResourceAsStream("example/crane.cp");
+        setupGUI(is, "example/crane.cp");
+    }
 }

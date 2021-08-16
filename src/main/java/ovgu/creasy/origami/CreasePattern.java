@@ -166,13 +166,13 @@ public class CreasePattern {
      * reading through it line by line and assigning the correct
      * CreaseTypes and coordinates to the returned CreasePattern,
      * utilizes StreamTokenizer
-     * @param file the .cp file in which the CreasePattern is described
+     * @param file the .cp file in which the CreasePattern is described as an InputStream
      * @return a CreasePattern based on the instructions in the file
      */
-    public static CreasePattern createFromFile(File file) {
+    public static CreasePattern createFromFile(InputStream file) {
         CreasePattern cp = new CreasePattern();
         try {
-            Reader reader = new FileReader(file);
+            Reader reader = new BufferedReader(new InputStreamReader(file));
             StreamTokenizer st = new StreamTokenizer(reader);
             st.resetSyntax();
 
