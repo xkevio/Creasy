@@ -3,14 +3,19 @@ package ovgu.creasy.ui;
 import javafx.application.HostServices;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ovgu.creasy.Main;
@@ -22,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class MainWindow {
@@ -40,7 +46,9 @@ public class MainWindow {
     private CreasePattern cp;
 
     @FXML
-    private VBox vbox;
+    private HBox history;
+    @FXML
+    private VBox steps;
     @FXML
     private VBox canvasVBox;
 
@@ -88,7 +96,7 @@ public class MainWindow {
 
         if (file.exists()) {
             try {
-                setupGUI(new FileInputStream(file), filePath);
+                setupCreasePattern(new FileInputStream(file), filePath);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Error loading file " + filePath + "!");
@@ -144,19 +152,19 @@ public class MainWindow {
     @FXML
     public void onLoadExampleBird() {
         InputStream is = Main.class.getResourceAsStream("example/bird.cp");
-        setupGUI(is, "example/bird.cp");
+        setupCreasePattern(is, "example/bird.cp");
     }
 
     @FXML
     public void onLoadExamplePenguin() {
         InputStream is = Main.class.getResourceAsStream("example/penguin_hideo_komatsu.cp");
-        setupGUI(is, "example/penguin_hideo_komatsu.cp");
+        setupCreasePattern(is, "example/penguin_hideo_komatsu.cp");
     }
 
     @FXML
     public void onLoadExampleCrane() {
         InputStream is = Main.class.getResourceAsStream("example/crane.cp");
-        setupGUI(is, "example/crane.cp");
+        setupCreasePattern(is, "example/crane.cp");
     }
     // -------------------------
 
@@ -190,9 +198,9 @@ public class MainWindow {
      * @param is the InputStream that is the crease pattern file
      * @param filePath what is displayed in the title bar of the window
      */
-    private void setupGUI(InputStream is, String filePath) {
+    private void setupCreasePattern(InputStream is, String filePath) {
         cp = CreasePattern.createFromFile(is);
-        ((Stage) mainCanvas.getScene().getWindow()).setTitle(filePath + " - Creasy");
+        ((Stage) mainCanvas.getScene().getWindow()).setTitle(filePath + " - " + Main.APPLICATION_TITLE);
 
         System.out.println(cp.getPoints());
         System.out.println(cp.getCreases());
@@ -201,14 +209,37 @@ public class MainWindow {
         cp.drawOnCanvas(mainCanvas, 1, 1);
 
         // should be called when the algorithm is executed, aka once the amount of steps is known
-        createCanvases(vbox, 10, 250, 250);
-        vbox.getChildren().forEach(c -> cp.drawOnCanvas((Canvas) c, 0.5, 0.5));
+        createCanvases(steps, 10, 250, 250);
+        createCanvases(history, 10, 200, 200);
+
+        setupEvents(steps, history);
 
         // after reading the file, if the file is valid:
         foldedModelMenuItem.setDisable(false);
         zoomInMenuItem.setDisable(false);
         zoomOutMenuItem.setDisable(false);
         resetMenuItem.setDisable(false);
+    }
+
+    private void setupEvents(Parent... parents) {
+        for (Parent parent : parents) {
+            ((Pane) parent).getChildren().forEach(c -> {
+                cp.drawOnCanvas((Canvas) c, 0.5, 0.5);
+
+                GraphicsContext graphicsContext = ((Canvas) c).getGraphicsContext2D();
+                c.setOnMouseEntered(mouseEvent -> {
+                    graphicsContext.setFill(Color.color(0.2, 0.2, 0.2, 0.2));
+                    graphicsContext.fillRect(0, 0, ((Canvas) c).getWidth(), ((Canvas) c).getHeight());
+                    c.setCursor(Cursor.HAND);
+                });
+
+                c.setOnMouseExited(mouseEvent -> {
+                    graphicsContext.clearRect(0, 0, ((Canvas) c).getWidth(), ((Canvas) c).getHeight());
+                    cp.drawOnCanvas((Canvas) c, 0.5, 0.5);
+                    c.setCursor(Cursor.DEFAULT);
+                });
+            });
+        }
     }
 
     /**
@@ -218,9 +249,16 @@ public class MainWindow {
      */
     private void resetGUI() {
         mainCanvas.getGraphicsContext2D().clearRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
-        ((Stage) mainCanvas.getScene().getWindow()).setTitle("Creasy");
-        vbox.getChildren().forEach(c -> ((Canvas) c).getGraphicsContext2D().
+        ((Stage) mainCanvas.getScene().getWindow()).setTitle(Main.APPLICATION_TITLE);
+
+        steps.getChildren().forEach(c -> ((Canvas) c).getGraphicsContext2D().
                 clearRect(0, 0, ((Canvas) c).getWidth(), ((Canvas) c).getHeight()));
+
+        history.getChildren().forEach(c -> ((Canvas) c).getGraphicsContext2D().
+                clearRect(0, 0, ((Canvas) c).getWidth(), ((Canvas) c).getHeight()));
+
+        steps.getChildren().clear();
+        history.getChildren().clear();
 
         foldedModelMenuItem.setDisable(true);
         zoomInMenuItem.setDisable(true);
@@ -228,10 +266,6 @@ public class MainWindow {
         resetMenuItem.setDisable(true);
 
         cp = null;
-    }
-
-    public void setHostServices(HostServices hostServices) {
-        this.hostServices = hostServices;
     }
 
     /**
@@ -243,9 +277,15 @@ public class MainWindow {
      * @param width  width of the Canvas
      * @param height height of the Canvas
      */
-    private static void createCanvases(Parent parent, int amount, int width, int height) {
-        for (int i = 0; i < amount; ++i) {
-            ((Pane) parent).getChildren().add(new Canvas(width, height));
+    private void createCanvases(Parent parent, int amount, int width, int height) {
+        if (((Pane) parent).getChildren().isEmpty()) {
+            for (int i = 0; i < amount; ++i) {
+                ((Pane) parent).getChildren().add(new Canvas(width, height));
+            }
         }
+    }
+
+    public void setHostServices(HostServices hostServices) {
+        this.hostServices = hostServices;
     }
 }

@@ -12,6 +12,8 @@ import java.util.Objects;
 
 public class Main extends Application {
 
+    public static final String APPLICATION_TITLE = "Creasy";
+
     public static void main(String[] args) {
         launch();
     }
@@ -28,7 +30,7 @@ public class Main extends Application {
 
         stage.setScene(initialScene);
         stage.sizeToScene();
-        stage.setTitle("Creasy");
+        stage.setTitle(APPLICATION_TITLE);
         stage.show();
     }
 }
