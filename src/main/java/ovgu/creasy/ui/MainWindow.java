@@ -11,7 +11,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -27,10 +26,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class MainWindow {
+
+    private static final int CANVAS_WIDTH = 200;
+    private static final int CANVAS_HEIGHT = 200;
 
     private final FileChooser openFileChooser;
     private HostServices hostServices;
@@ -111,7 +112,7 @@ public class MainWindow {
      * calls foldModel() method.
      *
      * Opens an Alert in case of an error while folding the model.
-     * @throws Exception
+     * @throws Exception when crease pattern is invalid
      */
     @FXML
     public void onShowFoldedModelAction() throws Exception {
@@ -171,14 +172,14 @@ public class MainWindow {
     /**
      * Opens an "about" dialogue which displays information about Creasy
      * and its developers
-     * @throws IOException
+     * @throws IOException when the fxml file does not exist
      */
     @FXML
     public void onHelpAbout() throws IOException {
         Stage stage = new Stage();
 
         FXMLLoader about = new FXMLLoader(Objects.requireNonNull(Main.class.getResource("about.fxml")));
-        Scene initialScene = new Scene(about.load(), 450, 300);
+        Scene initialScene = new Scene(about.load());
         stage.setResizable(false);
 
         ((AboutWindow) about.getController()).setHostServices(hostServices);
@@ -209,8 +210,8 @@ public class MainWindow {
         cp.drawOnCanvas(mainCanvas, 1, 1);
 
         // should be called when the algorithm is executed, aka once the amount of steps is known
-        createCanvases(steps, 10, 250, 250);
-        createCanvases(history, 10, 200, 200);
+        createCanvases(steps, 10, CANVAS_WIDTH, CANVAS_HEIGHT);
+        createCanvases(history, 10, CANVAS_WIDTH, CANVAS_HEIGHT);
 
         setupEvents(steps, history);
 
@@ -224,18 +225,18 @@ public class MainWindow {
     private void setupEvents(Parent... parents) {
         for (Parent parent : parents) {
             ((Pane) parent).getChildren().forEach(c -> {
-                cp.drawOnCanvas((Canvas) c, 0.5, 0.5);
+                cp.drawOnCanvas((Canvas) c, 0.45, 0.45);
 
                 GraphicsContext graphicsContext = ((Canvas) c).getGraphicsContext2D();
                 c.setOnMouseEntered(mouseEvent -> {
                     graphicsContext.setFill(Color.color(0.2, 0.2, 0.2, 0.2));
-                    graphicsContext.fillRect(0, 0, ((Canvas) c).getWidth(), ((Canvas) c).getHeight());
+                    graphicsContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
                     c.setCursor(Cursor.HAND);
                 });
 
                 c.setOnMouseExited(mouseEvent -> {
-                    graphicsContext.clearRect(0, 0, ((Canvas) c).getWidth(), ((Canvas) c).getHeight());
-                    cp.drawOnCanvas((Canvas) c, 0.5, 0.5);
+                    graphicsContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                    cp.drawOnCanvas((Canvas) c, 0.45, 0.45);
                     c.setCursor(Cursor.DEFAULT);
                 });
             });
@@ -252,10 +253,10 @@ public class MainWindow {
         ((Stage) mainCanvas.getScene().getWindow()).setTitle(Main.APPLICATION_TITLE);
 
         steps.getChildren().forEach(c -> ((Canvas) c).getGraphicsContext2D().
-                clearRect(0, 0, ((Canvas) c).getWidth(), ((Canvas) c).getHeight()));
+                clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT));
 
         history.getChildren().forEach(c -> ((Canvas) c).getGraphicsContext2D().
-                clearRect(0, 0, ((Canvas) c).getWidth(), ((Canvas) c).getHeight()));
+                clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT));
 
         steps.getChildren().clear();
         history.getChildren().clear();
