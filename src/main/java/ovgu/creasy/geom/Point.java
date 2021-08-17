@@ -43,19 +43,22 @@ public class Point {
         double dirThisLine = Math.atan2(other.getY() - this.getY(), other.getX() - this.getX());
         double angle = dirAnchorYLine - dirThisLine;
         if (angle > Math.PI) {
-            angle -= 2*Math.PI;
+            angle -= 2 * Math.PI;
         } else if (angle < -Math.PI) {
-            angle += 2* Math.PI;
+            angle += 2 * Math.PI;
         }
         return angle;
     }
 
     @Override
     public String toString() {
-        return "Point{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
+        return """
+               Point
+               {
+                   x: %f,
+                   y: %f
+               }
+               """.formatted(x, y);
     }
 
     @Override

@@ -44,10 +44,13 @@ public class Vertex {
 
     @Override
     public String toString() {
-        return "Vertex{" +
-                "Point=" + point.getX() + point.getY() +
-                ", type=" + type +
-                '}';
+        return """
+               Vertex
+               {
+                   %s,
+                   type: %s
+               }
+               """.formatted(point, type);
     }
 
     @Override

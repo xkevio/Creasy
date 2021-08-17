@@ -67,9 +67,13 @@ public class Line {
 
     @Override
     public String toString() {
-        return "Line{" +
-                "start=" + start +
-                ", end=" + end +
-                '}';
+        return """
+               Line
+               {
+                   start: %s,
+                   end: %s
+               }
+               """.formatted(start.toString().indent(4),
+                             end.toString().indent(4));
     }
 }
