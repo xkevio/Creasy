@@ -112,10 +112,9 @@ public class MainWindow {
      * calls foldModel() method.
      *
      * Opens an Alert in case of an error while folding the model.
-     * @throws Exception when crease pattern is invalid
      */
     @FXML
-    public void onShowFoldedModelAction() throws Exception {
+    public void onShowFoldedModelAction() {
         if (model == null) {
             Alert error = new Alert(Alert.AlertType.ERROR,
                     "There is no model to fold, perhaps it wasn't loaded correctly", ButtonType.OK);

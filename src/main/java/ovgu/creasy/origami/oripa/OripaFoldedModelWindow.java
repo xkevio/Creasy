@@ -30,9 +30,9 @@ public class OripaFoldedModelWindow {
     private final FoldabilityChecker foldabilityChecker;
     private final Folder folder;
 
-    public OripaFoldedModelWindow(CreasePattern cp) throws Exception {
-        // temporary
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    public OripaFoldedModelWindow(CreasePattern cp) {
+        // temporarily disabled as it does not work on certain Linux distros
+        // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         this.cp = OripaTypeConverter.convertToOripaCp(cp);
         window = new EstimationResultFrame();
