@@ -93,9 +93,9 @@ public class MainWindow {
     @FXML
     public void onMenuImportAction() {
         File file = openFileChooser.showOpenDialog(mainCanvas.getScene().getWindow());
-        var filePath = file.getPath();
+        var filePath = file == null ? "" : file.getPath();
 
-        if (file.exists()) {
+        if (file != null && file.exists()) {
             try {
                 setupCreasePattern(new FileInputStream(file), filePath);
             } catch (Exception e) {
