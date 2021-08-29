@@ -19,7 +19,6 @@ public class ReflectionGraphFactory {
         for (Point point : cp.getPoints()) {
             findReflectionCreases(cp.getAdjacentCreases(point), point);
         }
-        System.out.println(reflectionCreases);
     }
 
     /**
@@ -49,7 +48,6 @@ public class ReflectionGraphFactory {
                 } else {
                     alternatingAngle -= angle;
                 }
-                System.out.println(alternatingAngle);
                 // see 3.1.1 for definition of reflection creases
                 if (Math.abs(alternatingAngle) <= EPS
                         && adjacentCreases.get(i).getType() == adjacentCreases.get(j).getType().opposite()) {
@@ -77,18 +75,21 @@ public class ReflectionGraphFactory {
             }
             ReflectionGraph graph = new ReflectionGraph(cp);
             graph.addCrease(crease);
-            boolean allDone = false;
-            while (!allDone) {
-                allDone = true; // when all the creases are in done, this will stay true and end the loop
+            Set<Crease> newCreases = new HashSet<>();
+            do {
+                newCreases.clear();
                 for (Crease connectedCrease : graph.getCreases()) {
                     if (done.contains(connectedCrease)) {
                         continue;
                     }
-                    allDone = false;
                     done.add(connectedCrease);
-                    graph.addAllCreases(getReflectionCreases(connectedCrease));
+                    newCreases.addAll(getReflectionCreases(connectedCrease));
                 }
-            }
+                if (newCreases.isEmpty()) {
+                    break;
+                }
+                graph.addAllCreases(newCreases);
+            } while (!newCreases.isEmpty());
             reflectionGraphs.add(graph);
         }
         return reflectionGraphs;

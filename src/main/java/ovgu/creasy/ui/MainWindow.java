@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 import ovgu.creasy.Main;
 import ovgu.creasy.origami.CreasePattern;
 import ovgu.creasy.origami.ExtendedCreasePattern;
+import ovgu.creasy.origami.ExtendedCreasePatternFactory;
 import ovgu.creasy.origami.OrigamiModel;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
 
@@ -216,8 +217,6 @@ public class MainWindow {
         cp = CreasePattern.createFromFile(is);
         ((Stage) mainCanvas.getScene().getWindow()).setTitle(filePath + " - " + Main.APPLICATION_TITLE);
 
-        System.out.println(cp.getPoints());
-        System.out.println(cp.getCreases());
         model = new OrigamiModel(cp);
 
         cp.drawOnCanvas(mainCanvas, 1, 1);
@@ -234,7 +233,7 @@ public class MainWindow {
         zoomOutMenuItem.setDisable(false);
         resetMenuItem.setDisable(false);
 
-        ExtendedCreasePattern.buildExtendedGraph(cp);
+        System.out.println(new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp));
     }
 
     private void setupEvents(Parent... parents) {
