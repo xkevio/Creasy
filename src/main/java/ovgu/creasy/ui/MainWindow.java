@@ -19,6 +19,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ovgu.creasy.Main;
 import ovgu.creasy.origami.CreasePattern;
+import ovgu.creasy.origami.ExtendedCreasePattern;
 import ovgu.creasy.origami.OrigamiModel;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
 
@@ -190,7 +191,20 @@ public class MainWindow {
     }
 
     @FXML
-    public void onHelpCP() {}
+    public void onHelpCP() throws IOException {
+        Stage stage1 = new Stage();
+
+        FXMLLoader crease_patterns = new FXMLLoader(Objects.requireNonNull(Main.class.getResource("crease_patterns.fxml")));
+        Scene initialScene = new Scene(crease_patterns.load());
+        stage1.setResizable(false);
+
+        ((CreasePattern_Help) crease_patterns.getController()).setHostServices(hostServices);
+
+        stage1.setScene(initialScene);
+        stage1.sizeToScene();
+        stage1.setTitle("Crease Patterns");
+        stage1.show();
+    }
 
     /**
      * Loads a Crease Pattern, displays it on the canvases and
@@ -219,6 +233,8 @@ public class MainWindow {
         zoomInMenuItem.setDisable(false);
         zoomOutMenuItem.setDisable(false);
         resetMenuItem.setDisable(false);
+
+        ExtendedCreasePattern.buildExtendedGraph(cp);
     }
 
     private void setupEvents(Parent... parents) {
