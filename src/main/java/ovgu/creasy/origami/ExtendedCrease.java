@@ -12,16 +12,8 @@ import java.util.Objects;
 public class ExtendedCrease {
     private Vertex start;
     private Vertex end;
-    private Type type;
+    private Crease.Type type;
     private boolean active;
-
-    public enum Type {
-        MOUNTAIN,
-
-        VALLEY,
-
-        DONTCARE
-    }
 
     /**
      * @param start  is the start point for a reflection path
@@ -29,7 +21,7 @@ public class ExtendedCrease {
      * @param type   is the crease assignment of the first crease in the reflection path
      * @param active is a boolean indication whether the extended crease is active or not
      */
-    public ExtendedCrease(Vertex start, Vertex end, Type type, boolean active) {
+    public ExtendedCrease(Vertex start, Vertex end, Crease.Type type, boolean active) {
         this.start = start;
         this.end = end;
         this.type = type;
@@ -44,7 +36,7 @@ public class ExtendedCrease {
         return end;
     }
 
-    public Type getType() { return type; }
+    public Crease.Type getType() { return type; }
 
     public boolean getActive() {
         return active;
