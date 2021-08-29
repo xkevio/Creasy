@@ -20,7 +20,7 @@ public class ExtendedCrease {
 
         VALLEY,
 
-        DONTCARE;
+        DONTCARE
     }
 
     /**
@@ -55,6 +55,14 @@ public class ExtendedCrease {
     public void setStartVertex(Vertex vertex){ this.start = vertex; }
 
     public void setEndVertex(Vertex vertex){ this.end = vertex; }
+
+    public Line asLine() {
+        return new Line(start.getPoint(), end.getPoint());
+    }
+
+    public double getClockwiseAngle() {
+        return getStartVertex().getPoint().clockwiseAngle(getEndVertex().getPoint());
+    }
 
     @Override
     public String toString() {

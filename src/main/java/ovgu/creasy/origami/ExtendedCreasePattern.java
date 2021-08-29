@@ -40,9 +40,13 @@ public class ExtendedCreasePattern {
 
     public Map<Vertex, List<ExtendedCrease>> getListOfVertices() { return Collections.unmodifiableMap(xL); }
 
-    public ExtendedCreasePattern buildExtendedGraph(CreasePattern cp) {
+    public static ExtendedCreasePattern buildExtendedGraph(CreasePattern cp) {
         ReflectionGraphFactory reflGraph = new ReflectionGraphFactory(cp);
         Point defaultPoint = new Point(0,0);
+
+
+        Set<Vertex> xV = new HashSet<>();
+        Set<ExtendedCrease> xC = new HashSet<>();
 
         // copy each Vertex (from given CP) to extended Vertex
         Map<Point, Vertex> vertexMap = copyVertices(cp);
@@ -57,7 +61,7 @@ public class ExtendedCreasePattern {
         inactiveExtendedCreases.addAll(extendedCreasesReversed);
 
         // construct a set of ordered circular lists of edges parting from each vertex xV
-        Map<Vertex, List<ExtendedCrease>> xL = createList(vertices);
+        Map<Vertex, List<ExtendedCrease>> xL = createAdjacencyLists(inactiveExtendedCreases);
 
         // set of all reflection graphs
         Collection<ReflectionGraph> reflectionGraphs = reflGraph.getAllReflectionGraphs();
@@ -66,7 +70,7 @@ public class ExtendedCreasePattern {
             // set of local maximum reflection paths in reflectionGraph
             Collection<ReflectionPath> A = reflGraph.getLocalMaxima(reflectionGraph);
             // global maximum in A
-            ReflectionPath y = getGlobalMaxima(A);
+            ReflectionPath y = getGlobalMaximum(A);
             // terminal vertices of y
             Vertex xV1 = vertexMap.get(y.getStartingPoint());
             Vertex xV2 = vertexMap.get(y.getEndPoint());
@@ -101,16 +105,35 @@ public class ExtendedCreasePattern {
                 xC2.setEndVertex(xV1);
             }
         }
-        ExtendedCreasePattern xCP = new ExtendedCreasePattern(xV, xC, xL);
-        return xCP;
+        return new ExtendedCreasePattern(xV, xC, xL);
     }
-    // TODO
-    private Map<Vertex, List<ExtendedCrease>> createList(Set<Vertex> vertices) {
+
+    private static void insertCreaseIntoAdjacencyList(Map<Vertex, List<ExtendedCrease>> adjacencyLists, ExtendedCrease c) {
+        Vertex v = c.getStartVertex();
+        if (!adjacencyLists.containsKey(v)) {
+            adjacencyLists.put(v, new ArrayList<>());
+        }
+        List<ExtendedCrease> outgoingCreases = adjacencyLists.get(v);
+        int i = 0;
+        while (i < outgoingCreases.size()) {
+            ExtendedCrease line = outgoingCreases.get(i);
+            if (line.getClockwiseAngle() > c.getClockwiseAngle()) {
+                break;
+            }
+            i++;
+        }
+        outgoingCreases.add(i, c);
+    }
+
+    private static Map<Vertex, List<ExtendedCrease>> createAdjacencyLists(Set<ExtendedCrease> creases) {
         Map<Vertex, List<ExtendedCrease>> lists = new HashMap<>();
+        for (ExtendedCrease crease : creases) {
+            insertCreaseIntoAdjacencyList(lists, crease);
+        }
         return lists;
     }
 
-    private Set<ExtendedCrease> createExtendedCreases(CreasePattern cp, Map<Point, Vertex> extendedVertices, boolean reverse) {
+    private static Set<ExtendedCrease> createExtendedCreases(CreasePattern cp, Map<Point, Vertex> extendedVertices, boolean reverse) {
         Set<ExtendedCrease> xC = new HashSet<>();
 
         // if reverse == false --> xC = (v1, v2, a, false)
@@ -127,7 +150,7 @@ public class ExtendedCreasePattern {
         }).collect(Collectors.toSet());
     }
 
-    private Map<Point, Vertex> copyVertices(CreasePattern cp) {
+    private static Map<Point, Vertex> copyVertices(CreasePattern cp) {
         HashMap<Point, Vertex> vertices = new HashMap<>();
 
         cp.getPoints().forEach(point -> {
@@ -145,7 +168,7 @@ public class ExtendedCreasePattern {
         return vertices;
     }
 
-    private ReflectionPath getGlobalMaxima(Collection<ReflectionPath> reflectionPaths) {
+    private static ReflectionPath getGlobalMaximum(Collection<ReflectionPath> reflectionPaths) {
         return reflectionPaths.stream().max(Comparator.comparingInt(ReflectionPath::length)).orElse(null);
     }
 }

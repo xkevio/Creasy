@@ -19,6 +19,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ovgu.creasy.Main;
 import ovgu.creasy.origami.CreasePattern;
+import ovgu.creasy.origami.ExtendedCreasePattern;
 import ovgu.creasy.origami.OrigamiModel;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
 
@@ -234,6 +235,8 @@ public class MainWindow {
         zoomInMenuItem.setDisable(false);
         zoomOutMenuItem.setDisable(false);
         resetMenuItem.setDisable(false);
+
+        ExtendedCreasePattern.buildExtendedGraph(cp);
     }
 
     private void setupEvents(Parent... parents) {
