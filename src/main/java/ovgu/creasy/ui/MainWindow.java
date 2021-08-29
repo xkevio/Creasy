@@ -21,10 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ovgu.creasy.Main;
-import ovgu.creasy.origami.CreasePattern;
-import ovgu.creasy.origami.ExtendedCreasePattern;
-import ovgu.creasy.origami.ExtendedCreasePatternFactory;
-import ovgu.creasy.origami.OrigamiModel;
+import ovgu.creasy.origami.*;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
 
 import java.io.File;
@@ -223,27 +220,32 @@ public class MainWindow {
 
         cp.drawOnCanvas(mainCanvas, 1, 1);
 
+        ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
+        System.out.println(ecp.possibleSteps().size());
         // should be called when the algorithm is executed, aka once the amount of steps is known
-        createCanvases(steps, 10, CANVAS_WIDTH, CANVAS_HEIGHT);
+        createCanvases(steps, ecp.possibleSteps().size(), CANVAS_WIDTH, CANVAS_HEIGHT);
         createCanvases(history, 10, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-        setupEvents(steps, history);
+        setupMouseEvents(steps, history);
+        drawSteps(ecp, steps);
 
         // after reading the file, if the file is valid:
         foldedModelMenuItem.setDisable(false);
         zoomInMenuItem.setDisable(false);
         zoomOutMenuItem.setDisable(false);
         resetMenuItem.setDisable(false);
-        ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
-        System.out.println(ecp.possibleSteps().size());
     }
 
-    private void setupEvents(Parent... parents) {
-        CreasePattern copy = new CreasePattern(cp.getCreases(), cp.getPoints());
+    private void drawSteps(ExtendedCreasePattern ecp, Parent steps) {
+        for (int i = 0; i < ecp.possibleSteps().size(); i++) {
+            DiagramStep step = (DiagramStep) ecp.possibleSteps().toArray()[i];
+            step.to.toCreasePattern().drawOnCanvas((ResizableCanvas) ((Pane) steps).getChildren().get(i), 0.45, 0.45);
+        }
+    }
+
+    private void setupMouseEvents(Parent... parents) {
         for (Parent parent : parents) {
             ((Pane) parent).getChildren().forEach(c -> {
-                copy.drawOnCanvas((Canvas) c, 0.45, 0.45);
-
                 GraphicsContext graphicsContext = ((Canvas) c).getGraphicsContext2D();
                 c.setOnMouseEntered(mouseEvent -> {
                     graphicsContext.setFill(Color.color(0.2, 0.2, 0.2, 0.2));
@@ -253,7 +255,7 @@ public class MainWindow {
 
                 c.setOnMouseExited(mouseEvent -> {
                     graphicsContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                    copy.drawOnCanvas((Canvas) c, 0.45, 0.45);
+                    ((ResizableCanvas)c).getCp().drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
                     c.setCursor(Cursor.DEFAULT);
                 });
             });
@@ -298,7 +300,7 @@ public class MainWindow {
     private void createCanvases(Parent parent, int amount, int width, int height) {
         if (((Pane) parent).getChildren().isEmpty()) {
             for (int i = 0; i < amount; ++i) {
-                ((Pane) parent).getChildren().add(new Canvas(width, height));
+                ((Pane) parent).getChildren().add(new ResizableCanvas(width, height));
             }
         }
     }

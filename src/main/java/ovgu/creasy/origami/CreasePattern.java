@@ -5,6 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import ovgu.creasy.geom.Line;
 import ovgu.creasy.geom.Point;
+import ovgu.creasy.ui.ResizableCanvas;
 
 import java.io.*;
 import java.util.*;
@@ -236,9 +237,11 @@ public class CreasePattern {
      * @param scaleX scales the GraphicsContext in the x amount (default = 1)
      * @param scaleY scales the GraphicsContext in the y amount (default = 1)
      */
-    public void drawOnCanvas(Canvas canvas, double scaleX, double scaleY) {
+    public void drawOnCanvas(ResizableCanvas canvas, double scaleX, double scaleY) {
         this.scaleX = scaleX;
         this.scaleY = scaleY;
+
+        canvas.setCp(this);
 
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());

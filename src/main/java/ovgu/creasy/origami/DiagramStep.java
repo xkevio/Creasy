@@ -19,9 +19,9 @@ public class DiagramStep {
     /**
      * The cp before the simplification step is applied (usually more complex than to)
      */
-    private ExtendedCreasePattern from;
+    public ExtendedCreasePattern from;
     /**
      * the cp after the simplification step is applied (usually less complex than from)
      */
-    private ExtendedCreasePattern to;
+    public ExtendedCreasePattern to;
 }
