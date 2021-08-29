@@ -134,12 +134,14 @@ public class MainWindow {
 
     @FXML
     public void onZoomInMenuItem() {
-        cp.drawOnCanvas(mainCanvas, mainCanvas.getScaleX() * 1.1, mainCanvas.getScaleY() * 1.1);
+        mainCanvas.setScaleX(mainCanvas.getScaleX() * 1.1);
+        mainCanvas.setScaleY(mainCanvas.getScaleY() * 1.1);
     }
 
     @FXML
     public void onZoomOutMenuItem() {
-        cp.drawOnCanvas(mainCanvas, mainCanvas.getScaleX() * 0.9, mainCanvas.getScaleY() * 0.9);
+        mainCanvas.setScaleX(mainCanvas.getScaleX() * 0.9);
+        mainCanvas.setScaleY(mainCanvas.getScaleY() * 0.9);
     }
 
     @FXML
