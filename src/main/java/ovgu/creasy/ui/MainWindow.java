@@ -192,7 +192,20 @@ public class MainWindow {
     }
 
     @FXML
-    public void onHelpCP() {}
+    public void onHelpCP() throws IOException {
+        Stage stage1 = new Stage();
+
+        FXMLLoader crease_patterns = new FXMLLoader(Objects.requireNonNull(Main.class.getResource("crease_patterns.fxml")));
+        Scene initialScene = new Scene(crease_patterns.load());
+        stage1.setResizable(false);
+
+        ((CreasePattern_Help) crease_patterns.getController()).setHostServices(hostServices);
+
+        stage1.setScene(initialScene);
+        stage1.sizeToScene();
+        stage1.setTitle("Crease Patterns");
+        stage1.show();
+    }
 
     /**
      * Loads a Crease Pattern, displays it on the canvases and
