@@ -109,11 +109,7 @@ public class ExtendedCreasePatternFactory {
         return cp.getCreases().stream().map(c -> {
             Point start = reverse? c.getLine().getEnd() : c.getLine().getStart();
             Point end = reverse? c.getLine().getStart() : c.getLine().getEnd();
-            ExtendedCrease.Type type = switch (c.getType()) {
-                case VALLEY -> ExtendedCrease.Type.VALLEY;
-                case MOUNTAIN -> ExtendedCrease.Type.MOUNTAIN;
-                default -> ExtendedCrease.Type.DONTCARE;
-            };
+            Crease.Type type = c.getType();
             return new ExtendedCrease(extendedVertices.get(start), extendedVertices.get(end), type, false);
         }).collect(Collectors.toSet());
     }

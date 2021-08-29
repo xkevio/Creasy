@@ -1,5 +1,6 @@
 package ovgu.creasy.origami;
 
+import ovgu.creasy.geom.Line;
 import ovgu.creasy.geom.Point;
 import ovgu.creasy.geom.Vertex;
 
@@ -28,6 +29,28 @@ public class ExtendedCreasePattern {
     }
 
     public ExtendedCreasePattern() {
+    }
+
+    public CreasePattern toCreasePattern() {
+        Set<Line> addedLines = new HashSet<>();
+        CreasePattern cp = new CreasePattern();
+        for (ExtendedCrease extendedCrease : xC) {
+            if (extendedCrease.getStartVertex().getType() == Vertex.Type.VIRTUAL
+                || extendedCrease.getEndVertex().getType() == Vertex.Type.VIRTUAL) {
+                continue;
+            }
+            Line line = new Line(
+                extendedCrease.getStartVertex().getPoint(),
+                extendedCrease.getEndVertex().getPoint());
+            if (addedLines.contains(new Line(line.getEnd(), line.getStart()))) { // extended Creases can go in both directions,
+                continue;                                                        // but we only need one
+            }
+            addedLines.add(line);
+            cp.addCrease(new Crease(
+                line,
+                extendedCrease.getType()));
+        }
+        return cp;
     }
 
     public Set<Vertex> getVertices() {
