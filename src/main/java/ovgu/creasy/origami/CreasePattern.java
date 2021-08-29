@@ -19,146 +19,31 @@ public class CreasePattern {
     /**
      * all creases in the Crease Pattern
      */
-    private Set<Crease> creases;
+    private final Set<Crease> creases;
     /**
      * all points in the Crease pattern.
      */
-    private Set<Point> points;
+    private final Set<Point> points;
 
     /**
      * for any Point p in points, this contains a List of creases
      * that end or start in p, sorted by angle
      */
-    private HashMap<Point, List<Crease>> adjacentCreases;
+    private final HashMap<Point, List<Crease>> adjacentCreases;
+
+    private double scaleX;
+    private double scaleY;
 
     public CreasePattern(Set<Crease> creases, Set<Point> points) {
         this.creases = creases;
         this.points = points;
         this.adjacentCreases = new HashMap<>();
+        this.scaleX = 1;
+        this.scaleY = 1;
     }
 
     public CreasePattern() {
         this(new HashSet<>(), new HashSet<>());
-    }
-
-    public void addCrease(Crease crease){
-        addOrMergePoints(crease);
-        this.creases.add(crease);
-        addToAdjacentCreases(crease);
-    }
-
-    public List<Crease> getAdjacentCreases(Point p) {
-        if (!adjacentCreases.containsKey(p)) {
-            return new ArrayList<>();
-        }
-        return Collections.unmodifiableList(adjacentCreases.get(p));
-    }
-
-    private void addToAdjacentCreases(Crease crease) {
-        addToAdjacentCreases(crease.getLine().getStart(), crease);
-        addToAdjacentCreases(crease.getLine().getEnd(), crease);
-    }
-
-    /**
-     * Adds newCrease to the adjacentCreases entry of startOrEnd (which is either the start or end point of
-     * newCrease), keeping the sorting order intact
-     */
-    private void addToAdjacentCreases(Point startOrEnd, Crease newCrease) {
-        List<Crease> adjCreasesStart = adjacentCreases.get(startOrEnd);
-        double newAngle = getAngle(startOrEnd, newCrease);
-        double currAngle;
-        boolean done = false;
-        // finds the first crease with an angle smaller than that of the new crease,
-        // then inserts the new crease right before that crease
-        for (int i = 0; i < adjCreasesStart.size(); i++) {
-            Crease existingCrease = adjCreasesStart.get(i);
-            currAngle = getAngle(startOrEnd, existingCrease);
-            if (newAngle > currAngle) {
-                adjCreasesStart.add(i, newCrease);
-                done = true;
-                break;
-            }
-        }
-        // if no crease with a smaller angle exists, insert at the end
-        if (!done) {
-            adjCreasesStart.add(newCrease);
-        }
-    }
-
-    private double getAngle(Point startOrEnd, Crease crease) {
-        if (crease.getLine().getStart().equals(startOrEnd)) {
-            return crease.getLine().getStart().clockwiseAngle(crease.getLine().getEnd());
-        } else {
-            return crease.getLine().getEnd().clockwiseAngle(crease.getLine().getStart());
-        }
-    }
-
-    /**
-     * Adds both points of the Crease or replaces them with very close points (distance <= EPS)
-     * if possible
-     * @param crease the Crease of which the start and end point get added or replaced
-     */
-    private void addOrMergePoints(Crease crease) {
-        crease.getLine().setStart(addPoint(crease.getLine().getStart()));
-        crease.getLine().setEnd(addPoint(crease.getLine().getEnd()));
-    }
-
-    /**
-     * Either adds p to the points Set or returns a very near Point to p
-     * @param p the point to be added and returned if no other point is closer
-     * @return a very near Point if one exists (distance <= EPS) or p
-     */
-    private Point addPoint(Point p) {
-        Optional<Point> nearPoint = points.stream().filter(point -> point.distance(p) <= EPS).findAny();
-        if (nearPoint.isPresent()) {
-            return nearPoint.get();
-        }
-        points.add(p);
-        adjacentCreases.put(p, new ArrayList<>());
-        return p;
-    }
-
-    public Set<Crease> getCreases() {
-        return Collections.unmodifiableSet(creases);
-    }
-
-    public Set<Point> getPoints() {
-        return Collections.unmodifiableSet(points);
-    }
-
-    /**
-     * Draws the loaded Crease Pattern on the current canvas by
-     * iterating over all Creases and choosing the colors based
-     * on the type of Line
-     * @param canvas the Canvas to draw the Crease Pattern on
-     * @param scaleX scales the GraphicsContext in the x amount (default = 1)
-     * @param scaleY scales the GraphicsContext in the y amount (default = 1)
-     */
-    public void drawOnCanvas(Canvas canvas, double scaleX, double scaleY) {
-        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-        graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-        graphicsContext.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
-        graphicsContext.setLineWidth(2);
-
-        graphicsContext.scale(scaleX, scaleY);
-        for (Crease crease : creases) {
-            Color currentColor = switch (crease.getType()) {
-                case EDGE -> Color.BLACK;
-                case VALLEY -> Color.BLUE;
-                case MOUNTAIN -> Color.RED;
-            };
-
-            graphicsContext.setStroke(currentColor);
-
-            Point start = crease.getLine().getStart();
-            Point end = crease.getLine().getEnd();
-
-            graphicsContext.strokeLine(start.getX(), start.getY(), end.getX(), end.getY());
-        }
-
-        graphicsContext.scale(1 / scaleX, 1 / scaleY);
-        graphicsContext.translate(-canvas.getWidth() / 2, -canvas.getHeight() / 2);
     }
 
     /**
@@ -166,6 +51,7 @@ public class CreasePattern {
      * reading through it line by line and assigning the correct
      * CreaseTypes and coordinates to the returned CreasePattern,
      * utilizes StreamTokenizer
+     *
      * @param file the .cp file in which the CreasePattern is described as an InputStream
      * @return a CreasePattern based on the instructions in the file
      */
@@ -228,5 +114,138 @@ public class CreasePattern {
             return null;
         }
         return cp;
+    }
+
+    public void addCrease(Crease crease) {
+        addOrMergePoints(crease);
+        this.creases.add(crease);
+        addToAdjacentCreases(crease);
+    }
+
+    public List<Crease> getAdjacentCreases(Point p) {
+        if (!adjacentCreases.containsKey(p)) {
+            return new ArrayList<>();
+        }
+        return Collections.unmodifiableList(adjacentCreases.get(p));
+    }
+
+    private void addToAdjacentCreases(Crease crease) {
+        addToAdjacentCreases(crease.getLine().getStart(), crease);
+        addToAdjacentCreases(crease.getLine().getEnd(), crease);
+    }
+
+    /**
+     * Adds newCrease to the adjacentCreases entry of startOrEnd (which is either the start or end point of
+     * newCrease), keeping the sorting order intact
+     */
+    private void addToAdjacentCreases(Point startOrEnd, Crease newCrease) {
+        List<Crease> adjCreasesStart = adjacentCreases.get(startOrEnd);
+        double newAngle = getAngle(startOrEnd, newCrease);
+        double currAngle;
+        boolean done = false;
+        // finds the first crease with an angle smaller than that of the new crease,
+        // then inserts the new crease right before that crease
+        for (int i = 0; i < adjCreasesStart.size(); i++) {
+            Crease existingCrease = adjCreasesStart.get(i);
+            currAngle = getAngle(startOrEnd, existingCrease);
+            if (newAngle > currAngle) {
+                adjCreasesStart.add(i, newCrease);
+                done = true;
+                break;
+            }
+        }
+        // if no crease with a smaller angle exists, insert at the end
+        if (!done) {
+            adjCreasesStart.add(newCrease);
+        }
+    }
+
+    private double getAngle(Point startOrEnd, Crease crease) {
+        if (crease.getLine().getStart().equals(startOrEnd)) {
+            return crease.getLine().getStart().clockwiseAngle(crease.getLine().getEnd());
+        } else {
+            return crease.getLine().getEnd().clockwiseAngle(crease.getLine().getStart());
+        }
+    }
+
+    /**
+     * Adds both points of the Crease or replaces them with very close points (distance <= EPS)
+     * if possible
+     *
+     * @param crease the Crease of which the start and end point get added or replaced
+     */
+    private void addOrMergePoints(Crease crease) {
+        crease.getLine().setStart(addPoint(crease.getLine().getStart()));
+        crease.getLine().setEnd(addPoint(crease.getLine().getEnd()));
+    }
+
+    /**
+     * Either adds p to the points Set or returns a very near Point to p
+     *
+     * @param p the point to be added and returned if no other point is closer
+     * @return a very near Point if one exists (distance <= EPS) or p
+     */
+    private Point addPoint(Point p) {
+        Optional<Point> nearPoint = points.stream().filter(point -> point.distance(p) <= EPS).findAny();
+        if (nearPoint.isPresent()) {
+            return nearPoint.get();
+        }
+        points.add(p);
+        adjacentCreases.put(p, new ArrayList<>());
+        return p;
+    }
+
+    public Set<Crease> getCreases() {
+        return Collections.unmodifiableSet(creases);
+    }
+
+    public Set<Point> getPoints() {
+        return Collections.unmodifiableSet(points);
+    }
+
+    public double getScaleX() {
+        return this.scaleX;
+    }
+
+    public double getScaleY() {
+        return this.scaleY;
+    }
+
+    /**
+     * Draws the loaded Crease Pattern on the current canvas by
+     * iterating over all Creases and choosing the colors based
+     * on the type of Line
+     *
+     * @param canvas the Canvas to draw the Crease Pattern on
+     * @param scaleX scales the GraphicsContext in the x amount (default = 1)
+     * @param scaleY scales the GraphicsContext in the y amount (default = 1)
+     */
+    public void drawOnCanvas(Canvas canvas, double scaleX, double scaleY) {
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+
+        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+        graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        graphicsContext.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
+        graphicsContext.setLineWidth(2);
+
+        for (Crease crease : creases) {
+            Color currentColor = switch (crease.getType()) {
+                case EDGE -> Color.BLACK;
+                case VALLEY -> Color.BLUE;
+                case MOUNTAIN -> Color.RED;
+            };
+
+            graphicsContext.setStroke(currentColor);
+
+            Point start = crease.getLine().getStart();
+            Point end = crease.getLine().getEnd();
+
+            graphicsContext.strokeLine(start.getX() * scaleX, start.getY() * scaleY,
+                    end.getX() * scaleX, end.getY() * scaleY);
+        }
+
+        graphicsContext.translate(-canvas.getWidth() / 2, -canvas.getHeight() / 2);
     }
 }

@@ -134,14 +134,12 @@ public class MainWindow {
 
     @FXML
     public void onZoomInMenuItem() {
-        mainCanvas.setScaleX(mainCanvas.getScaleX() * 1.1);
-        mainCanvas.setScaleY(mainCanvas.getScaleY() * 1.1);
+        cp.drawOnCanvas(mainCanvas, 1.1 * cp.getScaleX(), 1.1 * cp.getScaleY());
     }
 
     @FXML
     public void onZoomOutMenuItem() {
-        mainCanvas.setScaleX(mainCanvas.getScaleX() * 0.9);
-        mainCanvas.setScaleY(mainCanvas.getScaleY() * 0.9);
+        cp.drawOnCanvas(mainCanvas, 0.9 * cp.getScaleX(), 0.9 * cp.getScaleY());
     }
 
     @FXML
@@ -224,9 +222,10 @@ public class MainWindow {
     }
 
     private void setupEvents(Parent... parents) {
+        CreasePattern copy = new CreasePattern(cp.getCreases(), cp.getPoints());
         for (Parent parent : parents) {
             ((Pane) parent).getChildren().forEach(c -> {
-                cp.drawOnCanvas((Canvas) c, 0.45, 0.45);
+                copy.drawOnCanvas((Canvas) c, 0.45, 0.45);
 
                 GraphicsContext graphicsContext = ((Canvas) c).getGraphicsContext2D();
                 c.setOnMouseEntered(mouseEvent -> {
@@ -237,7 +236,7 @@ public class MainWindow {
 
                 c.setOnMouseExited(mouseEvent -> {
                     graphicsContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                    cp.drawOnCanvas((Canvas) c, 0.45, 0.45);
+                    copy.drawOnCanvas((Canvas) c, 0.45, 0.45);
                     c.setCursor(Cursor.DEFAULT);
                 });
             });
