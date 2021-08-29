@@ -43,6 +43,10 @@ public class Line {
         this.end = end;
     }
 
+    public double getSlope() {
+        return (getEnd().getX() - getStart().getX())/(getEnd().getY() - getStart().getY());
+    }
+
     public Point getOppositePoint(Point startOrEnd) {
         if (startOrEnd.equals(this.start)) {
             return this.end;

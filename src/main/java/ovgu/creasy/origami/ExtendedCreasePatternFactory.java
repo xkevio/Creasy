@@ -35,6 +35,9 @@ public class ExtendedCreasePatternFactory {
         for (ReflectionGraph reflectionGraph : reflectionGraphs) {
             // set of local maximum reflection paths in reflectionGraph
             Collection<ReflectionPath> A = reflGraph.getLocalMaxima(reflectionGraph);
+            if (A.isEmpty()) {
+                continue;
+            }
             // global maximum in A
             ReflectionPath y = getGlobalMaximum(A);
             // terminal vertices of y

@@ -116,6 +116,22 @@ public class CreasePattern {
         return cp;
     }
 
+    public void removeCrease(Crease crease) {
+        removeAdjacentCrease(crease.getLine().getStart(), crease);
+        removeAdjacentCrease(crease.getLine().getEnd(), crease);
+        creases.remove(crease);
+    }
+
+    private void removeAdjacentCrease(Point p, Crease crease) {
+        if (adjacentCreases.containsKey(p)) {
+            adjacentCreases.get(p).remove(crease);
+            if (adjacentCreases.get(p).isEmpty()) {
+                adjacentCreases.remove(p);
+                points.remove(p);
+            }
+        }
+    }
+
     public void addCrease(Crease crease) {
         addOrMergePoints(crease);
         this.creases.add(crease);
