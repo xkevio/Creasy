@@ -69,4 +69,9 @@ public class ExtendedCreasePattern {
             "xC=" + xC +
             '}';
     }
+
+    public Collection<DiagramStep> possibleSteps() {
+        List<DiagramStep> steps = new ArrayList<>();
+        return steps;
+    }
 }

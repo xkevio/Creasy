@@ -63,8 +63,10 @@ public class ExtendedCreasePatternFactory {
                 Vertex newVertex = new Vertex(defaultPoint, Vertex.Type.VIRTUAL);
                 xC1.setEndVertex(newVertex);
                 ExtendedCrease new_xC1 = new ExtendedCrease(newVertex, xV1, xC1.getType(), true);
+                insertCreaseIntoAdjacencyList(adjacencyLists, new_xC1);
                 xC2.setEndVertex(newVertex);
                 ExtendedCrease new_xC2 = new ExtendedCrease(newVertex, xV2, xC1.getType(), true);
+                insertCreaseIntoAdjacencyList(adjacencyLists, new_xC2);
                 vertices.add(newVertex);
                 processedExtendedCreases.add(new_xC1);
                 processedExtendedCreases.add(new_xC2);
