@@ -178,11 +178,11 @@ public class MainWindow {
     public void onHelpAbout() throws IOException {
         Stage stage = new Stage();
 
-        FXMLLoader about = new FXMLLoader(Objects.requireNonNull(Main.class.getResource("about.fxml")));
-        Scene initialScene = new Scene(about.load());
+        FXMLLoader aboutWindow = new FXMLLoader(Objects.requireNonNull(Main.class.getResource("about.fxml")));
+        Scene initialScene = new Scene(aboutWindow.load());
         stage.setResizable(false);
 
-        ((AboutWindow) about.getController()).setHostServices(hostServices);
+        ((AboutWindow) aboutWindow.getController()).setHostServices(hostServices);
 
         stage.setScene(initialScene);
         stage.sizeToScene();
@@ -192,18 +192,18 @@ public class MainWindow {
 
     @FXML
     public void onHelpCP() throws IOException {
-        Stage stage1 = new Stage();
+        Stage stage = new Stage();
 
-        FXMLLoader crease_patterns = new FXMLLoader(Objects.requireNonNull(Main.class.getResource("crease_patterns.fxml")));
-        Scene initialScene = new Scene(crease_patterns.load());
-        stage1.setResizable(false);
+        FXMLLoader creasePatternWindow = new FXMLLoader(Objects.requireNonNull(Main.class.getResource("crease_patterns.fxml")));
+        Scene initialScene = new Scene(creasePatternWindow.load());
+        stage.setResizable(false);
 
-        ((CreasePattern_Help) crease_patterns.getController()).setHostServices(hostServices);
+        ((CreasePatternHelpWindow) creasePatternWindow.getController()).setHostServices(hostServices);
 
-        stage1.setScene(initialScene);
-        stage1.sizeToScene();
-        stage1.setTitle("Crease Patterns");
-        stage1.show();
+        stage.setScene(initialScene);
+        stage.sizeToScene();
+        stage.setTitle("What are Crease Patterns");
+        stage.show();
     }
 
     /**
@@ -246,8 +246,9 @@ public class MainWindow {
     }
 
     private void drawHistory(Parent history) {
+        var copy = new CreasePattern(cp.getCreases(), cp.getPoints());
         ((Pane) history).getChildren().forEach(c -> {
-            cp.drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
+            copy.drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
         });
     }
 

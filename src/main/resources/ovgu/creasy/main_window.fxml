@@ -39,7 +39,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
               <items>
-                <MenuItem mnemonicParsing="false" onAction="#onHelpCP" text="Crease Patterns" />
+                <MenuItem mnemonicParsing="false" onAction="#onHelpCP" text="What are Crease Patterns" />
                   <MenuItem mnemonicParsing="false" onAction="#onHelpAbout" text="About" />
               </items>
             </Menu>
