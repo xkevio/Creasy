@@ -3,6 +3,7 @@ package ovgu.creasy.ui;
 import javafx.application.HostServices;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.BoundingBox;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,6 +12,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -36,6 +39,7 @@ public class MainWindow {
     private static final int CANVAS_HEIGHT = 200;
 
     private final FileChooser openFileChooser;
+    public ScrollPane canvasHolder;
     private HostServices hostServices;
 
     public ResizableCanvas mainCanvas;
@@ -52,8 +56,6 @@ public class MainWindow {
     private HBox history;
     @FXML
     private VBox steps;
-    @FXML
-    private VBox canvasVBox;
 
     public MainWindow() {
         openFileChooser = new FileChooser();
@@ -67,12 +69,12 @@ public class MainWindow {
      */
     @FXML
     public void initialize() {
-        mainCanvas = new ResizableCanvas(canvasVBox.getWidth(), canvasVBox.getHeight());
+        mainCanvas = new ResizableCanvas(canvasHolder.getWidth(), canvasHolder.getHeight());
         mainCanvas.setManaged(false);
-        canvasVBox.getChildren().add(mainCanvas);
+        canvasHolder.setContent(mainCanvas);
 
-        mainCanvas.widthProperty().bind(canvasVBox.widthProperty());
-        mainCanvas.heightProperty().bind(canvasVBox.heightProperty());
+        mainCanvas.widthProperty().bind(canvasHolder.widthProperty());
+        mainCanvas.heightProperty().bind(canvasHolder.heightProperty());
 
         mainCanvas.widthProperty().addListener((observableValue, number, t1) -> {
             if (cp != null) {

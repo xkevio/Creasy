@@ -63,7 +63,6 @@
                 <RowConstraints percentHeight="30.0" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <VBox fx:id="canvasVBox" />
                   <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
                     <content>
                       <AnchorPane>
@@ -72,6 +71,7 @@
                            </children></AnchorPane>
                     </content>
                   </ScrollPane>
+                  <ScrollPane fx:id="canvasHolder" fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" pannable="true" vbarPolicy="ALWAYS" />
                </children>
             </GridPane>
             <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
