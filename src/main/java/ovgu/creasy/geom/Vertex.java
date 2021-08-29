@@ -14,7 +14,7 @@ public class Vertex {
 
         BORDER,
 
-        VIRTUAL;
+        VIRTUAL
     }
 
     /**
@@ -53,8 +53,5 @@ public class Vertex {
                """.formatted(point, type);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(point, type);
-    }
+
 }

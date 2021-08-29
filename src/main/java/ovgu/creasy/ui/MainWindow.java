@@ -234,8 +234,8 @@ public class MainWindow {
         zoomInMenuItem.setDisable(false);
         zoomOutMenuItem.setDisable(false);
         resetMenuItem.setDisable(false);
-
-        System.out.println(new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp));
+        ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
+        System.out.println(ecp.possibleSteps().size());
     }
 
     private void setupEvents(Parent... parents) {

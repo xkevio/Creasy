@@ -9,6 +9,13 @@ import java.util.HashSet;
  * Step sequence graph
  */
 public class DiagramStep {
+    public DiagramStep(ExtendedCreasePattern from, ExtendedCreasePattern to) {
+        this.from = from;
+        this.to = to;
+    }
+
+
+
     /**
      * The cp before the simplification step is applied (usually more complex than to)
      */
