@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ovgu.creasy.ui.CreasePattern_Help">
-    <children>
-        <Text layoutX="17.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hier könnte Ihre Werbung stehen." textAlignment="CENTER" wrappingWidth="416.25927734375">
-            <font>
-                <Font size="18.0" />
-            </font>
-        </Text>
-
-    </children>
+   <children>
+      <Text layoutX="17.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Crease Patterns sind Muster von Falten, die die Origami Struktur in einem Bild darstellen. In diesem Programm kommt aus diesen Mustern eine Schritt für Schritt Anleitung zum falten des Modells heraus. &#10; Hierbei wird ein Bild in Form eines Quadrates dargestellt, welches aus 3 Farben besteht. &#10;Schwarz gibt die Umrandung. &#10; Rot ... &#10; Blau ... " textAlignment="CENTER" wrappingWidth="416.25927734375">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+   </children>
 </Pane>
