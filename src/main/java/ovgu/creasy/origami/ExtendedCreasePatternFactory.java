@@ -20,8 +20,8 @@ public class ExtendedCreasePatternFactory {
 
 
         // From each Crease (from given CP) construct extended Crease
-        Set<ExtendedCrease> extendedCreases = createExtendedCreases(cp, vertexMap, false);
-        Set<ExtendedCrease> extendedCreasesReversed = createExtendedCreases(cp, vertexMap, true);
+        Set<ExtendedCrease> extendedCreases = createExtendedCreases(cp, vertexMap);
+        Set<ExtendedCrease> extendedCreasesReversed = createReversedExtendedCreases(extendedCreases);
         Set<ExtendedCrease> inactiveExtendedCreases = new HashSet<>();
         inactiveExtendedCreases.addAll(extendedCreases);
         inactiveExtendedCreases.addAll(extendedCreasesReversed);
@@ -103,16 +103,25 @@ public class ExtendedCreasePatternFactory {
         return lists;
     }
 
-    private Set<ExtendedCrease> createExtendedCreases(CreasePattern cp, Map<Point, Vertex> extendedVertices, boolean reverse) {
+    private Set<ExtendedCrease> createExtendedCreases(CreasePattern cp, Map<Point, Vertex> extendedVertices) {
         Set<ExtendedCrease> xC = new HashSet<>();
 
         // if reverse == false --> xC = (v1, v2, a, false)
         // if reverse == true --> xC = (v2, v1, a, false)
         return cp.getCreases().stream().map(c -> {
-            Point start = reverse? c.getLine().getEnd() : c.getLine().getStart();
-            Point end = reverse? c.getLine().getStart() : c.getLine().getEnd();
+            Point start = c.getLine().getStart();
+            Point end = c.getLine().getEnd();
             Crease.Type type = c.getType();
             return new ExtendedCrease(extendedVertices.get(start), extendedVertices.get(end), type, false);
+        }).collect(Collectors.toSet());
+    }
+
+    private Set<ExtendedCrease> createReversedExtendedCreases(Set<ExtendedCrease> extendedCreases) {
+        return extendedCreases.stream().map(c -> {
+            ExtendedCrease cn = new ExtendedCrease(c.getEndVertex(), c.getStartVertex(), c.getType(), c.getActive());
+            cn.setOpposite(c);
+            c.setOpposite(cn);
+            return cn;
         }).collect(Collectors.toSet());
     }
 

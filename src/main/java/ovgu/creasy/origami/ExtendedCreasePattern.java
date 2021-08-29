@@ -72,6 +72,43 @@ public class ExtendedCreasePattern {
 
     public Collection<DiagramStep> possibleSteps() {
         List<DiagramStep> steps = new ArrayList<>();
+        List<List<ExtendedCrease>> removableCreases = new ArrayList<>();
+        Map<Vertex, List<ExtendedCrease>> possiblyRemovableCreases = new HashMap<>();
+        for (Vertex vertex : xV) {
+            if (vertex.getType() == Vertex.Type.BORDER) {
+                List<ExtendedCrease> outgoing = this.xL.get(vertex);
+                for (ExtendedCrease outgoingCrease : outgoing) {
+                    if (outgoingCrease.getType() == Crease.Type.EDGE) {
+                        continue;
+                    }
+                    if (outgoingCrease.getEndVertex().getType() == Vertex.Type.BORDER) {
+                        removableCreases.add(Collections.singletonList(outgoingCrease));
+                    } else if (outgoingCrease.getEndVertex().getType() == Vertex.Type.VIRTUAL) {
+                        List<ExtendedCrease> creases = new ArrayList<>();
+                        creases.add(outgoingCrease);
+                        ExtendedCrease currentCrease = outgoingCrease;
+                        while (xL.containsKey(currentCrease.getEndVertex())) {
+                            var next = xL.get(currentCrease.getEndVertex());
+                            currentCrease = next.get(next.size()-1);
+                        }
+                        Vertex middle = currentCrease.getEndVertex();
+                        if (possiblyRemovableCreases.containsKey(middle)) {
+                            possiblyRemovableCreases.get(middle).addAll(creases);
+                            removableCreases.add(possiblyRemovableCreases.get(middle));
+                        } else {
+                            possiblyRemovableCreases.put(middle, creases);
+                        }
+                    }
+                }
+            }
+        }
+        for (List<ExtendedCrease> removableCreaseList : removableCreases) {
+            ExtendedCreasePattern next = new ExtendedCreasePattern(new HashSet<>(xV), new HashSet<>(xC), xL);
+            removableCreaseList.forEach(next.xC::remove);
+            removableCreaseList.stream().map(ExtendedCrease::getOpposite).toList().forEach(next.xC::remove);
+            next = new ExtendedCreasePatternFactory().createExtendedCreasePattern(next.toCreasePattern());
+            steps.add(new DiagramStep(this, next));
+        }
         return steps;
     }
 }

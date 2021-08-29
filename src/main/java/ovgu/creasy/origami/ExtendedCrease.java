@@ -14,6 +14,7 @@ public class ExtendedCrease {
     private Vertex end;
     private Crease.Type type;
     private boolean active;
+    private ExtendedCrease opposite;
 
     /**
      * @param start  is the start point for a reflection path
@@ -26,6 +27,15 @@ public class ExtendedCrease {
         this.end = end;
         this.type = type;
         this.active = active;
+        this.opposite = null;
+    }
+
+    public void setOpposite(ExtendedCrease opposite) {
+        this.opposite = opposite;
+    }
+
+    public ExtendedCrease getOpposite() {
+        return opposite;
     }
 
     public Vertex getStartVertex() {
