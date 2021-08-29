@@ -104,7 +104,7 @@ public class ExtendedCreasePattern {
             '}';
     }
 
-    public Collection<DiagramStep> possibleSteps() {
+    public List<DiagramStep> possibleSteps() {
         List<DiagramStep> steps = new ArrayList<>();
         List<List<ExtendedCrease>> removableCreases = new ArrayList<>();
         Map<Vertex, List<ExtendedCrease>> possiblyRemovableCreases = new HashMap<>();

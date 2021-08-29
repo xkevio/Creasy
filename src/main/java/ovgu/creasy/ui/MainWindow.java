@@ -228,6 +228,7 @@ public class MainWindow {
 
         setupMouseEvents(steps, history);
         drawSteps(ecp, steps);
+        drawHistory(history);
 
         // after reading the file, if the file is valid:
         foldedModelMenuItem.setDisable(false);
@@ -238,9 +239,16 @@ public class MainWindow {
 
     private void drawSteps(ExtendedCreasePattern ecp, Parent steps) {
         for (int i = 0; i < ecp.possibleSteps().size(); i++) {
-            DiagramStep step = (DiagramStep) ecp.possibleSteps().toArray()[i];
-            step.to.toCreasePattern().drawOnCanvas((ResizableCanvas) ((Pane) steps).getChildren().get(i), 0.45, 0.45);
+            DiagramStep step = ecp.possibleSteps().get(i);
+            step.to.toCreasePattern().drawOnCanvas((ResizableCanvas) ((Pane) steps).getChildren().get(i),
+                    0.45, 0.45);
         }
+    }
+
+    private void drawHistory(Parent history) {
+        ((Pane) history).getChildren().forEach(c -> {
+            cp.drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
+        });
     }
 
     private void setupMouseEvents(Parent... parents) {
