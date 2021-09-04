@@ -71,7 +71,7 @@
                            </children></AnchorPane>
                     </content>
                   </ScrollPane>
-                  <ScrollPane fx:id="canvasHolder" fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" pannable="true" vbarPolicy="ALWAYS" />
+                  <ScrollPane fx:id="canvasHolder" fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" hvalue="0.5" pannable="true" vbarPolicy="ALWAYS" vvalue="0.5" />
                </children>
             </GridPane>
             <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">

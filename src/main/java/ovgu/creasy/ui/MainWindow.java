@@ -66,12 +66,13 @@ public class MainWindow {
      */
     @FXML
     public void initialize() {
-        mainCanvas = new ResizableCanvas(canvasHolder.getWidth(), canvasHolder.getHeight());
+        mainCanvas = new ResizableCanvas(1000, 1000);
+        mainCanvas.setId("main");
         mainCanvas.setManaged(false);
         canvasHolder.setContent(mainCanvas);
 
-        mainCanvas.widthProperty().bind(canvasHolder.widthProperty());
-        mainCanvas.heightProperty().bind(canvasHolder.heightProperty());
+        //mainCanvas.widthProperty().bind(canvasHolder.widthProperty());
+        //mainCanvas.heightProperty().bind(canvasHolder.heightProperty());
 
         mainCanvas.widthProperty().addListener((observableValue, number, t1) -> {
             if (cp != null) {
@@ -222,6 +223,7 @@ public class MainWindow {
 
         ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
         System.out.println(ecp.possibleSteps().size());
+
         // should be called when the algorithm is executed, aka once the amount of steps is known
         createCanvases(steps, ecp.possibleSteps().size(), CANVAS_WIDTH, CANVAS_HEIGHT);
         createCanvases(history, 10, CANVAS_WIDTH, CANVAS_HEIGHT);

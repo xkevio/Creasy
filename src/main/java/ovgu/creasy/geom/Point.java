@@ -30,6 +30,14 @@ public class Point {
         this.y = y;
     }
 
+    public Point add(Point other) {
+        return new Point(this.x + other.getX(), this.y + other.getY());
+    }
+
+    public Point multiply(Point other) {
+        return new Point(this.x * other.getX(), this.y * other.getY());
+    }
+
     public double distance(Point other) {
         return Math.sqrt(((other.x-x) * (other.x-x)) + ((other.y-y) * (other.y-y)));
     }
