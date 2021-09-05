@@ -11,7 +11,7 @@ public class ReflectionPath {
     private Point startingPoint;
     private Point endPoint;
 
-    public ReflectionPath(ArrayList<Crease> creases, Point startingPoint, Point endPoint) {
+    public ReflectionPath(List<Crease> creases, Point startingPoint, Point endPoint) {
         this.creases = creases;
         this.reversedCreases = new ArrayList<>(creases);
         Collections.reverse(this.reversedCreases);

@@ -56,7 +56,9 @@ public class ExtendedCreasePatternFactory {
                                                         .findFirst().get();
             // activate xC1 and xC2
             xC1.setActive(true);
+            xC1.setReflectionPath(y);
             xC2.setActive(true);
+            xC2.setReflectionPath(y);
             inactiveExtendedCreases.remove(xC1);
             inactiveExtendedCreases.remove(xC2);
             processedExtendedCreases.add(xC1);
@@ -71,6 +73,8 @@ public class ExtendedCreasePatternFactory {
                 ExtendedCrease new_xC2 = new ExtendedCrease(newVertex, xV2, xC1.getType(), true);
                 insertCreaseIntoAdjacencyList(adjacencyLists, new_xC2);
                 vertices.add(newVertex);
+                new_xC1.setReflectionPath(y);
+                new_xC2.setReflectionPath(y);
                 processedExtendedCreases.add(new_xC1);
                 processedExtendedCreases.add(new_xC2);
             } else {
@@ -78,7 +82,7 @@ public class ExtendedCreasePatternFactory {
                 xC2.setEndVertex(xV1);
             }
         }
-        return new ExtendedCreasePattern(vertices, processedExtendedCreases, adjacencyLists);
+        return new ExtendedCreasePattern(vertices, processedExtendedCreases, adjacencyLists, cp);
     }
 
     private void insertCreaseIntoAdjacencyList(Map<Vertex, List<ExtendedCrease>> adjacencyLists, ExtendedCrease c) {
@@ -120,12 +124,13 @@ public class ExtendedCreasePatternFactory {
     }
 
     private Set<ExtendedCrease> createReversedExtendedCreases(Set<ExtendedCrease> extendedCreases) {
-        return extendedCreases.stream().map(c -> {
-            ExtendedCrease cn = new ExtendedCrease(c.getEndVertex(), c.getStartVertex(), c.getType(), c.getActive());
-            cn.setOpposite(c);
-            c.setOpposite(cn);
-            return cn;
-        }).collect(Collectors.toSet());
+        return extendedCreases.stream()
+                              .map(c -> new ExtendedCrease(
+                                  c.getEndVertex(),
+                                  c.getStartVertex(),
+                                  c.getType(),
+                                  c.getActive()))
+                              .collect(Collectors.toSet());
     }
 
     private Map<Point, Vertex> copyVertices(CreasePattern cp) {

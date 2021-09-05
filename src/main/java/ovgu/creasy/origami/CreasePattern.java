@@ -134,6 +134,43 @@ public class CreasePattern {
         }
     }
 
+    public void removeLinearPoints() {
+        Set<Crease> creasesToRemove = new HashSet<>();
+        Set<Crease> creasesToAdd = new HashSet<>();
+        for (Point point : getPoints()) {
+            var adj = getAdjacentCreases(point);
+            if (adj.size() == 2) {
+                var line1 = adj.get(0);
+                var line2 = adj.get(1);
+                if (line1.getType() != line2.getType()) {
+                    continue;
+                }
+                double slope1 = Math.abs(line1.getLine().getSlope());
+                double slope2 = Math.abs(line2.getLine().getSlope());
+                if (Math.abs(slope1-slope2) < 0.00001) {
+                    creasesToRemove.add(line1);
+                    creasesToRemove.add(line2);
+                    Point p1, p2;
+                    if (line1.getLine().getStart().distance(point) < 0.00001) {
+                        p1 = line1.getLine().getEnd();
+                    } else {
+                        p1 = line1.getLine().getEnd();
+                    }
+
+                    if (line2.getLine().getStart().distance(point) < 0.00001) {
+                        p2 = line2.getLine().getEnd();
+                    } else {
+                        p2 = line2.getLine().getEnd();
+                    }
+                    creasesToAdd.add(new Crease(new Line(p1, p2), line1.getType()));
+                }
+            }
+        }
+
+        creasesToRemove.forEach(this::removeCrease);
+        creasesToAdd.forEach(this::addCrease);
+    }
+
     public void addCrease(Crease crease) {
         addOrMergePoints(crease);
         this.creases.add(crease);
@@ -267,5 +304,13 @@ public class CreasePattern {
         }
 
         graphicsContext.translate(-canvas.getWidth() / 2, -canvas.getHeight() / 2);
+    }
+
+    public CreasePattern copy() {
+        CreasePattern cp = new CreasePattern();
+        for (Crease crease : creases) {
+            cp.addCrease(crease);
+        }
+        return cp;
     }
 }

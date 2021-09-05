@@ -2,6 +2,8 @@ package ovgu.creasy.origami;
 
 import ovgu.creasy.geom.*;
 
+import java.sql.Ref;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -14,7 +16,7 @@ public class ExtendedCrease {
     private Vertex end;
     private Crease.Type type;
     private boolean active;
-    private ExtendedCrease opposite;
+    private ReflectionPath reflectionPath;
 
     /**
      * @param start  is the start point for a reflection path
@@ -27,15 +29,17 @@ public class ExtendedCrease {
         this.end = end;
         this.type = type;
         this.active = active;
-        this.opposite = null;
+        this.reflectionPath = new ReflectionPath(
+            Arrays.asList(new Crease(new Line(start.getPoint(), end.getPoint()), type)),
+            start.getPoint(), end.getPoint());
     }
 
-    public void setOpposite(ExtendedCrease opposite) {
-        this.opposite = opposite;
+    public void setReflectionPath(ReflectionPath reflectionPath) {
+        this.reflectionPath = reflectionPath;
     }
 
-    public ExtendedCrease getOpposite() {
-        return opposite;
+    public ReflectionPath getReflectionPath() {
+        return reflectionPath;
     }
 
     public Vertex getStartVertex() {
