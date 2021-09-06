@@ -56,6 +56,10 @@ public class Line {
         return null;
     }
 
+    public double getClockwiseAngle() {
+        return getStart().clockwiseAngle(getEnd());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
