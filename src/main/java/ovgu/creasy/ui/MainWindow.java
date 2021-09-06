@@ -78,6 +78,8 @@ public class MainWindow {
         mainCanvas = new ResizableCanvas(1000, 1000);
         mainCanvas.setId("main");
         mainCanvas.setManaged(false);
+        mainCanvas.getGraphicsContext2D().setFill(Color.WHITE);
+        mainCanvas.getGraphicsContext2D().fillRect(0, 0, 1000,1000);
         canvasHolder.setContent(mainCanvas);
 
         //mainCanvas.widthProperty().bind(canvasHolder.widthProperty());
@@ -94,6 +96,8 @@ public class MainWindow {
                 cp.drawOnCanvas(mainCanvas, 1, 1);
             }
         });
+
+        logText("Starting up... Welcome to Creasy 0.1.0!");
     }
 
     /**
@@ -294,12 +298,17 @@ public class MainWindow {
                     graphicsContext.setFill(Color.color(0.2, 0.2, 0.2, 0.2));
                     graphicsContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
                     c.setCursor(Cursor.HAND);
+
+                    CreasePattern diff = mainCanvas.getCp().getDifference(((ResizableCanvas) c).getCp());
+                    diff.drawOverCanvas(mainCanvas, 1, 1);
                 });
 
                 c.setOnMouseExited(mouseEvent -> {
                     graphicsContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
                     ((ResizableCanvas) c).getCp().drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
                     c.setCursor(Cursor.DEFAULT);
+
+                    mainCanvas.getCp().drawOnCanvas(mainCanvas, 1, 1);
                 });
 
                 c.setOnMouseClicked(mouseEvent -> {
@@ -347,7 +356,7 @@ public class MainWindow {
      * Useful for resetting state.
      */
     private void resetGUI() {
-        mainCanvas.getGraphicsContext2D().clearRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
+        // mainCanvas.getGraphicsContext2D().clearRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
         ((Stage) mainCanvas.getScene().getWindow()).setTitle(Main.APPLICATION_TITLE);
 
         steps.getChildren().clear();

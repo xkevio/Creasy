@@ -8,6 +8,7 @@ import ovgu.creasy.ui.ResizableCanvas;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A collection of creases that, when folded, create an origami Model.
@@ -267,11 +268,33 @@ public class CreasePattern {
         canvas.setCp(this);
 
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-        graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        if (canvas.getId() != null && canvas.getId().equals("main")) {
+            graphicsContext.setFill(Color.WHITE);
+            graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        } else {
+            graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        }
 
         graphicsContext.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
         graphicsContext.setLineWidth(2);
 
+        drawCreasePattern(canvas, scaleX, scaleY, graphicsContext);
+    }
+
+    public void drawOverCanvas(ResizableCanvas canvas, double scaleX, double scaleY) {
+        canvas.setCpScaleX(scaleX);
+        canvas.setCpScaleY(scaleY);
+
+        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+
+        graphicsContext.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
+        graphicsContext.setLineWidth(6);
+
+        drawCreasePattern(canvas, scaleX, scaleY, graphicsContext);
+    }
+
+    private void drawCreasePattern(ResizableCanvas canvas, double scaleX, double scaleY, GraphicsContext graphicsContext) {
         for (Crease crease : creases) {
             Color currentColor = switch (crease.getType()) {
                 case EDGE -> Color.BLACK;
@@ -289,6 +312,17 @@ public class CreasePattern {
         }
 
         graphicsContext.translate(-canvas.getWidth() / 2, -canvas.getHeight() / 2);
+    }
+
+    // TODO asymmetrical
+    public CreasePattern getDifference(CreasePattern other) {
+        CreasePattern diff = new CreasePattern();
+
+        Set<Crease> intersection = new HashSet<>(this.creases);
+        intersection.removeAll(other.creases);
+
+        intersection.forEach(diff::addCrease);
+        return diff;
     }
 
     public CreasePattern copy() {
