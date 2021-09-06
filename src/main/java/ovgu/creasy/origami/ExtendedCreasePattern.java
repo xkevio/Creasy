@@ -72,6 +72,7 @@ public class ExtendedCreasePattern {
 
             removableCreases.addAll(findSimpleFolds(vertex).stream().map(Collections::singletonList)
                     .collect(Collectors.toList()));
+            removableCreases.addAll(findReverseFolds(vertex));
         }
         List<CreasePattern> newcps = new ArrayList<>();
         for (List<ExtendedReflectionPath> removablePathList : removableCreases) {
@@ -90,19 +91,48 @@ public class ExtendedCreasePattern {
     private HashSet<List<ExtendedReflectionPath>> findReverseFolds(Vertex vertex) {
         List<ExtendedCrease> outgoingCreases = getAdjacencyLists().get(vertex);
         HashSet<List<ExtendedReflectionPath>> paths = new HashSet<>();
-        outgoingCreases = outgoingCreases.stream()
-                .filter(crease -> crease.getExtendedReflectionPath().getStart().equals(vertex))
-                .collect(Collectors.toList());
+        //outgoingCreases = outgoingCreases.stream()
+                //.filter(crease -> crease.getExtendedReflectionPath().getStart().equals(vertex))
+                //.collect(Collectors.toList());
         List<List<ExtendedCrease>> viableCombinations = findViableCombinations(outgoingCreases);
+        List<List<ExtendedCrease>> validCombinations = viableCombinations.stream().filter(combination -> {
+            Vertex p = combination.get(0).getEndVertex();
+            boolean refPoint = true;
+            boolean border = true;
+            for (ExtendedCrease extendedCrease : combination) {
+                if (extendedCrease.getExtendedReflectionPath().getEnd() != p){
+                    refPoint = false;
+                }
+                if (extendedCrease.getExtendedReflectionPath().getEnd().getType() != Vertex.Type.BORDER) {
+                    border = false;
+                }
+                if (!border && !refPoint) {
+                    break;
+                }
+            }
+            return border || refPoint;
+        }).collect(Collectors.toList());
+        for (List<ExtendedCrease> validCombination : validCombinations) {
+            paths.add(validCombination.stream().map(ExtendedCrease::getExtendedReflectionPath).collect(Collectors.toList()));
+        }
         return paths;
     }
 
     private List<List<ExtendedCrease>> findViableCombinations(List<ExtendedCrease> outgoingCreases) {
         List<List<ExtendedCrease>> combinations = new ArrayList<>();
         for (int i = 0; i < outgoingCreases.size(); i++) {
-            Crease.Type mainType = outgoingCreases.get(0).getType();
-            int j = (i+1) % outgoingCreases.size();
+            Crease.Type mainType = outgoingCreases.get(i).getType();
+            ExtendedCrease middle = outgoingCreases.get(i);
+            ExtendedCrease left = outgoingCreases.get((i-1+outgoingCreases.size())%outgoingCreases.size());
+            ExtendedCrease right = outgoingCreases.get((i+1)%outgoingCreases.size());
+            if (left.getType() == mainType.opposite()
+                    && right.getType() == mainType.opposite()
+                    && left.getExtendedReflectionPath().getStart() == left.getStartVertex()
+                    && right.getExtendedReflectionPath().getStart() == right.getStartVertex()
+                    && middle.getExtendedReflectionPath().getStart() == middle.getStartVertex()) {
 
+                combinations.add(Arrays.asList(left, middle, right));
+            }
         }
         return combinations;
     }
