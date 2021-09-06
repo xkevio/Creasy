@@ -1,9 +1,9 @@
 package ovgu.creasy.origami;
 
-import ovgu.creasy.geom.*;
+import ovgu.creasy.geom.Line;
+import ovgu.creasy.geom.Vertex;
 
-import java.sql.Ref;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -16,7 +16,7 @@ public class ExtendedCrease {
     private Vertex end;
     private Crease.Type type;
     private boolean active;
-    private ReflectionPath reflectionPath;
+    private ExtendedReflectionPath extendedReflectionPath;
 
     /**
      * @param start  is the start point for a reflection path
@@ -29,17 +29,15 @@ public class ExtendedCrease {
         this.end = end;
         this.type = type;
         this.active = active;
-        this.reflectionPath = new ReflectionPath(
-            Arrays.asList(new Crease(new Line(start.getPoint(), end.getPoint()), type)),
-            start.getPoint(), end.getPoint());
+        this.extendedReflectionPath = new ExtendedReflectionPath(start, end, Collections.singletonList(new Crease(new Line(start.getPoint(), end.getPoint()), type)));
     }
 
-    public void setReflectionPath(ReflectionPath reflectionPath) {
-        this.reflectionPath = reflectionPath;
+    public void setExtendedReflectionPath(ExtendedReflectionPath extendedReflectionPath) {
+        this.extendedReflectionPath = extendedReflectionPath;
     }
 
-    public ReflectionPath getReflectionPath() {
-        return reflectionPath;
+    public ExtendedReflectionPath getExtendedReflectionPath() {
+        return extendedReflectionPath;
     }
 
     public Vertex getStartVertex() {

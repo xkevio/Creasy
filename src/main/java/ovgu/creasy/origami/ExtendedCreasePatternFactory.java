@@ -40,6 +40,7 @@ public class ExtendedCreasePatternFactory {
             }
             // global maximum in A
             ReflectionPath y = getGlobalMaximum(A);
+            ExtendedReflectionPath ex = new ExtendedReflectionPath(vertexMap.get(y.getStartingPoint()), vertexMap.get(y.getEndPoint()), y.getCreases());
             // terminal vertices of y
             Vertex xV1 = vertexMap.get(y.getStartingPoint());
             Vertex xV2 = vertexMap.get(y.getEndPoint());
@@ -56,9 +57,9 @@ public class ExtendedCreasePatternFactory {
                                                         .findFirst().get();
             // activate xC1 and xC2
             xC1.setActive(true);
-            xC1.setReflectionPath(y);
+            xC1.setExtendedReflectionPath(ex);
             xC2.setActive(true);
-            xC2.setReflectionPath(y);
+            xC2.setExtendedReflectionPath(ex);
             inactiveExtendedCreases.remove(xC1);
             inactiveExtendedCreases.remove(xC2);
             processedExtendedCreases.add(xC1);
@@ -73,8 +74,8 @@ public class ExtendedCreasePatternFactory {
                 ExtendedCrease new_xC2 = new ExtendedCrease(newVertex, xV2, xC1.getType(), true);
                 insertCreaseIntoAdjacencyList(adjacencyLists, new_xC2);
                 vertices.add(newVertex);
-                new_xC1.setReflectionPath(y);
-                new_xC2.setReflectionPath(y);
+                new_xC1.setExtendedReflectionPath(ex);
+                new_xC2.setExtendedReflectionPath(ex);
                 processedExtendedCreases.add(new_xC1);
                 processedExtendedCreases.add(new_xC2);
             } else {
@@ -82,7 +83,7 @@ public class ExtendedCreasePatternFactory {
                 xC2.setEndVertex(xV1);
             }
         }
-        return new ExtendedCreasePattern(vertices, processedExtendedCreases, adjacencyLists, cp);
+        return new ExtendedCreasePattern(vertices, processedExtendedCreases, adjacencyLists, cp, vertexMap);
     }
 
     private void insertCreaseIntoAdjacencyList(Map<Vertex, List<ExtendedCrease>> adjacencyLists, ExtendedCrease c) {

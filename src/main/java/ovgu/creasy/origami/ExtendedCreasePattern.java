@@ -1,8 +1,10 @@
 package ovgu.creasy.origami;
 
+import ovgu.creasy.geom.Point;
 import ovgu.creasy.geom.Vertex;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Extended Crease Pattern, adds information about Reflection Creases
@@ -11,7 +13,9 @@ import java.util.*;
  */
 public class ExtendedCreasePattern {
     private Set<Vertex> vertices;
+    private Map<Point, Vertex> vertexMap;
     private Set<ExtendedCrease> creases;
+    private Set<ExtendedReflectionPath> reflectionPaths;
     private Map<Vertex, List<ExtendedCrease>> connections;
     private CreasePattern cp;
     /**
@@ -19,11 +23,20 @@ public class ExtendedCreasePattern {
      * @param creases is the set of directed edges of the extended graph.
      * @param connections is a set of ordered, circular lists of edges parting from each vertex in vertices
      */
-    public ExtendedCreasePattern(Set<Vertex> vertices, Set<ExtendedCrease> creases, Map<Vertex, List<ExtendedCrease>> connections, CreasePattern cp) {
+    public ExtendedCreasePattern(Set<Vertex> vertices,
+                                 Set<ExtendedCrease> creases,
+                                 Map<Vertex, List<ExtendedCrease>> connections,
+                                 CreasePattern cp,
+                                 Map<Point, Vertex> vertexMap) {
         this.vertices = vertices;
         this.creases = creases;
         this.connections = connections;
         this.cp = cp;
+        this.reflectionPaths = new HashSet<>();
+        for (ExtendedCrease crease : creases) {
+            reflectionPaths.add(crease.getExtendedReflectionPath());
+        }
+        this.vertexMap = vertexMap;
     }
 
     public ExtendedCreasePattern() {
@@ -52,13 +65,19 @@ public class ExtendedCreasePattern {
 
     public List<DiagramStep> possibleSteps() {
         List<DiagramStep> steps = new ArrayList<>();
-        HashSet<ReflectionPath> removableCreases = new HashSet<>();
+        HashSet<List<ExtendedReflectionPath>> removableCreases = new HashSet<>();
         for (Vertex vertex : vertices) {
-            removableCreases.addAll(findSimpleFolds(vertex));
+            removableCreases.addAll(findSimpleFolds(vertex).stream().map(Collections::singletonList).collect(Collectors.toList()));
         }
-        for (ReflectionPath removableCreaseList : removableCreases) {
+        for (List<ExtendedReflectionPath> removablePathList : removableCreases) {
+
+            for (ExtendedReflectionPath path : removablePathList) {
+                System.out.println("ab");
+                System.out.println(path.getStart());
+                System.out.println(path.getEnd());
+            }
             CreasePattern newcp = this.cp.copy();
-            removableCreaseList.getCreases().forEach(newcp::removeCrease);
+            removablePathList.forEach(p -> p.getCreases().forEach(newcp::removeCrease));
             newcp.removeLinearPoints();
             ExtendedCreasePattern next = new ExtendedCreasePatternFactory().createExtendedCreasePattern(newcp);
             steps.add(new DiagramStep(this, next));
@@ -66,36 +85,21 @@ public class ExtendedCreasePattern {
         return steps;
     }
 
-    private HashSet<ReflectionPath> findSimpleFolds(Vertex vertex) {
-        Map<Vertex, ReflectionPath> possiblySimpleFolds = new HashMap<>();
-        HashSet<ReflectionPath> simpleFolds = new HashSet<>();
-        if (vertex.getType() == Vertex.Type.BORDER) {
-            List<ExtendedCrease> outgoing = this.connections.get(vertex);
-            for (ExtendedCrease outgoingCrease : outgoing) {
-                if (outgoingCrease.getType() == Crease.Type.EDGE) {
-                    continue;
-                }
-                if (outgoingCrease.getEndVertex().getType() == Vertex.Type.BORDER
-                    && outgoingCrease.getType()!= Crease.Type.EDGE) {
-                    simpleFolds.add(outgoingCrease.getReflectionPath());
-                } else if (outgoingCrease.getEndVertex().getType() == Vertex.Type.VIRTUAL) {
-                    List<ExtendedCrease> creases = new ArrayList<>();
-                    creases.add(outgoingCrease);
-                    ExtendedCrease currentCrease = outgoingCrease;
-                    while (connections.containsKey(currentCrease.getEndVertex())) {
-                        var next = connections.get(currentCrease.getEndVertex());
-                        currentCrease = next.get(next.size()-1);
-                        creases.add(currentCrease);
-                    }
-                    Vertex middle = currentCrease.getStartVertex();
-                    if (possiblySimpleFolds.containsKey(middle)) {
-                        simpleFolds.add(currentCrease.getReflectionPath());
-                    } else {
-                        possiblySimpleFolds.put(middle, outgoingCrease.getReflectionPath());
-                    }
-                }
-            }
-        }
-        return simpleFolds;
+    //private HashSet<List<ReflectionPath>> findReverseFolds(Vertex vertex) {
+    //    List<ExtendedCrease> outgoingCreases = getAdjacencyLists().get(vertex);
+
+    //}
+
+    private Set<ExtendedReflectionPath> findSimpleFolds(Vertex vertex) {
+        List<ExtendedCrease> outgoing = this.connections.get(vertex);
+        return  outgoing.stream()
+                .filter(crease -> crease.getType() != Crease.Type.EDGE)
+                .filter(
+                        crease -> crease.getExtendedReflectionPath().getEnd().getType() == Vertex.Type.BORDER
+                                && crease.getExtendedReflectionPath().getStart().getType() == Vertex.Type.BORDER
+                                || (crease.getExtendedReflectionPath().getStart() == crease.getExtendedReflectionPath().getEnd()
+                        ))
+                .map(ExtendedCrease::getExtendedReflectionPath).collect(Collectors.toSet());
+
     }
 }
