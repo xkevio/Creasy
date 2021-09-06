@@ -122,6 +122,9 @@ public class ExtendedCreasePattern {
         List<List<ExtendedCrease>> combinations = new ArrayList<>();
         for (int i = 0; i < outgoingCreases.size(); i++) {
             Crease.Type mainType = outgoingCreases.get(i).getType();
+            if (mainType == Crease.Type.EDGE) {
+                continue;
+            }
             ExtendedCrease middle = outgoingCreases.get(i);
             ExtendedCrease left = outgoingCreases.get((i-1+outgoingCreases.size())%outgoingCreases.size());
             ExtendedCrease right = outgoingCreases.get((i+1)%outgoingCreases.size());

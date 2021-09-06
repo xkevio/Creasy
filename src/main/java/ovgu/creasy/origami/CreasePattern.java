@@ -143,13 +143,10 @@ public class CreasePattern {
                 if (line1.getType() != line2.getType()) {
                     continue;
                 }
-                double slope1 = line1.getLine().getSlope();
-                if (slope1 < 0) {
-                    slope1 = -1/slope1;
-                }
-                double slope2 = line2.getLine().getSlope();
+                double slope1 = Math.abs(line1.getLine().getSlope());
+                double slope2 = Math.abs(line2.getLine().getSlope());
                 if (slope2 < 0) {
-                    slope2 = -1/slope2;
+                    slope2 = -slope2;
                 }
                 if (Math.abs(slope1-slope2) < 0.00001) {
                     creasesToRemove.add(line1);
