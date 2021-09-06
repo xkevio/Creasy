@@ -20,7 +20,6 @@
             <Menu mnemonicParsing="false" text="File">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#onMenuImportAction" text="Import" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="exportMenuItem" disable="true" mnemonicParsing="false" onAction="#onMenuExportAction" text="Export" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="resetMenuItem" disable="true" mnemonicParsing="false" onAction="#onMenuResetAction" text="Reset" />

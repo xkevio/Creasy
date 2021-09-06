@@ -31,15 +31,10 @@ public class CreasePattern {
      */
     private final HashMap<Point, List<Crease>> adjacentCreases;
 
-    private double scaleX;
-    private double scaleY;
-
     public CreasePattern(Set<Crease> creases, Set<Point> points) {
         this.creases = creases;
         this.points = points;
         this.adjacentCreases = new HashMap<>();
-        this.scaleX = 1;
-        this.scaleY = 1;
     }
 
     public CreasePattern() {
@@ -256,14 +251,6 @@ public class CreasePattern {
         return Collections.unmodifiableSet(points);
     }
 
-    public double getScaleX() {
-        return this.scaleX;
-    }
-
-    public double getScaleY() {
-        return this.scaleY;
-    }
-
     /**
      * Draws the loaded Crease Pattern on the current canvas by
      * iterating over all Creases and choosing the colors based
@@ -274,8 +261,8 @@ public class CreasePattern {
      * @param scaleY scales the GraphicsContext in the y amount (default = 1)
      */
     public void drawOnCanvas(ResizableCanvas canvas, double scaleX, double scaleY) {
-        this.scaleX = scaleX;
-        this.scaleY = scaleY;
+        canvas.setCpScaleX(scaleX);
+        canvas.setCpScaleY(scaleY);
 
         canvas.setCp(this);
 

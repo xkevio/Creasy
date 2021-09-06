@@ -3,7 +3,6 @@ package ovgu.creasy.ui;
 import javafx.application.HostServices;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.BoundingBox;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,8 +10,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -36,20 +33,29 @@ public class MainWindow {
     private static final int CANVAS_HEIGHT = 200;
 
     private final FileChooser openFileChooser;
-    public ScrollPane canvasHolder;
-    public ScrollPane logHolder;
+
+    @FXML
+    private ScrollPane canvasHolder;
+    @FXML
+    private ScrollPane logHolder;
+
     private HostServices hostServices;
+    private OrigamiModel model;
+    private CreasePattern cp;
 
     public ResizableCanvas mainCanvas;
 
-    public MenuItem foldedModelMenuItem;
-    public MenuItem zoomInMenuItem;
-    public MenuItem zoomOutMenuItem;
-    public MenuItem resetMenuItem;
-    public MenuItem exportMenuItem;
+    @FXML
+    private MenuItem foldedModelMenuItem;
+    @FXML
+    private MenuItem zoomInMenuItem;
+    @FXML
+    private MenuItem zoomOutMenuItem;
+    @FXML
+    private MenuItem resetMenuItem;
+    @FXML
+    private MenuItem exportMenuItem;
 
-    private OrigamiModel model;
-    private CreasePattern cp;
 
     @FXML
     private TextArea log;
@@ -121,7 +127,7 @@ public class MainWindow {
      *
      */
     @FXML
-    public void onMenuExportAction(){
+    public void onMenuExportAction() {
 
     }
 
@@ -152,12 +158,14 @@ public class MainWindow {
 
     @FXML
     public void onZoomInMenuItem() {
-        cp.drawOnCanvas(mainCanvas, 1.1 * cp.getScaleX(), 1.1 * cp.getScaleY());
+        CreasePattern mainCP = mainCanvas.getCp();
+        mainCP.drawOnCanvas(mainCanvas, 1.1 * mainCanvas.getCpScaleX(), 1.1 * mainCanvas.getCpScaleY());
     }
 
     @FXML
     public void onZoomOutMenuItem() {
-        cp.drawOnCanvas(mainCanvas, 0.9 * cp.getScaleX(), 0.9 * cp.getScaleY());
+        CreasePattern mainCP = mainCanvas.getCp();
+        mainCP.drawOnCanvas(mainCanvas, 0.9 * mainCanvas.getCpScaleX(), 0.9 * mainCanvas.getCpScaleY());
     }
 
     @FXML
@@ -333,8 +341,6 @@ public class MainWindow {
                         drawSteps(ecp, steps);
                     }
                 });
-
-
             });
         }
     }
