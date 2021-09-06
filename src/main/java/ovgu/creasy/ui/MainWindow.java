@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 public class MainWindow {
@@ -35,6 +37,7 @@ public class MainWindow {
 
     private final FileChooser openFileChooser;
     public ScrollPane canvasHolder;
+    public ScrollPane logHolder;
     private HostServices hostServices;
 
     public ResizableCanvas mainCanvas;
@@ -43,12 +46,15 @@ public class MainWindow {
     public MenuItem zoomInMenuItem;
     public MenuItem zoomOutMenuItem;
     public MenuItem resetMenuItem;
+    public MenuItem exportMenuItem;
 
     private OrigamiModel model;
     private CreasePattern cp;
 
     @FXML
-    private HBox history;
+    private TextArea log;
+    @FXML
+    private VBox history;
     @FXML
     private VBox steps;
 
@@ -99,6 +105,7 @@ public class MainWindow {
             try {
                 resetGUI();
                 setupCreasePattern(new FileInputStream(file), filePath);
+                logText("Import " + filePath);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Error loading file " + filePath + "!");
@@ -165,6 +172,7 @@ public class MainWindow {
         resetGUI();
         InputStream is = Main.class.getResourceAsStream("example/bird.cp");
         setupCreasePattern(is, "example/bird.cp");
+        logText("Import example/bird.cp");
     }
 
     @FXML
@@ -172,6 +180,7 @@ public class MainWindow {
         resetGUI();
         InputStream is = Main.class.getResourceAsStream("example/penguin_hideo_komatsu.cp");
         setupCreasePattern(is, "example/penguin_hideo_komatsu.cp");
+        logText("Import example/penguin_hideo_komatsu.cp");
     }
 
     @FXML
@@ -179,6 +188,7 @@ public class MainWindow {
         resetGUI();
         InputStream is = Main.class.getResourceAsStream("example/crane.cp");
         setupCreasePattern(is, "example/crane.cp");
+        logText("Import example/crane.cp");
     }
     // -------------------------
 
@@ -249,6 +259,7 @@ public class MainWindow {
         zoomInMenuItem.setDisable(false);
         zoomOutMenuItem.setDisable(false);
         resetMenuItem.setDisable(false);
+        exportMenuItem.setDisable(false);
     }
 
     private void drawSteps(ExtendedCreasePattern ecp, Parent steps) {
@@ -367,5 +378,11 @@ public class MainWindow {
 
     public void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
+    }
+
+    public void logText(String event) {
+        String timeStamp = new SimpleDateFormat("[dd.MM / HH:mm:ss]: ").format(new Date());
+        log.appendText(timeStamp + event + '\n');
+        logHolder.setHvalue(0);
     }
 }
