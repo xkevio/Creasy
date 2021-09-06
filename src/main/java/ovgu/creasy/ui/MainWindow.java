@@ -56,7 +56,6 @@ public class MainWindow {
     @FXML
     private MenuItem exportMenuItem;
 
-
     @FXML
     private TextArea log;
     @FXML
@@ -308,10 +307,8 @@ public class MainWindow {
                         if (c.getParent().equals(history)) {
                             ContextMenu contextMenu = new ContextMenu();
                             MenuItem delete = new MenuItem("Delete");
-                            delete.setOnAction(actionEvent -> {
-                                history.getChildren().remove(c);
-                            });
 
+                            delete.setOnAction(actionEvent -> history.getChildren().remove(c));
                             contextMenu.getItems().add(delete);
 
                             c.setOnContextMenuRequested(contextMenuEvent -> {
@@ -323,7 +320,6 @@ public class MainWindow {
                         var currentStep = ((ResizableCanvas) c).getCp();
 
                         System.out.println(history.getChildren().size());
-
                         System.out.println(currentStep.equals(cp) ? "equals" : "not equals");
 
                         currentStep.drawOnCanvas(mainCanvas, 1, 1);
@@ -331,13 +327,13 @@ public class MainWindow {
 
                         if (c.getParent().equals(steps)) {
                             drawHistory(currentStep, history);
+                            logText("Pick this step and add to history... " + ecp.possibleSteps().size() + " new option(s) were calculated");
                         }
 
                         steps.getChildren().clear();
 
                         createCanvases(steps, ecp.possibleSteps().size(), CANVAS_WIDTH, CANVAS_HEIGHT);
-                        setupMouseEvents(steps);
-                        setupMouseEvents(history);
+                        setupMouseEvents(steps, history);
                         drawSteps(ecp, steps);
                     }
                 });
@@ -361,6 +357,7 @@ public class MainWindow {
         zoomInMenuItem.setDisable(true);
         zoomOutMenuItem.setDisable(true);
         resetMenuItem.setDisable(true);
+        exportMenuItem.setDisable(true);
 
         cp = null;
     }

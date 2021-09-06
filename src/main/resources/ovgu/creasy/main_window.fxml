@@ -4,6 +4,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -12,6 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <VBox prefHeight="727.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ovgu.creasy.ui.MainWindow">
    <children>
@@ -85,7 +87,17 @@
               <content>
                 <AnchorPane>
                      <children>
-                        <VBox fx:id="steps" alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <VBox alignment="TOP_CENTER" prefHeight="700.0" prefWidth="206.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Text stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Possible steps">
+                                 <font>
+                                    <Font name="Segoe UI" size="18.0" />
+                                 </font>
+                              </Text>
+                              <Separator prefWidth="200.0" />
+                              <VBox fx:id="steps" alignment="CENTER" />
+                           </children>
+                        </VBox>
                      </children>
                   </AnchorPane>
               </content>
@@ -94,7 +106,17 @@
               <content>
                 <AnchorPane>
                      <children>
-                        <VBox fx:id="history" alignment="CENTER" prefHeight="0.0" prefWidth="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <VBox alignment="TOP_CENTER" prefHeight="700.0" prefWidth="206.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Text stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="History">
+                                 <font>
+                                    <Font name="Segoe UI" size="18.0" />
+                                 </font>
+                              </Text>
+                              <Separator prefWidth="200.0" />
+                              <VBox fx:id="history" alignment="CENTER" prefHeight="0.0" prefWidth="0.0" />
+                           </children>
+                        </VBox>
                      </children>
                   </AnchorPane>
               </content>
