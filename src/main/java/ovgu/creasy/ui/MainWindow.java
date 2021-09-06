@@ -222,7 +222,7 @@ public class MainWindow {
         cp.drawOnCanvas(mainCanvas, 1, 1);
 
         ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
-        System.out.println(ecp.possibleSteps().size());
+        System.out.println("size = " + ecp.possibleSteps().size());
 
         // should be called when the algorithm is executed, aka once the amount of steps is known
         createCanvases(steps, ecp.possibleSteps().size(), CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -310,7 +310,9 @@ public class MainWindow {
      */
     private void createCanvases(Parent parent, int amount, int width, int height) {
         if (((Pane) parent).getChildren().isEmpty()) {
+            System.out.println("amount = " + amount);
             for (int i = 0; i < amount; ++i) {
+                System.out.println("i = " + i);
                 ((Pane) parent).getChildren().add(new ResizableCanvas(width, height));
             }
         }
