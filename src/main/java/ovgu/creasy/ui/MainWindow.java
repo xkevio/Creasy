@@ -109,6 +109,16 @@ public class MainWindow {
     }
 
     /**
+     * Opens a file explorer dialogue which lets the user export
+     * the .cp file
+     *
+     */
+    @FXML
+    public void onMenuExportAction(){
+
+    }
+
+    /**
      * Opens Oripa with the folded 3d model,
      * calls foldModel() method.
      *
