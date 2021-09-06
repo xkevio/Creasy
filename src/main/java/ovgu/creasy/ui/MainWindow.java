@@ -9,10 +9,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -275,27 +273,45 @@ public class MainWindow {
                 });
 
                 c.setOnMouseClicked(mouseEvent -> {
-                    var startCP = cp.copy();
-                    var currentStep = ((ResizableCanvas) c).getCp();
+                    if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                        if (c.getParent().equals(history)) {
+                            ContextMenu contextMenu = new ContextMenu();
+                            MenuItem delete = new MenuItem("Delete");
+                            delete.setOnAction(actionEvent -> {
+                                history.getChildren().remove(c);
+                            });
 
-                    System.out.println(history.getChildren().size());
+                            contextMenu.getItems().add(delete);
 
-                    System.out.println(currentStep.equals(cp) ? "equals" : "not equals");
+                            c.setOnContextMenuRequested(contextMenuEvent -> {
+                                contextMenu.show(c, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY());
+                            });
+                        }
+                    } else {
+                        var startCP = cp.copy();
+                        var currentStep = ((ResizableCanvas) c).getCp();
 
-                    currentStep.drawOnCanvas(mainCanvas, 1, 1);
-                    ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(currentStep);
+                        System.out.println(history.getChildren().size());
 
-                    if (c.getParent().equals(steps)) {
-                        drawHistory(currentStep, history);
+                        System.out.println(currentStep.equals(cp) ? "equals" : "not equals");
+
+                        currentStep.drawOnCanvas(mainCanvas, 1, 1);
+                        ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(currentStep);
+
+                        if (c.getParent().equals(steps)) {
+                            drawHistory(currentStep, history);
+                        }
+
+                        steps.getChildren().clear();
+
+                        createCanvases(steps, ecp.possibleSteps().size(), CANVAS_WIDTH, CANVAS_HEIGHT);
+                        setupMouseEvents(steps);
+                        setupMouseEvents(history);
+                        drawSteps(ecp, steps);
                     }
-
-                    steps.getChildren().clear();
-
-                    createCanvases(steps, ecp.possibleSteps().size(), CANVAS_WIDTH, CANVAS_HEIGHT);
-                    setupMouseEvents(steps);
-                    setupMouseEvents(history);
-                    drawSteps(ecp, steps);
                 });
+
+
             });
         }
     }
