@@ -97,7 +97,7 @@ public class ExtendedCreasePattern {
             Point a = crease.getStartVertex().getPoint();
             Point b = crease.getEndVertex().getPoint();
 
-            double angle = (a.dot(b)) / ((a.distance(a)) * (b.distance(b)));
+            double angle = Math.acos((a.dot(b)) / ((a.distance(a)) * (b.distance(b))));
             angles.add(angle);
         }
 
