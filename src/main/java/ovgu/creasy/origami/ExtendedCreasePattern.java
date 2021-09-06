@@ -1,6 +1,5 @@
 package ovgu.creasy.origami;
 
-import ovgu.creasy.geom.Line;
 import ovgu.creasy.geom.Vertex;
 
 import java.util.*;
@@ -53,7 +52,7 @@ public class ExtendedCreasePattern {
 
     public List<DiagramStep> possibleSteps() {
         List<DiagramStep> steps = new ArrayList<>();
-        List<List<Crease>> removableCreases = new ArrayList<>();
+        HashSet<ReflectionPath> removableCreases = new HashSet<>();
         Map<Vertex, List<ExtendedCrease>> possiblyRemovableCreases = new HashMap<>();
         for (Vertex vertex : xV) {
             if (vertex.getType() == Vertex.Type.BORDER) {
@@ -64,7 +63,7 @@ public class ExtendedCreasePattern {
                     }
                     if (outgoingCrease.getEndVertex().getType() == Vertex.Type.BORDER
                         && outgoingCrease.getType()!= Crease.Type.EDGE) {
-                        removableCreases.add(outgoingCrease.getReflectionPath().getCreases());
+                        removableCreases.add(outgoingCrease.getReflectionPath());
                     } else if (outgoingCrease.getEndVertex().getType() == Vertex.Type.VIRTUAL) {
                         List<ExtendedCrease> creases = new ArrayList<>();
                         creases.add(outgoingCrease);
@@ -74,10 +73,10 @@ public class ExtendedCreasePattern {
                             currentCrease = next.get(next.size()-1);
                             creases.add(currentCrease);
                         }
-                        Vertex middle = currentCrease.getStartVertex();
+                        Vertex middle = currentCrease.getEndVertex();
                         if (possiblyRemovableCreases.containsKey(middle)) {
                             possiblyRemovableCreases.get(middle).addAll(creases);
-                            removableCreases.add(currentCrease.getReflectionPath().getCreases());
+                            removableCreases.add(currentCrease.getReflectionPath());
                         } else {
                             possiblyRemovableCreases.put(middle, creases);
                         }
@@ -85,11 +84,10 @@ public class ExtendedCreasePattern {
                 }
             }
         }
-        for (List<Crease> removableCreaseList : removableCreases) {
+        for (ReflectionPath removableCreaseList : removableCreases) {
             CreasePattern newcp = this.cp.copy();
-            System.out.println(removableCreaseList.size());
-            removableCreaseList.forEach(newcp::removeCrease);
-            //newcp.removeLinearPoints();
+            removableCreaseList.getCreases().forEach(newcp::removeCrease);
+            newcp.removeLinearPoints();
             ExtendedCreasePattern next = new ExtendedCreasePatternFactory().createExtendedCreasePattern(newcp);
             steps.add(new DiagramStep(this, next));
         }

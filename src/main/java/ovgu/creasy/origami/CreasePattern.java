@@ -1,7 +1,5 @@
 package ovgu.creasy.origami;
 
-import javafx.geometry.Point2D;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import ovgu.creasy.geom.Line;
@@ -145,24 +143,27 @@ public class CreasePattern {
                 if (line1.getType() != line2.getType()) {
                     continue;
                 }
-                double slope1 = Math.abs(line1.getLine().getSlope());
-                double slope2 = Math.abs(line2.getLine().getSlope());
+                double slope1 = line1.getLine().getSlope();
+                if (slope1 < 0) {
+                    slope1 = -1/slope1;
+                }
+                double slope2 = line2.getLine().getSlope();
+                if (slope2 < 0) {
+                    slope2 = -1/slope2;
+                }
                 if (Math.abs(slope1-slope2) < 0.00001) {
                     creasesToRemove.add(line1);
                     creasesToRemove.add(line2);
                     Point p1, p2;
-                    if (line1.getLine().getStart().distance(point) < 0.00001) {
-                        p1 = line1.getLine().getEnd();
-                    } else {
-                        p1 = line1.getLine().getEnd();
-                    }
-
-                    if (line2.getLine().getStart().distance(point) < 0.00001) {
-                        p2 = line2.getLine().getEnd();
-                    } else {
-                        p2 = line2.getLine().getEnd();
-                    }
-                    creasesToAdd.add(new Crease(new Line(p1, p2), line1.getType()));
+                    HashSet<Point> points = new HashSet<>();
+                    points.add(line1.getLine().getStart());
+                    points.add(line1.getLine().getEnd());
+                    points.add(line2.getLine().getStart());
+                    points.add(line2.getLine().getEnd());
+                    points.remove(point);
+                    Object[] p = points.toArray();
+                    Crease c = new Crease(new Line((Point)p[0], (Point)p[1]), line1.getType());
+                    creasesToAdd.add(c);
                 }
             }
         }
