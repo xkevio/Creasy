@@ -41,9 +41,6 @@ public class ExtendedCreasePattern {
         this.vertexMap = vertexMap;
     }
 
-    public ExtendedCreasePattern() {
-    }
-
     public CreasePattern toCreasePattern() {
         return this.cp;
     }
@@ -86,6 +83,46 @@ public class ExtendedCreasePattern {
             steps.add(new DiagramStep(this, next));
         });
         return steps;
+    }
+
+    private double calculateNewAngle(Vertex vertex) {
+        List<Double> angles = new ArrayList<>();
+        List<ExtendedCrease> extendedCreases = connections.get(vertex);
+        // double biggestAngle = 0.0;
+        int sum = 0;
+
+        for (int i = 0; i < extendedCreases.size() - 1; i++) {
+            // TODO
+            ExtendedCrease crease = extendedCreases.get(i);
+            Point a = crease.getStartVertex().getPoint();
+            Point b = crease.getEndVertex().getPoint();
+
+            double angle = (a.dot(b)) / ((a.distance(a)) * (b.distance(b)));
+            angles.add(angle);
+        }
+
+        double currentMax = 0;
+        int index = 0;
+        for (int i = 0; i < angles.size(); i++) {
+            if (angles.get(i) > currentMax) {
+                currentMax = angles.get(i);
+                index = i;
+            }
+        }
+
+        // biggestAngle = currentMax;
+        if (index % 2 == 0) {
+            for (int i = 2; i < index; i += 2) {
+                sum += angles.get(i);
+            }
+        } else {
+            for (int i = 1; i < index; i += 2) {
+                sum += angles.get(i);
+            }
+        }
+
+        // c_k.angle?
+        return ((ExtendedCrease) creases.toArray()[index]).getClockwiseAngle() + (Math.PI - sum);
     }
 
     private HashSet<List<ExtendedReflectionPath>> findReverseFolds(Vertex vertex) {

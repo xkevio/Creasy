@@ -58,6 +58,10 @@ public class Point {
         return angle;
     }
 
+    public double dot(Point other) {
+        return this.x * other.x + this.y * other.y;
+    }
+
     @Override
     public String toString() {
         return """

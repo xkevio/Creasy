@@ -7,14 +7,14 @@ import java.util.Collections;
 import java.util.Objects;
 
 /**
- * A single extended crease in a Extended Crease Pattern
+ * A single extended crease in an Extended Crease Pattern
  * Each extended crease represents the local maximum reflection that starts in 'start' and ends in 'end'
  * ('start' & 'end' must be a part of extended vertices)
  */
 public class ExtendedCrease {
     private Vertex start;
     private Vertex end;
-    private Crease.Type type;
+    private final Crease.Type type;
     private boolean active;
     private ExtendedReflectionPath extendedReflectionPath;
 
