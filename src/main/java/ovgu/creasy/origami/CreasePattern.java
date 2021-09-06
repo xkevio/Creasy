@@ -325,6 +325,6 @@ public class CreasePattern {
 
     @Override
     public int hashCode() {
-        return Objects.hash(creases, points, adjacentCreases);
+        return Objects.hash(creases, points);
     }
 }

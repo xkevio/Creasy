@@ -4,6 +4,8 @@ import ovgu.creasy.geom.Point;
 import ovgu.creasy.geom.Vertex;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -67,28 +69,43 @@ public class ExtendedCreasePattern {
         List<DiagramStep> steps = new ArrayList<>();
         HashSet<List<ExtendedReflectionPath>> removableCreases = new HashSet<>();
         for (Vertex vertex : vertices) {
-            removableCreases.addAll(findSimpleFolds(vertex).stream().map(Collections::singletonList).collect(Collectors.toList()));
-        }
-        for (List<ExtendedReflectionPath> removablePathList : removableCreases) {
 
-            for (ExtendedReflectionPath path : removablePathList) {
-                System.out.println("ab");
-                System.out.println(path.getStart());
-                System.out.println(path.getEnd());
-            }
+            removableCreases.addAll(findSimpleFolds(vertex).stream().map(Collections::singletonList)
+                    .collect(Collectors.toList()));
+        }
+        List<CreasePattern> newcps = new ArrayList<>();
+        for (List<ExtendedReflectionPath> removablePathList : removableCreases) {
             CreasePattern newcp = this.cp.copy();
             removablePathList.forEach(p -> p.getCreases().forEach(newcp::removeCrease));
             newcp.removeLinearPoints();
-            ExtendedCreasePattern next = new ExtendedCreasePatternFactory().createExtendedCreasePattern(newcp);
-            steps.add(new DiagramStep(this, next));
+            newcps.add(newcp);
         }
+        newcps.stream().distinct().forEach(cp -> {
+            ExtendedCreasePattern next = new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
+            steps.add(new DiagramStep(this, next));
+        });
         return steps;
     }
 
-    //private HashSet<List<ReflectionPath>> findReverseFolds(Vertex vertex) {
-    //    List<ExtendedCrease> outgoingCreases = getAdjacencyLists().get(vertex);
+    private HashSet<List<ExtendedReflectionPath>> findReverseFolds(Vertex vertex) {
+        List<ExtendedCrease> outgoingCreases = getAdjacencyLists().get(vertex);
+        HashSet<List<ExtendedReflectionPath>> paths = new HashSet<>();
+        outgoingCreases = outgoingCreases.stream()
+                .filter(crease -> crease.getExtendedReflectionPath().getStart().equals(vertex))
+                .collect(Collectors.toList());
+        List<List<ExtendedCrease>> viableCombinations = findViableCombinations(outgoingCreases);
+        return paths;
+    }
 
-    //}
+    private List<List<ExtendedCrease>> findViableCombinations(List<ExtendedCrease> outgoingCreases) {
+        List<List<ExtendedCrease>> combinations = new ArrayList<>();
+        for (int i = 0; i < outgoingCreases.size(); i++) {
+            Crease.Type mainType = outgoingCreases.get(0).getType();
+            int j = (i+1) % outgoingCreases.size();
+
+        }
+        return combinations;
+    }
 
     private Set<ExtendedReflectionPath> findSimpleFolds(Vertex vertex) {
         List<ExtendedCrease> outgoing = this.connections.get(vertex);
@@ -99,7 +116,16 @@ public class ExtendedCreasePattern {
                                 && crease.getExtendedReflectionPath().getStart().getType() == Vertex.Type.BORDER
                                 || (crease.getExtendedReflectionPath().getStart() == crease.getExtendedReflectionPath().getEnd()
                         ))
-                .map(ExtendedCrease::getExtendedReflectionPath).collect(Collectors.toSet());
+                .map(ExtendedCrease::getExtendedReflectionPath).filter(distinctOrReverse()).collect(Collectors.toSet());
 
+    }
+
+    private Predicate<ExtendedReflectionPath> distinctOrReverse() {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return p -> {
+            boolean b = seen.add(p);
+            seen.add(new ExtendedReflectionPath(p.getEnd(), p.getStart(), p.getCreases()));
+            return b;
+        };
     }
 }

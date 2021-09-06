@@ -39,48 +39,50 @@ public class ExtendedCreasePatternFactory {
                 continue;
             }
             // global maximum in A
-            ReflectionPath y = getGlobalMaximum(A);
-            ExtendedReflectionPath ex = new ExtendedReflectionPath(vertexMap.get(y.getStartingPoint()), vertexMap.get(y.getEndPoint()), y.getCreases());
-            // terminal vertices of y
-            Vertex xV1 = vertexMap.get(y.getStartingPoint());
-            Vertex xV2 = vertexMap.get(y.getEndPoint());
-            // Extended Crease in y with xC1.getStartVertex() == xV1
+            ReflectionPath refPath = getGlobalMaximum(A);
+            // terminal vertices of refPath
+            Vertex vertex1 = vertexMap.get(refPath.getStartingPoint());
+            Vertex vertex2 = vertexMap.get(refPath.getEndPoint());
+            List<Crease> creases = refPath.getCreases();
+            ExtendedReflectionPath ex = new ExtendedReflectionPath(vertex1, vertex2, creases);
+            ExtendedReflectionPath exR = new ExtendedReflectionPath(vertex2, vertex1, creases);
+            // Extended Crease in refPath with exCrease1.getStartVertex() == vertex1
             // TODO: maybe make more efficient
-            ExtendedCrease xC1 = inactiveExtendedCreases.stream()
-                                                        .filter(c -> c.getStartVertex().equals(xV1))
-                                                        .filter(c -> y.getPoints().contains(c.getEndVertex().getPoint()))
+            ExtendedCrease exCrease1 = inactiveExtendedCreases.stream()
+                                                        .filter(c -> c.getStartVertex().equals(vertex1))
+                                                        .filter(c -> refPath.getPoints().contains(c.getEndVertex().getPoint()))
                                                         .findFirst().get();
-            // Extended Crease in y with xC2.getStartVertex() == xV2
-            ExtendedCrease xC2 = inactiveExtendedCreases.stream()
-                                                        .filter(c -> c.getStartVertex().equals(xV2))
-                                                        .filter(c -> y.getPoints().contains(c.getEndVertex().getPoint()))
+            // Extended Crease in refPath with exCrease2.getStartVertex() == vertex2
+            ExtendedCrease exCrease2 = inactiveExtendedCreases.stream()
+                                                        .filter(c -> c.getStartVertex().equals(vertex2))
+                                                        .filter(c -> refPath.getPoints().contains(c.getEndVertex().getPoint()))
                                                         .findFirst().get();
-            // activate xC1 and xC2
-            xC1.setActive(true);
-            xC1.setExtendedReflectionPath(ex);
-            xC2.setActive(true);
-            xC2.setExtendedReflectionPath(ex);
-            inactiveExtendedCreases.remove(xC1);
-            inactiveExtendedCreases.remove(xC2);
-            processedExtendedCreases.add(xC1);
-            processedExtendedCreases.add(xC2);
+            // activate exCrease1 and exCrease2
+            exCrease1.setActive(true);
+            exCrease1.setExtendedReflectionPath(ex);
+            exCrease2.setActive(true);
+            exCrease2.setExtendedReflectionPath(exR);
+            inactiveExtendedCreases.remove(exCrease1);
+            inactiveExtendedCreases.remove(exCrease2);
+            processedExtendedCreases.add(exCrease1);
+            processedExtendedCreases.add(exCrease2);
 
-            if (xV1.getPoint() == xV2.getPoint() && xC1.getType() != xC2.getType()) {
+            if (vertex1.getPoint() == vertex2.getPoint() && exCrease1.getType() != exCrease2.getType()) {
                 Vertex newVertex = new Vertex(defaultPoint, Vertex.Type.VIRTUAL);
-                xC1.setEndVertex(newVertex);
-                ExtendedCrease new_xC1 = new ExtendedCrease(newVertex, xV1, xC1.getType(), true);
+                exCrease1.setEndVertex(newVertex);
+                ExtendedCrease new_xC1 = new ExtendedCrease(newVertex, vertex1, exCrease1.getType(), true);
                 insertCreaseIntoAdjacencyList(adjacencyLists, new_xC1);
-                xC2.setEndVertex(newVertex);
-                ExtendedCrease new_xC2 = new ExtendedCrease(newVertex, xV2, xC1.getType(), true);
+                exCrease2.setEndVertex(newVertex);
+                ExtendedCrease new_xC2 = new ExtendedCrease(newVertex, vertex2, exCrease1.getType(), true);
                 insertCreaseIntoAdjacencyList(adjacencyLists, new_xC2);
                 vertices.add(newVertex);
                 new_xC1.setExtendedReflectionPath(ex);
-                new_xC2.setExtendedReflectionPath(ex);
+                new_xC2.setExtendedReflectionPath(exR);
                 processedExtendedCreases.add(new_xC1);
                 processedExtendedCreases.add(new_xC2);
             } else {
-                xC1.setEndVertex(xV2);
-                xC2.setEndVertex(xV1);
+                exCrease1.setEndVertex(vertex2);
+                exCrease2.setEndVertex(vertex1);
             }
         }
         return new ExtendedCreasePattern(vertices, processedExtendedCreases, adjacencyLists, cp, vertexMap);
