@@ -152,18 +152,21 @@ public class MainWindow {
     // Loading example files
     @FXML
     public void onLoadExampleBird() {
+        resetGUI();
         InputStream is = Main.class.getResourceAsStream("example/bird.cp");
         setupCreasePattern(is, "example/bird.cp");
     }
 
     @FXML
     public void onLoadExamplePenguin() {
+        resetGUI();
         InputStream is = Main.class.getResourceAsStream("example/penguin_hideo_komatsu.cp");
         setupCreasePattern(is, "example/penguin_hideo_komatsu.cp");
     }
 
     @FXML
     public void onLoadExampleCrane() {
+        resetGUI();
         InputStream is = Main.class.getResourceAsStream("example/crane.cp");
         setupCreasePattern(is, "example/crane.cp");
     }
@@ -225,7 +228,6 @@ public class MainWindow {
 
         // should be called when the algorithm is executed, aka once the amount of steps is known
         createCanvases(steps, ecp.possibleSteps().size(), CANVAS_WIDTH, CANVAS_HEIGHT);
-        // createCanvases(history, 10, CANVAS_WIDTH, CANVAS_HEIGHT);
 
         drawSteps(ecp, steps);
         drawHistory(cp, history);
