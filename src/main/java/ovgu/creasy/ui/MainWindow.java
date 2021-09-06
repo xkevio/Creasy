@@ -99,6 +99,7 @@ public class MainWindow {
 
         if (file != null && file.exists()) {
             try {
+                resetGUI();
                 setupCreasePattern(new FileInputStream(file), filePath);
             } catch (Exception e) {
                 e.printStackTrace();
