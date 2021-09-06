@@ -227,11 +227,12 @@ public class MainWindow {
 
         // should be called when the algorithm is executed, aka once the amount of steps is known
         createCanvases(steps, ecp.possibleSteps().size(), CANVAS_WIDTH, CANVAS_HEIGHT);
-        createCanvases(history, 10, CANVAS_WIDTH, CANVAS_HEIGHT);
+        // createCanvases(history, 10, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+        drawSteps(ecp, steps);
+        drawHistory(cp, history);
 
         setupMouseEvents(steps, history);
-        drawSteps(ecp, steps);
-        drawHistory(history);
 
         // after reading the file, if the file is valid:
         foldedModelMenuItem.setDisable(false);
@@ -248,10 +249,12 @@ public class MainWindow {
         }
     }
 
-    private void drawHistory(Parent history) {
-        var copy = new CreasePattern(cp.getCreases(), cp.getPoints());
+    private void drawHistory(CreasePattern cp, Parent history) {
+        createCanvases(history, 1, CANVAS_WIDTH, CANVAS_HEIGHT);
         ((Pane) history).getChildren().forEach(c -> {
-            copy.drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
+            if (((ResizableCanvas) c).getCp() == null) {
+                cp.drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
+            }
         });
     }
 
@@ -267,8 +270,31 @@ public class MainWindow {
 
                 c.setOnMouseExited(mouseEvent -> {
                     graphicsContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                    ((ResizableCanvas)c).getCp().drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
+                    ((ResizableCanvas) c).getCp().drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
                     c.setCursor(Cursor.DEFAULT);
+                });
+
+                c.setOnMouseClicked(mouseEvent -> {
+                    var startCP = cp.copy();
+                    var currentStep = ((ResizableCanvas) c).getCp();
+
+                    System.out.println(history.getChildren().size());
+
+                    System.out.println(currentStep.equals(cp) ? "equals" : "not equals");
+
+                    currentStep.drawOnCanvas(mainCanvas, 1, 1);
+                    ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(currentStep);
+
+                    if (c.getParent().equals(steps)) {
+                        drawHistory(currentStep, history);
+                    }
+
+                    steps.getChildren().clear();
+
+                    createCanvases(steps, ecp.possibleSteps().size(), CANVAS_WIDTH, CANVAS_HEIGHT);
+                    setupMouseEvents(steps);
+                    setupMouseEvents(history);
+                    drawSteps(ecp, steps);
                 });
             });
         }
@@ -282,12 +308,6 @@ public class MainWindow {
     private void resetGUI() {
         mainCanvas.getGraphicsContext2D().clearRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
         ((Stage) mainCanvas.getScene().getWindow()).setTitle(Main.APPLICATION_TITLE);
-
-        steps.getChildren().forEach(c -> ((Canvas) c).getGraphicsContext2D().
-                clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT));
-
-        history.getChildren().forEach(c -> ((Canvas) c).getGraphicsContext2D().
-                clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT));
 
         steps.getChildren().clear();
         history.getChildren().clear();
@@ -310,12 +330,10 @@ public class MainWindow {
      * @param height height of the Canvas
      */
     private void createCanvases(Parent parent, int amount, int width, int height) {
-        if (((Pane) parent).getChildren().isEmpty()) {
-            System.out.println("amount = " + amount);
-            for (int i = 0; i < amount; ++i) {
-                System.out.println("i = " + i);
-                ((Pane) parent).getChildren().add(new ResizableCanvas(width, height));
-            }
+        System.out.println("amount = " + amount);
+        for (int i = 0; i < amount; ++i) {
+            System.out.println("i = " + i);
+            ((Pane) parent).getChildren().add(new ResizableCanvas(width, height));
         }
     }
 

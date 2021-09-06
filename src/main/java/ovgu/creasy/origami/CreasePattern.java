@@ -314,4 +314,17 @@ public class CreasePattern {
         }
         return cp;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CreasePattern that = (CreasePattern) o;
+        return creases.equals(that.creases) && points.equals(that.points);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(creases, points, adjacentCreases);
+    }
 }
