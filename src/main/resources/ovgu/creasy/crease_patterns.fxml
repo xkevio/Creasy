@@ -4,9 +4,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ovgu.creasy.ui.CreasePatternHelpWindow">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ovgu.creasy.ui.CreasePatternHelpWindow">
    <children>
-      <Text layoutX="17.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Crease Patterns are a two-dimensional representation of an origami structure. &#10;This application converts those representations step-by-step into DIY instructions. &#10;The representation is a square image consisting of three types of lines: &#10;Black = Edge &#10;Red = Mountain&#10;Blue = Valley" textAlignment="CENTER" wrappingWidth="416.25927734375">
+      <Text layoutX="5.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Crease Patterns are a two-dimensional representation&#10;of an origami structure. &#10;Creasy converts those representations step-by-step into DIY instructions. &#10;The representation is a square image &#10;consisting of three types of lines:&#10; &#10;Black = Edge Folds &#10;Red = Mountain Folds&#10;Blue   = Valley Folds" textAlignment="CENTER" wrappingWidth="540.0">
          <font>
             <Font size="18.0" />
          </font>

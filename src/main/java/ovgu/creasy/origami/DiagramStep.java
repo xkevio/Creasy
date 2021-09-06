@@ -1,8 +1,5 @@
 package ovgu.creasy.origami;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 /**
  * A single step that transforms one crease pattern into a slightly
  * different one using some folding technique, equivalent to an edge in the
