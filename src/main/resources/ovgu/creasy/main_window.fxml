@@ -99,7 +99,7 @@
                      <children>
                         <VBox alignment="TOP_CENTER" prefHeight="700.0" prefWidth="206.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Text stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Possible steps">
+                              <Text fill="#9f9f9f" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Possible steps">
                                  <font>
                                     <Font name="Segoe UI" size="18.0" />
                                  </font>
@@ -118,7 +118,7 @@
                      <children>
                         <VBox alignment="TOP_CENTER" prefHeight="700.0" prefWidth="206.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Text stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="History">
+                              <Text fill="#9f9f9f" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="History">
                                  <font>
                                     <Font name="Segoe UI" size="18.0" />
                                  </font>
