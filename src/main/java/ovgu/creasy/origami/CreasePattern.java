@@ -261,7 +261,7 @@ public class CreasePattern {
      * @param scaleX scales the GraphicsContext in the x amount (default = 1)
      * @param scaleY scales the GraphicsContext in the y amount (default = 1)
      */
-    public void drawOnCanvas(ResizableCanvas canvas, double scaleX, double scaleY) {
+    public void drawOnCanvas(ResizableCanvas canvas, double scaleX, double scaleY, int cellSize) {
         canvas.setCpScaleX(scaleX);
         canvas.setCpScaleY(scaleY);
 
@@ -280,6 +280,11 @@ public class CreasePattern {
         graphicsContext.setLineWidth(2);
 
         drawCreasePattern(canvas, scaleX, scaleY, graphicsContext);
+        if (canvas.getId() != null && canvas.getId().equals("main")) canvas.drawGrid(cellSize);
+    }
+
+    public void drawOnCanvas(ResizableCanvas canvas, double scaleX, double scaleY) {
+        drawOnCanvas(canvas, scaleX, scaleY, 50);
     }
 
     public void drawOverCanvas(ResizableCanvas canvas, double scaleX, double scaleY) {
@@ -321,7 +326,11 @@ public class CreasePattern {
         Set<Crease> intersection = new HashSet<>(this.creases);
         intersection.removeAll(other.creases);
 
-        intersection.forEach(diff::addCrease);
+        intersection.forEach(crease -> {
+            if (crease.getType() != Crease.Type.EDGE) {
+                diff.addCrease(crease);
+            }
+        });
         return diff;
     }
 

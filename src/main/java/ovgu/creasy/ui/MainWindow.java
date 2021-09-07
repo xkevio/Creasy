@@ -35,6 +35,13 @@ public class MainWindow {
     private final FileChooser openFileChooser;
 
     @FXML
+    private MenuItem onGridIncrease;
+    @FXML
+    private MenuItem onGridDecrease;
+    @FXML
+    private MenuItem onCustomGridSize;
+
+    @FXML
     private ScrollPane canvasHolder;
     @FXML
     private ScrollPane logHolder;
@@ -78,8 +85,11 @@ public class MainWindow {
         mainCanvas = new ResizableCanvas(1000, 1000);
         mainCanvas.setId("main");
         mainCanvas.setManaged(false);
+
         mainCanvas.getGraphicsContext2D().setFill(Color.WHITE);
         mainCanvas.getGraphicsContext2D().fillRect(0, 0, 1000,1000);
+        mainCanvas.drawGrid();
+
         canvasHolder.setContent(mainCanvas);
 
         //mainCanvas.widthProperty().bind(canvasHolder.widthProperty());
@@ -87,17 +97,17 @@ public class MainWindow {
 
         mainCanvas.widthProperty().addListener((observableValue, number, t1) -> {
             if (cp != null) {
-                cp.drawOnCanvas(mainCanvas, 1, 1);
+                cp.drawOnCanvas(mainCanvas, 1, 1, 50);
             }
         });
 
         mainCanvas.heightProperty().addListener((observableValue, number, t1) -> {
             if (cp != null) {
-                cp.drawOnCanvas(mainCanvas, 1, 1);
+                cp.drawOnCanvas(mainCanvas, 1, 1, 50);
             }
         });
 
-        logText("Starting up... Welcome to Creasy 0.1.0!");
+        logText("Starting up... Welcome to Creasy v0.1.0!");
     }
 
     /**
@@ -169,6 +179,11 @@ public class MainWindow {
     public void onZoomOutMenuItem() {
         CreasePattern mainCP = mainCanvas.getCp();
         mainCP.drawOnCanvas(mainCanvas, 0.9 * mainCanvas.getCpScaleX(), 0.9 * mainCanvas.getCpScaleY());
+    }
+
+    @FXML
+    public void onGridIncreaseAction() {
+        // TODO
     }
 
     @FXML
@@ -277,7 +292,7 @@ public class MainWindow {
         for (int i = 0; i < ecp.possibleSteps().size(); i++) {
             DiagramStep step = ecp.possibleSteps().get(i);
             step.to.toCreasePattern().drawOnCanvas((ResizableCanvas) ((Pane) steps).getChildren().get(i),
-                    0.45, 0.45);
+                    0.45, 0.45, 0);
         }
     }
 
@@ -285,7 +300,7 @@ public class MainWindow {
         createCanvases(history, 1, CANVAS_WIDTH, CANVAS_HEIGHT);
         ((Pane) history).getChildren().forEach(c -> {
             if (((ResizableCanvas) c).getCp() == null) {
-                cp.drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
+                cp.drawOnCanvas((ResizableCanvas) c, 0.45, 0.45, 0);
             }
         });
     }
@@ -299,16 +314,21 @@ public class MainWindow {
                     graphicsContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
                     c.setCursor(Cursor.HAND);
 
-                    CreasePattern diff = mainCanvas.getCp().getDifference(((ResizableCanvas) c).getCp());
-                    diff.drawOverCanvas(mainCanvas, 1, 1);
+                    CreasePattern diff;
+                    if (c.getParent().equals(history)) {
+                        diff = ((ResizableCanvas) c).getCp().getDifference(mainCanvas.getCp());
+                    } else {
+                        diff = mainCanvas.getCp().getDifference(((ResizableCanvas) c).getCp());
+                    }
+                    diff.drawOverCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
                 });
 
                 c.setOnMouseExited(mouseEvent -> {
                     graphicsContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                    ((ResizableCanvas) c).getCp().drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
+                    ((ResizableCanvas) c).getCp().drawOnCanvas((ResizableCanvas) c, 0.45, 0.45, 0);
                     c.setCursor(Cursor.DEFAULT);
 
-                    mainCanvas.getCp().drawOnCanvas(mainCanvas, 1, 1);
+                    mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
                 });
 
                 c.setOnMouseClicked(mouseEvent -> {
@@ -356,7 +376,8 @@ public class MainWindow {
      * Useful for resetting state.
      */
     private void resetGUI() {
-        // mainCanvas.getGraphicsContext2D().clearRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
+        mainCanvas.getGraphicsContext2D().setFill(Color.WHITE);
+        mainCanvas.getGraphicsContext2D().fillRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
         ((Stage) mainCanvas.getScene().getWindow()).setTitle(Main.APPLICATION_TITLE);
 
         steps.getChildren().clear();
