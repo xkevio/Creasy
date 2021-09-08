@@ -8,7 +8,6 @@ import ovgu.creasy.ui.ResizableCanvas;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * A collection of creases that, when folded, create an origami Model.
@@ -319,7 +318,6 @@ public class CreasePattern {
         graphicsContext.translate(-canvas.getWidth() / 2, -canvas.getHeight() / 2);
     }
 
-    // TODO asymmetrical
     public CreasePattern getDifference(CreasePattern other) {
         CreasePattern diff = new CreasePattern();
 
@@ -335,11 +333,9 @@ public class CreasePattern {
     }
 
     public CreasePattern copy() {
-        CreasePattern cp = new CreasePattern();
-        for (Crease crease : creases) {
-            cp.addCrease(crease);
-        }
-        return cp;
+        CreasePattern copy = new CreasePattern();
+        creases.forEach(copy::addCrease);
+        return copy;
     }
 
     @Override
