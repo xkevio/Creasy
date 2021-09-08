@@ -54,7 +54,7 @@
             <Menu mnemonicParsing="false" text="Help">
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#onHelpCP" text="What are Crease Patterns?" />
-                  <MenuItem mnemonicParsing="false" accelerator="F1" onAction="#onHelpAbout" text="About..." />
+                  <MenuItem accelerator="F1" mnemonicParsing="false" onAction="#onHelpAbout" text="About..." />
               </items>
             </Menu>
          </menus>
@@ -78,19 +78,12 @@
                 <RowConstraints percentHeight="30.0" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <ScrollPane fx:id="logHolder" fitToHeight="true" fitToWidth="true" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
-                    <content>
-                      <AnchorPane>
-                           <children>
-                              <TextArea fx:id="log" editable="false" prefHeight="208.0" prefWidth="462.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <font>
-                                    <Font name="Inconsolata Regular" size="14.0" />
-                                 </font>
-                              </TextArea>
-                           </children></AnchorPane>
-                    </content>
-                  </ScrollPane>
                   <ScrollPane fx:id="canvasHolder" fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" hvalue="0.5" pannable="true" vbarPolicy="ALWAYS" vvalue="0.5" />
+                  <TextArea fx:id="log" editable="false" prefHeight="209.0" prefWidth="482.0" GridPane.rowIndex="1">
+                     <font>
+                        <Font name="Inconsolata Regular" size="14.0" />
+                     </font>
+                  </TextArea>
                </children>
             </GridPane>
             <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">

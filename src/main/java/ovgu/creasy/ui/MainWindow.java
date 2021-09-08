@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 import ovgu.creasy.Main;
 import ovgu.creasy.origami.*;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
+import ovgu.creasy.util.TextLogger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,8 +49,6 @@ public class MainWindow {
 
     @FXML
     private ScrollPane canvasHolder;
-    @FXML
-    private ScrollPane logHolder;
 
     private HostServices hostServices;
     private OrigamiModel model;
@@ -112,7 +111,7 @@ public class MainWindow {
             }
         });
 
-        logText("Starting up... Welcome to Creasy v0.1.0!");
+        TextLogger.logText("Starting up... Welcome to " + Main.APPLICATION_TITLE + " v0.1.0!", log);
     }
 
     /**
@@ -129,7 +128,7 @@ public class MainWindow {
             try {
                 resetGUI();
                 setupCreasePattern(new FileInputStream(file), filePath);
-                logText("Import " + filePath);
+                TextLogger.logText("Import " + filePath, log);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Error loading file " + filePath + "!");
@@ -203,7 +202,7 @@ public class MainWindow {
         resetGUI();
         InputStream is = Main.class.getResourceAsStream("example/bird.cp");
         setupCreasePattern(is, "example/bird.cp");
-        logText("Import example/bird.cp");
+        TextLogger.logText("Import example/bird.cp", log);
     }
 
     @FXML
@@ -211,7 +210,7 @@ public class MainWindow {
         resetGUI();
         InputStream is = Main.class.getResourceAsStream("example/penguin_hideo_komatsu.cp");
         setupCreasePattern(is, "example/penguin_hideo_komatsu.cp");
-        logText("Import example/penguin_hideo_komatsu.cp");
+        TextLogger.logText("Import example/penguin_hideo_komatsu.cp", log);
     }
 
     @FXML
@@ -219,7 +218,7 @@ public class MainWindow {
         resetGUI();
         InputStream is = Main.class.getResourceAsStream("example/crane.cp");
         setupCreasePattern(is, "example/crane.cp");
-        logText("Import example/crane.cp");
+        TextLogger.logText("Import example/crane.cp", log);
     }
     // -------------------------
 
@@ -342,7 +341,7 @@ public class MainWindow {
 
                         if (c.getParent().equals(steps)) {
                             drawHistory(currentStep, history);
-                            logText("Pick this step and add to history... " + ecp.possibleSteps().size() + " new option(s) were calculated");
+                            TextLogger.logText("Pick this step and add to history... " + ecp.possibleSteps().size() + " new option(s) were calculated", log);
                         }
 
                         steps.getChildren().clear();
@@ -397,11 +396,5 @@ public class MainWindow {
 
     public void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
-    }
-
-    public void logText(String event) {
-        String timeStamp = new SimpleDateFormat("[dd.MM / HH:mm:ss]: ").format(new Date());
-        log.appendText(timeStamp + event + '\n');
-        logHolder.setHvalue(0);
     }
 }
