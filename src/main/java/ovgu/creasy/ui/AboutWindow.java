@@ -1,33 +1,40 @@
 package ovgu.creasy.ui;
 
 import javafx.application.HostServices;
-import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
+import ovgu.creasy.Main;
+
+import java.util.Objects;
 
 public class AboutWindow {
 
-    @FXML
-    private ImageView GitHubLogo;
-    private HostServices hostServices;
+    // TODO: add more info text
+    public static void open(HostServices hostServices) {
+        Alert about = new Alert(Alert.AlertType.INFORMATION);
+        about.setTitle("About Creasy");
+        about.setHeaderText("Creasy v0.1.0");
 
-    public void setHostServices(HostServices hostServices) {
-        this.hostServices = hostServices;
-    }
+        Hyperlink gitHub = new Hyperlink("https://github.com/xkevio/Creasy");
+        gitHub.setOnAction(e -> hostServices.showDocument("https://github.com/xkevio/Creasy"));
 
-    @FXML
-    public void openGitHub() {
-        hostServices.showDocument("https://github.com/xkevio/Creasy");
-    }
+        about.getDialogPane().setContent(new TextFlow(
+                new Text("""
+                Creasy is a software that allows you to convert
+                crease patterns into simple step-by-step instructions.
+                
+                Find us here:\040"""),
+                gitHub));
 
-    @FXML
-    public void changeCursor(MouseEvent mouseEvent) {
-        if (mouseEvent.getEventType() == MouseEvent.MOUSE_ENTERED) {
-            GitHubLogo.setCursor(Cursor.HAND);
-        } else {
-            GitHubLogo.setCursor(Cursor.DEFAULT);
-        }
+        about.showAndWait();
     }
 }
 

@@ -53,8 +53,8 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
               <items>
-                <MenuItem mnemonicParsing="false" onAction="#onHelpCP" text="What are Crease Patterns" />
-                  <MenuItem mnemonicParsing="false" onAction="#onHelpAbout" text="About" />
+                <MenuItem mnemonicParsing="false" onAction="#onHelpCP" text="What are Crease Patterns?" />
+                  <MenuItem mnemonicParsing="false" accelerator="F1" onAction="#onHelpAbout" text="About..." />
               </items>
             </Menu>
          </menus>

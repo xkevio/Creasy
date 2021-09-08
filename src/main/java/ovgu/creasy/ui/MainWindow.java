@@ -9,10 +9,15 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ovgu.creasy.Main;
@@ -221,38 +226,19 @@ public class MainWindow {
     /**
      * Opens an "about" dialogue which displays information about Creasy
      * and its developers
-     * @throws IOException when the fxml file does not exist
      */
     @FXML
-    public void onHelpAbout() throws IOException {
-        Stage stage = new Stage();
-
-        FXMLLoader aboutWindow = new FXMLLoader(Objects.requireNonNull(Main.class.getResource("about.fxml")));
-        Scene initialScene = new Scene(aboutWindow.load());
-        stage.setResizable(false);
-
-        ((AboutWindow) aboutWindow.getController()).setHostServices(hostServices);
-
-        stage.setScene(initialScene);
-        stage.sizeToScene();
-        stage.setTitle("About Creasy");
-        stage.show();
+    public void onHelpAbout() {
+        AboutWindow.open(this.hostServices);
     }
 
+    /**
+     * Opens a help dialogue explaining what crease patterns are, what they
+     * are used for and explaining the different types of folds
+     */
     @FXML
-    public void onHelpCP() throws IOException {
-        Stage stage = new Stage();
-
-        FXMLLoader creasePatternWindow = new FXMLLoader(Objects.requireNonNull(Main.class.getResource("crease_patterns.fxml")));
-        Scene initialScene = new Scene(creasePatternWindow.load());
-        stage.setResizable(false);
-
-        ((CreasePatternHelpWindow) creasePatternWindow.getController()).setHostServices(hostServices);
-
-        stage.setScene(initialScene);
-        stage.sizeToScene();
-        stage.setTitle("What are Crease Patterns");
-        stage.show();
+    public void onHelpCP() {
+        CreasePatternHelpWindow.open();
     }
 
     /**
