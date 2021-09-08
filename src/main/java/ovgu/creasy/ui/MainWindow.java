@@ -65,7 +65,7 @@ public class MainWindow {
     @FXML
     private MenuItem resetMenuItem;
     @FXML
-    private MenuItem exportMenuItem;
+    private Menu exportMenu;
 
     @FXML
     private TextArea log;
@@ -270,7 +270,7 @@ public class MainWindow {
         zoomInMenuItem.setDisable(false);
         zoomOutMenuItem.setDisable(false);
         resetMenuItem.setDisable(false);
-        exportMenuItem.setDisable(false);
+        exportMenu.setDisable(false);
     }
 
     private void drawSteps(ExtendedCreasePattern ecp, Parent steps) {
@@ -372,7 +372,7 @@ public class MainWindow {
         zoomInMenuItem.setDisable(true);
         zoomOutMenuItem.setDisable(true);
         resetMenuItem.setDisable(true);
-        exportMenuItem.setDisable(true);
+        exportMenu.setDisable(true);
 
         cp = null;
     }
