@@ -41,10 +41,10 @@
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <Menu mnemonicParsing="false" text="Change grid size">
                     <items>
-                      <MenuItem fx:id="onGridIncrease" mnemonicParsing="false" onAction="#onGridIncreaseAction" text="Increase" />
-                        <MenuItem fx:id="onGridDecrease" mnemonicParsing="false" text="Decrease" />
+                      <MenuItem fx:id="onGridIncrease" mnemonicParsing="false" onAction="#onGridIncreaseAction" text="Increase" accelerator="COMMA"/>
+                        <MenuItem fx:id="onGridDecrease" mnemonicParsing="false" onAction="#onGridDecreaseAction" text="Decrease" accelerator="PERIOD"/>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="onCustomGridSize" mnemonicParsing="false" text="Custom" />
+                        <MenuItem fx:id="onCustomGridSize" mnemonicParsing="false" onAction="#onGridCustomAction" text="Custom" />
                     </items>
                   </Menu>
                </items>
@@ -97,7 +97,7 @@
                      <children>
                         <VBox alignment="TOP_CENTER" prefHeight="700.0" prefWidth="206.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Text fill="#9f9f9f" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="Possible steps">
+                              <Text fill="#9f9f9f" stroke="#9f9f9f" strokeType="OUTSIDE" strokeWidth="0.0" text="Possible steps">
                                  <font>
                                     <Font name="Segoe UI" size="18.0" />
                                  </font>
@@ -116,7 +116,7 @@
                      <children>
                         <VBox alignment="TOP_CENTER" prefHeight="700.0" prefWidth="206.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Text fill="#9f9f9f" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="History">
+                              <Text fill="#9f9f9f" stroke="#9f9f9f" strokeType="OUTSIDE" strokeWidth="0.0" text="History">
                                  <font>
                                     <Font name="Segoe UI" size="18.0" />
                                  </font>

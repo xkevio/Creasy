@@ -2,22 +2,17 @@ package ovgu.creasy.ui;
 
 import javafx.application.HostServices;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ovgu.creasy.Main;
@@ -27,11 +22,7 @@ import ovgu.creasy.util.TextLogger;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Objects;
 
 public class MainWindow {
 
@@ -184,6 +175,8 @@ public class MainWindow {
         }
     }
 
+    // -------------------------
+    // Handling different kinds of zoom
     @FXML
     public void onZoomInMenuItem() {
         CreasePattern mainCP = mainCanvas.getCp();
@@ -199,7 +192,67 @@ public class MainWindow {
     @FXML
     public void onGridIncreaseAction() {
         // TODO
+        mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
+                mainCanvas.getCpScaleY(), mainCanvas.getCurrentCellSize() + 2);
     }
+
+    @FXML
+    public void onGridDecreaseAction() {
+        // TODO
+        mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
+                mainCanvas.getCpScaleY(), mainCanvas.getCurrentCellSize() - 2);
+    }
+
+    @FXML
+    public void onGridCustomAction() {
+        Alert customSlider = new Alert(Alert.AlertType.CONFIRMATION);
+        customSlider.setTitle("Select a cell size");
+        customSlider.setHeaderText("Change grid cell size to custom size");
+
+        Slider slider = new Slider(0, 200, mainCanvas.getCurrentCellSize());
+        slider.setShowTickLabels(true);
+        slider.setShowTickMarks(true);
+
+        VBox wrapper = new VBox();
+        HBox labelAndTextField = new HBox();
+
+        Label label = new Label("New size: ");
+        TextField currentValue = new TextField(String.valueOf(mainCanvas.getCurrentCellSize()));
+        currentValue.setPrefColumnCount(5);
+
+        slider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            currentValue.setText(String.valueOf(newValue.intValue()));
+            if (mainCanvas.getCp() != null) {
+                mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY(), newValue.intValue());
+            } else {
+                mainCanvas.getGraphicsContext2D().fillRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
+                mainCanvas.drawGrid(newValue.intValue());
+            }
+        });
+
+        // currentValue.setOnAction(actionEvent -> slider.setValue(Double.parseDouble(currentValue.getText())));
+
+        labelAndTextField.getChildren().addAll(label, currentValue);
+        labelAndTextField.setAlignment(Pos.CENTER);
+        wrapper.getChildren().addAll(slider, labelAndTextField);
+
+        customSlider.getDialogPane().setContent(wrapper);
+
+        ButtonType apply = new ButtonType("Apply", ButtonBar.ButtonData.APPLY);
+        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        customSlider.getButtonTypes().setAll(apply, cancel);
+        var result = customSlider.showAndWait();
+
+        if (result.isPresent() && result.get() == apply) {
+            mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
+                    mainCanvas.getCpScaleY(), Integer.parseInt(currentValue.getText()));
+        } else {
+            mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
+                    mainCanvas.getCpScaleY(), 50);
+        }
+    }
+    // -------------------------
 
     @FXML
     public void onMenuResetAction() {
@@ -324,7 +377,8 @@ public class MainWindow {
                     ((ResizableCanvas) c).getCp().drawOnCanvas((ResizableCanvas) c, 0.45, 0.45, 0);
                     c.setCursor(Cursor.DEFAULT);
 
-                    mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
+                    mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
+                            mainCanvas.getCpScaleY(), mainCanvas.getCurrentCellSize());
                 });
 
                 c.setOnMouseClicked(mouseEvent -> {

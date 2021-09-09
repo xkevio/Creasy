@@ -1,7 +1,6 @@
 package ovgu.creasy.ui;
 
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -44,7 +43,6 @@ public class CreasePatternHelpWindow {
                           """));
 
         HBox wrapper = new HBox(new TextFlow(colorWords, colorTexts));
-        // wrapper.setAlignment(Pos.CENTER);
 
         VBox container = new VBox();
         container.getChildren().addAll(mainText, wrapper);

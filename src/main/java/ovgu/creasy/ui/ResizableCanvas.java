@@ -26,6 +26,8 @@ public class ResizableCanvas extends Canvas {
     }
 
     public void drawGrid(int cellSize) {
+        if (cellSize <= 0) return;
+
         this.currentCellSize = cellSize;
         GraphicsContext graphicsContext = this.getGraphicsContext2D();
 

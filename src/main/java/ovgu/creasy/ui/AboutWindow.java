@@ -1,19 +1,12 @@
 package ovgu.creasy.ui;
 
 import javafx.application.HostServices;
-import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import ovgu.creasy.Main;
-
-import java.util.Objects;
 
 public class AboutWindow {
 
@@ -23,11 +16,10 @@ public class AboutWindow {
         about.setTitle("About Creasy");
         about.setHeaderText("Creasy v0.1.0");
 
-        ImageView icon = new ImageView("ovgu/creasy/dickere_Linien_Logo.jpg");
+        ImageView icon = new ImageView(Main.APPLICATION_ICON);
         icon.setFitHeight(60);
         icon.setFitWidth(60);
         about.getDialogPane().setGraphic(icon);
-        about.show();
 
         Hyperlink gitHub = new Hyperlink("https://github.com/xkevio/Creasy");
         gitHub.setOnAction(e -> hostServices.showDocument("https://github.com/xkevio/Creasy"));
