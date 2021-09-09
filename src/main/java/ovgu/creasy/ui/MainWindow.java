@@ -193,14 +193,14 @@ public class MainWindow {
     public void onGridIncreaseAction() {
         // TODO
         mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
-                mainCanvas.getCpScaleY(), mainCanvas.getCurrentCellSize() + 2);
+                mainCanvas.getCpScaleY(), mainCanvas.getCurrentCellSize() * 2);
     }
 
     @FXML
     public void onGridDecreaseAction() {
         // TODO
         mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
-                mainCanvas.getCpScaleY(), mainCanvas.getCurrentCellSize() - 2);
+                mainCanvas.getCpScaleY(), mainCanvas.getCurrentCellSize() / 2);
     }
 
     @FXML

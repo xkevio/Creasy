@@ -41,8 +41,8 @@
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <Menu mnemonicParsing="false" text="Change grid size">
                     <items>
-                      <MenuItem fx:id="onGridIncrease" mnemonicParsing="false" onAction="#onGridIncreaseAction" text="Increase" accelerator="COMMA"/>
-                        <MenuItem fx:id="onGridDecrease" mnemonicParsing="false" onAction="#onGridDecreaseAction" text="Decrease" accelerator="PERIOD"/>
+                      <MenuItem fx:id="onGridIncrease" mnemonicParsing="false" onAction="#onGridIncreaseAction" text="Increase (x2)" accelerator="COMMA"/>
+                        <MenuItem fx:id="onGridDecrease" mnemonicParsing="false" onAction="#onGridDecreaseAction" text="Decrease (x0.5)" accelerator="PERIOD"/>
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="onCustomGridSize" mnemonicParsing="false" onAction="#onGridCustomAction" text="Custom" />
                     </items>
