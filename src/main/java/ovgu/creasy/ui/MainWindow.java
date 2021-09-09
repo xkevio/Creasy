@@ -145,6 +145,7 @@ public class MainWindow {
      */
     @FXML
     public void onMenuExportAction() {
+        File file = openFileChooser.showSaveDialog(mainCanvas.getScene().getWindow());
 
     }
 

@@ -23,6 +23,12 @@ public class AboutWindow {
         about.setTitle("About Creasy");
         about.setHeaderText("Creasy v0.1.0");
 
+        ImageView icon = new ImageView("ovgu/creasy/dickere_Linien_Logo.jpg");
+        icon.setFitHeight(60);
+        icon.setFitWidth(60);
+        about.getDialogPane().setGraphic(icon);
+        about.show();
+
         Hyperlink gitHub = new Hyperlink("https://github.com/xkevio/Creasy");
         gitHub.setOnAction(e -> hostServices.showDocument("https://github.com/xkevio/Creasy"));
 
@@ -35,6 +41,7 @@ public class AboutWindow {
                 gitHub));
 
         about.showAndWait();
+
     }
 }
 
