@@ -147,6 +147,16 @@ public class MainWindow {
     public void onMenuExportAction() {
         File file = openFileChooser.showSaveDialog(mainCanvas.getScene().getWindow());
 
+        if ( file != null ) {
+            try {
+
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                System.err.println("Error saving file "  + "!");
+            }
+        }
+
     }
 
     /**
