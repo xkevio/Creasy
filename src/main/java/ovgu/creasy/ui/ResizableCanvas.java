@@ -22,7 +22,7 @@ public class ResizableCanvas extends Canvas {
     }
 
     public void drawGrid() {
-        drawGrid(50);
+        drawGrid(currentCellSize);
     }
 
     public void drawGrid(int cellSize) {
@@ -30,6 +30,7 @@ public class ResizableCanvas extends Canvas {
 
         this.currentCellSize = cellSize;
         GraphicsContext graphicsContext = this.getGraphicsContext2D();
+        graphicsContext.fillRect(0, 0, getWidth(), getHeight());
 
         graphicsContext.setStroke(Color.GRAY);
         graphicsContext.setLineWidth(0.5);

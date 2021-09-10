@@ -263,30 +263,19 @@ public class CreasePattern {
      * @param scaleX scales the GraphicsContext in the x amount (default = 1)
      * @param scaleY scales the GraphicsContext in the y amount (default = 1)
      */
-    public void drawOnCanvas(ResizableCanvas canvas, double scaleX, double scaleY, int cellSize) {
+    public void drawOnCanvas(ResizableCanvas canvas, double scaleX, double scaleY) {
         canvas.setCpScaleX(scaleX);
         canvas.setCpScaleY(scaleY);
 
         canvas.setCp(this);
 
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-
-        if (canvas.getId() != null && canvas.getId().equals("main")) {
-            graphicsContext.setFill(Color.WHITE);
-            graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        } else {
-            graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        }
+        graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         graphicsContext.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
         graphicsContext.setLineWidth(2);
 
         drawCreasePattern(canvas, scaleX, scaleY, graphicsContext);
-        if (canvas.getId() != null && canvas.getId().equals("main")) canvas.drawGrid(cellSize);
-    }
-
-    public void drawOnCanvas(ResizableCanvas canvas, double scaleX, double scaleY) {
-        drawOnCanvas(canvas, scaleX, scaleY, 50);
     }
 
     public void drawOverCanvas(ResizableCanvas canvas, double scaleX, double scaleY) {

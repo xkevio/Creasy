@@ -4,11 +4,13 @@ import javafx.application.HostServices;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -32,13 +34,6 @@ public class MainWindow {
     private final FileChooser openFileChooser;
 
     @FXML
-    private MenuItem onGridIncrease;
-    @FXML
-    private MenuItem onGridDecrease;
-    @FXML
-    private MenuItem onCustomGridSize;
-
-    @FXML
     private ScrollPane canvasHolder;
 
     private HostServices hostServices;
@@ -46,6 +41,7 @@ public class MainWindow {
     private CreasePattern cp;
 
     public ResizableCanvas mainCanvas;
+    public ResizableCanvas gridCanvas;
 
     @FXML
     private MenuItem foldedModelMenuItem;
@@ -83,26 +79,39 @@ public class MainWindow {
         mainCanvas.setId("main");
         mainCanvas.setManaged(false);
 
-        mainCanvas.getGraphicsContext2D().setFill(Color.WHITE);
-        mainCanvas.getGraphicsContext2D().fillRect(0, 0, 1000,1000);
-        mainCanvas.drawGrid();
+        mainCanvas.getGraphicsContext2D().setFill(Color.TRANSPARENT);
+        mainCanvas.getGraphicsContext2D().clearRect(0, 0, 1000,1000);
 
-        canvasHolder.setContent(mainCanvas);
+        gridCanvas = new ResizableCanvas(1000, 1000);
+        gridCanvas.setManaged(false);
 
-        //mainCanvas.widthProperty().bind(canvasHolder.widthProperty());
-        //mainCanvas.heightProperty().bind(canvasHolder.heightProperty());
+        gridCanvas.getGraphicsContext2D().setFill(Color.WHITE);
+        gridCanvas.getGraphicsContext2D().fillRect(0, 0, 1000,1000);
+        gridCanvas.drawGrid();
 
-        mainCanvas.widthProperty().addListener((observableValue, number, t1) -> {
-            if (cp != null) {
-                cp.drawOnCanvas(mainCanvas, 1, 1, 50);
+        canvasHolder.setContent(new Group(gridCanvas, mainCanvas));
+
+        canvasHolder.setOnScroll(scrollEvent -> {
+            if (mainCanvas.getCp() != null) {
+                if (scrollEvent.getDeltaY() < 0) {
+                    mainCanvas.getCp().drawOnCanvas(mainCanvas, 0.9 * mainCanvas.getCpScaleX(), 0.9 * mainCanvas.getCpScaleY());
+                }  else {
+                    mainCanvas.getCp().drawOnCanvas(mainCanvas, 1.1 * mainCanvas.getCpScaleX(), 1.1 * mainCanvas.getCpScaleY());
+                }
             }
         });
 
-        mainCanvas.heightProperty().addListener((observableValue, number, t1) -> {
-            if (cp != null) {
-                cp.drawOnCanvas(mainCanvas, 1, 1, 50);
-            }
-        });
+//        mainCanvas.widthProperty().addListener((observableValue, number, t1) -> {
+//            if (cp != null) {
+//                cp.drawOnCanvas(mainCanvas, 1, 1);
+//            }
+//        });
+//
+//        mainCanvas.heightProperty().addListener((observableValue, number, t1) -> {
+//            if (cp != null) {
+//                cp.drawOnCanvas(mainCanvas, 1, 1);
+//            }
+//        });
 
         TextLogger.logText("Starting up ... Welcome to " + Main.APPLICATION_TITLE + " " + version + "!", log);
     }
@@ -199,69 +208,20 @@ public class MainWindow {
     @FXML
     public void onGridIncreaseAction() {
         // TODO
-        mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
-                mainCanvas.getCpScaleY(), mainCanvas.getCurrentCellSize() * 2);
+        gridCanvas.drawGrid(gridCanvas.getCurrentCellSize() * 2);
         TextLogger.logText("Increased Grid (x2)", log);
     }
 
     @FXML
     public void onGridDecreaseAction() {
         // TODO
-        mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
-                mainCanvas.getCpScaleY(), mainCanvas.getCurrentCellSize() / 2);
+        gridCanvas.drawGrid(gridCanvas.getCurrentCellSize() / 2);
         TextLogger.logText("Decreased Grid (x0.5)", log);
     }
 
     @FXML
     public void onGridCustomAction() {
-        Alert customSlider = new Alert(Alert.AlertType.CONFIRMATION);
-        customSlider.setTitle("Select a cell size");
-        customSlider.setHeaderText("Change grid cell size to custom size");
-
-        Slider slider = new Slider(0, 200, mainCanvas.getCurrentCellSize());
-        slider.setShowTickLabels(true);
-        slider.setShowTickMarks(true);
-
-        VBox wrapper = new VBox();
-        HBox labelAndTextField = new HBox();
-
-        Label label = new Label("New size: ");
-        TextField currentValue = new TextField(String.valueOf(mainCanvas.getCurrentCellSize()));
-        currentValue.setPrefColumnCount(5);
-
-        slider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            currentValue.setText(String.valueOf(newValue.intValue()));
-            if (mainCanvas.getCp() != null) {
-                mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY(), newValue.intValue());
-            } else {
-                mainCanvas.getGraphicsContext2D().fillRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
-                mainCanvas.drawGrid(newValue.intValue());
-            }
-        });
-
-        // currentValue.setOnAction(actionEvent -> slider.setValue(Double.parseDouble(currentValue.getText())));
-
-        labelAndTextField.getChildren().addAll(label, currentValue);
-        labelAndTextField.setAlignment(Pos.CENTER);
-        wrapper.getChildren().addAll(slider, labelAndTextField);
-
-        customSlider.getDialogPane().setContent(wrapper);
-
-        ButtonType apply = new ButtonType("Apply", ButtonBar.ButtonData.APPLY);
-        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-        customSlider.getButtonTypes().setAll(apply, cancel);
-        var result = customSlider.showAndWait();
-
-        if (result.isPresent() && result.get() == apply) {
-            mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
-                    mainCanvas.getCpScaleY(), Integer.parseInt(currentValue.getText()));
-            TextLogger.logText("New grid sell size: " + Integer.parseInt(currentValue.getText()), log);
-        } else {
-            mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
-                    mainCanvas.getCpScaleY(), 50);
-            TextLogger.logText("New grid cell size: 50", log);
-        }
+        CustomGridSizeWindow.open(gridCanvas);
     }
     // -------------------------
 
@@ -359,7 +319,7 @@ public class MainWindow {
         for (int i = 0; i < ecp.possibleSteps().size(); i++) {
             DiagramStep step = ecp.possibleSteps().get(i);
             step.to.toCreasePattern().drawOnCanvas((ResizableCanvas) ((Pane) steps).getChildren().get(i),
-                    0.45, 0.45, 0);
+                    0.45, 0.45);
         }
     }
 
@@ -367,7 +327,7 @@ public class MainWindow {
         createCanvases(history, 1, CANVAS_WIDTH, CANVAS_HEIGHT);
         ((Pane) history).getChildren().forEach(c -> {
             if (((ResizableCanvas) c).getCp() == null) {
-                cp.drawOnCanvas((ResizableCanvas) c, 0.45, 0.45, 0);
+                cp.drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
             }
         });
     }
@@ -392,11 +352,10 @@ public class MainWindow {
 
                 c.setOnMouseExited(mouseEvent -> {
                     graphicsContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                    ((ResizableCanvas) c).getCp().drawOnCanvas((ResizableCanvas) c, 0.45, 0.45, 0);
+                    ((ResizableCanvas) c).getCp().drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
                     c.setCursor(Cursor.DEFAULT);
 
-                    mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
-                            mainCanvas.getCpScaleY(), mainCanvas.getCurrentCellSize());
+                    mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
                 });
 
                 c.setOnMouseClicked(mouseEvent -> {
@@ -445,8 +404,8 @@ public class MainWindow {
      * Useful for resetting state.
      */
     private void resetGUI() {
-        mainCanvas.getGraphicsContext2D().setFill(Color.WHITE);
-        mainCanvas.getGraphicsContext2D().fillRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
+        mainCanvas.setCp(null);
+        mainCanvas.getGraphicsContext2D().clearRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
         ((Stage) mainCanvas.getScene().getWindow()).setTitle(Main.APPLICATION_TITLE);
 
         steps.getChildren().clear();
@@ -459,7 +418,6 @@ public class MainWindow {
         exportMenu.setDisable(true);
 
         cp = null;
-
     }
 
     /**
@@ -482,5 +440,4 @@ public class MainWindow {
     public void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
     }
-
 }
