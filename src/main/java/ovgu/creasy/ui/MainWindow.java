@@ -221,6 +221,7 @@ public class MainWindow {
     @FXML
     public void onGridCustomAction() {
         CustomGridSizeWindow.open(gridCanvas);
+        TextLogger.logText("New grid cell size: " + gridCanvas.getCurrentCellSize(), log);
     }
     // -------------------------
 
