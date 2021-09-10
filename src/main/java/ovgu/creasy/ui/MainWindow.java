@@ -60,10 +60,12 @@ public class MainWindow {
 
     @FXML
     private TextArea log;
+    private final String version = "v0.1.0";
     @FXML
     private VBox history;
     @FXML
     private VBox steps;
+    private String filepath;
 
     public MainWindow() {
         openFileChooser = new FileChooser();
@@ -102,7 +104,7 @@ public class MainWindow {
             }
         });
 
-        TextLogger.logText("Starting up... Welcome to " + Main.APPLICATION_TITLE + " v0.1.0!", log);
+        TextLogger.logText("Starting up ... Welcome to " + Main.APPLICATION_TITLE + " " + version + "!", log);
     }
 
     /**
@@ -118,14 +120,17 @@ public class MainWindow {
         if (file != null && file.exists()) {
             try {
                 resetGUI();
+                TextLogger.logText("Import: " + filePath, log);
                 setupCreasePattern(new FileInputStream(file), filePath);
-                TextLogger.logText("Import " + filePath, log);
+                TextLogger.logText("CreasePattern successfully loaded!", log);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Error loading file " + filePath + "!");
+                TextLogger.logText("Error loading file!", log);
             }
         } else {
             System.err.println("No file selected or path is invalid!");
+            TextLogger.logText("No file selected or path is invalid!", log);
         }
     }
 
@@ -144,7 +149,8 @@ public class MainWindow {
             }
             catch (Exception e){
                 e.printStackTrace();
-                System.err.println("Error saving file "  + "!");
+                System.err.println("Error saving file!");
+                TextLogger.logText("Error saving file!", log);
             }
         }
 
@@ -171,6 +177,7 @@ public class MainWindow {
             } else {
                 foldedModelWindow.showError();
                 System.err.println("Crease Pattern is invalid");
+                TextLogger.logText("Crease Pattern is invalid", log);
             }
         }
     }
@@ -194,6 +201,7 @@ public class MainWindow {
         // TODO
         mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
                 mainCanvas.getCpScaleY(), mainCanvas.getCurrentCellSize() * 2);
+        TextLogger.logText("Increased Grid (x2)", log);
     }
 
     @FXML
@@ -201,6 +209,7 @@ public class MainWindow {
         // TODO
         mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
                 mainCanvas.getCpScaleY(), mainCanvas.getCurrentCellSize() / 2);
+        TextLogger.logText("Decreased Grid (x0.5)", log);
     }
 
     @FXML
@@ -247,9 +256,11 @@ public class MainWindow {
         if (result.isPresent() && result.get() == apply) {
             mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
                     mainCanvas.getCpScaleY(), Integer.parseInt(currentValue.getText()));
+            TextLogger.logText("New grid sell size: " + Integer.parseInt(currentValue.getText()), log);
         } else {
             mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(),
                     mainCanvas.getCpScaleY(), 50);
+            TextLogger.logText("New grid cell size: 50", log);
         }
     }
     // -------------------------
@@ -257,32 +268,39 @@ public class MainWindow {
     @FXML
     public void onMenuResetAction() {
         resetGUI();
+        TextLogger.logText("Reset: UI cleared!", log);
     }
 
     // -------------------------
     // Loading example files
     @FXML
     public void onLoadExampleBird() {
+        filepath = "example/bird.cp";
         resetGUI();
-        InputStream is = Main.class.getResourceAsStream("example/bird.cp");
-        setupCreasePattern(is, "example/bird.cp");
-        TextLogger.logText("Import example/bird.cp", log);
+        InputStream is = Main.class.getResourceAsStream(filepath);
+        setupCreasePattern(is, filepath);
+        TextLogger.logText("Import: example/bird.cp", log);
+        TextLogger.logText("CreasePattern successfully loaded!", log);
     }
 
     @FXML
     public void onLoadExamplePenguin() {
+        filepath = "example/penguin_hideo_komatsu.cp";
         resetGUI();
-        InputStream is = Main.class.getResourceAsStream("example/penguin_hideo_komatsu.cp");
-        setupCreasePattern(is, "example/penguin_hideo_komatsu.cp");
-        TextLogger.logText("Import example/penguin_hideo_komatsu.cp", log);
+        InputStream is = Main.class.getResourceAsStream(filepath);
+        setupCreasePattern(is, filepath);
+        TextLogger.logText("Import: example/penguin_hideo_komatsu.cp", log);
+        TextLogger.logText("CreasePattern successfully loaded!", log);
     }
 
     @FXML
     public void onLoadExampleCrane() {
+        filepath = "example/crane.cp";
         resetGUI();
-        InputStream is = Main.class.getResourceAsStream("example/crane.cp");
-        setupCreasePattern(is, "example/crane.cp");
-        TextLogger.logText("Import example/crane.cp", log);
+        InputStream is = Main.class.getResourceAsStream(filepath);
+        setupCreasePattern(is, filepath);
+        TextLogger.logText("Import: example/crane.cp", log);
+        TextLogger.logText("CreasePattern successfully loaded!", log);
     }
     // -------------------------
 
@@ -386,6 +404,7 @@ public class MainWindow {
                         if (c.getParent().equals(history)) {
                             ContextMenu contextMenu = new ContextMenu();
                             MenuItem delete = new MenuItem("Delete");
+                            TextLogger.logText("1 item successfully deleted", log);
 
                             delete.setOnAction(actionEvent -> history.getChildren().remove(c));
                             contextMenu.getItems().add(delete);
@@ -440,6 +459,7 @@ public class MainWindow {
         exportMenu.setDisable(true);
 
         cp = null;
+
     }
 
     /**
@@ -462,4 +482,5 @@ public class MainWindow {
     public void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
     }
+
 }

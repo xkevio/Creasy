@@ -2,12 +2,14 @@ package ovgu.creasy.ui;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
+import ovgu.creasy.Main;
 
 public class CreasePatternHelpWindow {
 
@@ -15,6 +17,11 @@ public class CreasePatternHelpWindow {
         Alert alertCP = new Alert(Alert.AlertType.INFORMATION);
         alertCP.setTitle("What are Crease Patterns?");
         alertCP.setHeaderText(null);
+
+        ImageView icon = new ImageView(Main.APPLICATION_ICON);
+        icon.setFitHeight(60);
+        icon.setFitWidth(60);
+        alertCP.getDialogPane().setGraphic(icon);
 
         Text black = buildTextWithColor("Black \n", Color.BLACK);
         Text blue = buildTextWithColor("Blue \n", Color.BLUE);

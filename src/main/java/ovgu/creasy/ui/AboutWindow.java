@@ -10,11 +10,13 @@ import ovgu.creasy.Main;
 
 public class AboutWindow {
 
+    private static final String version = "v0.1.0";
+
     // TODO: add more info text
     public static void open(HostServices hostServices) {
         Alert about = new Alert(Alert.AlertType.INFORMATION);
         about.setTitle("About Creasy");
-        about.setHeaderText("Creasy v0.1.0");
+        about.setHeaderText("Creasy " + version);
 
         ImageView icon = new ImageView(Main.APPLICATION_ICON);
         icon.setFitHeight(60);

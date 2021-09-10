@@ -1,10 +1,12 @@
 package ovgu.creasy.origami;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.TextArea;
 import javafx.scene.paint.Color;
 import ovgu.creasy.geom.Line;
 import ovgu.creasy.geom.Point;
 import ovgu.creasy.ui.ResizableCanvas;
+import ovgu.creasy.util.TextLogger;
 
 import java.io.*;
 import java.util.*;
@@ -15,6 +17,7 @@ import java.util.*;
  * that are added
  */
 public class CreasePattern {
+
     private static final double EPS = 0.000001;
     /**
      * all creases in the Crease Pattern
