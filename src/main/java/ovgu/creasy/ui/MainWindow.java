@@ -10,6 +10,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -91,13 +92,14 @@ public class MainWindow {
 
         canvasHolder.setContent(new Group(gridCanvas, mainCanvas));
 
-        canvasHolder.setOnScroll(scrollEvent -> {
+        canvasHolder.addEventFilter(ScrollEvent.ANY, scrollEvent -> {
             if (mainCanvas.getCp() != null) {
                 if (scrollEvent.getDeltaY() < 0) {
                     mainCanvas.getCp().drawOnCanvas(mainCanvas, 0.9 * mainCanvas.getCpScaleX(), 0.9 * mainCanvas.getCpScaleY());
                 }  else {
                     mainCanvas.getCp().drawOnCanvas(mainCanvas, 1.1 * mainCanvas.getCpScaleX(), 1.1 * mainCanvas.getCpScaleY());
                 }
+                scrollEvent.consume();
             }
         });
 

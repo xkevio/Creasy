@@ -7,10 +7,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TextLogger {
+
     /**
-     * Class TextLogger provides possibilty to log program events and show them in a textarea in the UI
-     * @param event is a String which get displayed
-     * @param logObject ???
+     * Class TextLogger provides a function to log program events and show them in a TextArea
+     * @param event is the event string which get displayed
+     * @param logObject is the object to which the event is written to
      */
     public static void logText(String event, Node logObject) {
         String timeStamp = new SimpleDateFormat("[HH:mm:ss]: ").format(new Date());
