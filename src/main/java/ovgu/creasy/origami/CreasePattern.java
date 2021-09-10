@@ -1,12 +1,10 @@
 package ovgu.creasy.origami;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.TextArea;
 import javafx.scene.paint.Color;
 import ovgu.creasy.geom.Line;
 import ovgu.creasy.geom.Point;
 import ovgu.creasy.ui.ResizableCanvas;
-import ovgu.creasy.util.TextLogger;
 
 import java.io.*;
 import java.util.*;

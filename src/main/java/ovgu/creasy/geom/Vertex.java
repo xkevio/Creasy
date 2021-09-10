@@ -1,7 +1,5 @@
 package ovgu.creasy.geom;
 
-import java.util.Objects;
-
 /**
  * Type that stores position and vertex type
  */

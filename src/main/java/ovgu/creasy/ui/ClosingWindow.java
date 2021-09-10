@@ -1,13 +1,9 @@
 package ovgu.creasy.ui;
 
-import javafx.application.HostServices;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import ovgu.creasy.Main;
 
