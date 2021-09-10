@@ -29,4 +29,6 @@ hs_err_pid*
 target/
 *.txt
 
+*.iml
+
 *.exe
