@@ -1,52 +1,135 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane minHeight="480.0" minWidth="640.0" prefHeight="653.0" prefWidth="858.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ovgu.creasy.ui.MainWindow">
+<VBox prefHeight="727.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ovgu.creasy.ui.MainWindow">
    <children>
-      <AnchorPane prefHeight="625.0" prefWidth="805.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <ScrollPane layoutY="489.0" prefHeight="164.0" prefWidth="606.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="252.0" AnchorPane.topAnchor="489.0">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="130.0" prefWidth="591.0">
-                     <children>
-                        <HBox id="hbox" fx:id="hbox" layoutX="109.0" layoutY="15.0" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-                  </AnchorPane>
-              </content>
-            </ScrollPane>
-            <ScrollPane layoutX="605.0" layoutY="32.0" prefHeight="625.0" prefWidth="239.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="605.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0">
-              <content>
-                <AnchorPane maxHeight="1.7976931348623157E308">
-                     <children>
-                        <VBox id="vbox" fx:id="vbox" layoutY="-6.0" prefHeight="585.0" prefWidth="200.0" AnchorPane.bottomAnchor="191.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-                  </AnchorPane>
-              </content>
-            </ScrollPane>
-            <Canvas id="mainCanvas" fx:id="mainCanvas" height="400.0" layoutX="121.0" layoutY="56.0" width="400.0" AnchorPane.leftAnchor="121.0" AnchorPane.topAnchor="56.0" />
-         </children>
-      </AnchorPane>
-      <MenuBar layoutY="2.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="25.0" minWidth="640.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#onMenuImportAction" text="Import" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="View">
-            <items>
-              <MenuItem fx:id="foldedModelMenuItem" disable="true" mnemonicParsing="false" onAction="#onShowFoldedModelAction" text="Folded Model" />
-            </items>
-          </Menu>
-        </menus>
+      <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="25.0" minWidth="640.0">
+         <menus>
+            <Menu mnemonicParsing="false" text="File">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#onMenuImportAction" text="Import" />
+                  <Menu mnemonicParsing="false" fx:id="exportMenu" onAction="#onMenuExportAction" text="Export">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="PDF" />
+                        <MenuItem mnemonicParsing="false" text="SVG" />
+                    </items>
+                  </Menu>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="resetMenuItem" disable="true" mnemonicParsing="false" onAction="#onMenuResetAction" text="Reset" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="View">
+               <items>
+                  <MenuItem fx:id="foldedModelMenuItem" disable="true" mnemonicParsing="false" onAction="#onShowFoldedModelAction" text="Folded Model" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="zoomInMenuItem" accelerator="PLUS" disable="true" mnemonicParsing="false" onAction="#onZoomInMenuItem" text="Zoom In" />
+                  <MenuItem fx:id="zoomOutMenuItem" accelerator="MINUS" disable="true" mnemonicParsing="false" onAction="#onZoomOutMenuItem" text="Zoom Out" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <Menu mnemonicParsing="false" text="Change grid size">
+                    <items>
+                      <MenuItem fx:id="onGridIncrease" mnemonicParsing="false" onAction="#onGridIncreaseAction" text="Increase (x2)" accelerator="COMMA"/>
+                        <MenuItem fx:id="onGridDecrease" mnemonicParsing="false" onAction="#onGridDecreaseAction" text="Decrease (x0.5)" accelerator="PERIOD"/>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="onCustomGridSize" mnemonicParsing="false" onAction="#onGridCustomAction" text="Custom" />
+                    </items>
+                  </Menu>
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Examples">
+               <items>
+                   <MenuItem mnemonicParsing="false" onAction="#onLoadExampleBird" text="Bird" />
+                   <MenuItem mnemonicParsing="false" onAction="#onLoadExamplePenguin" text="Penguin" />
+                   <MenuItem mnemonicParsing="false" onAction="#onLoadExampleCrane" text="Crane" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#onHelpCP" text="What are Crease Patterns?" />
+                  <MenuItem accelerator="F1" mnemonicParsing="false" onAction="#onHelpAbout" text="About..." />
+              </items>
+            </Menu>
+         </menus>
       </MenuBar>
+      <GridPane fx:id="mainGrid" prefHeight="700.0" prefWidth="860.0" VBox.vgrow="ALWAYS">
+         <columnConstraints>
+            <ColumnConstraints minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
+            <ColumnConstraints percentWidth="70.0" />
+            <ColumnConstraints maxWidth="424.0" minWidth="10.0" percentWidth="30.0" prefWidth="253.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+         </rowConstraints>
+         <children>
+            <GridPane fx:id="canvasGrid" GridPane.columnIndex="1">
+              <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="70.0" vgrow="ALWAYS" />
+                <RowConstraints percentHeight="30.0" vgrow="ALWAYS" />
+              </rowConstraints>
+               <children>
+                  <ScrollPane fx:id="canvasHolder" fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" hvalue="0.5" pannable="true" vbarPolicy="ALWAYS" vvalue="0.5" />
+                  <TextArea fx:id="log" editable="false" prefHeight="209.0" prefWidth="482.0" GridPane.rowIndex="1">
+                     <font>
+                        <Font name="Inconsolata Regular" size="14.0" />
+                     </font>
+                  </TextArea>
+               </children>
+            </GridPane>
+            <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+              <content>
+                <AnchorPane>
+                     <children>
+                        <VBox alignment="TOP_CENTER" prefHeight="700.0" prefWidth="206.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Text fill="#9f9f9f" stroke="#9f9f9f" strokeType="OUTSIDE" strokeWidth="0.0" text="Possible steps">
+                                 <font>
+                                    <Font name="Segoe UI" size="18.0" />
+                                 </font>
+                              </Text>
+                              <Separator prefWidth="200.0" />
+                              <VBox fx:id="steps" alignment="CENTER" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </ScrollPane>
+            <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+              <content>
+                <AnchorPane>
+                     <children>
+                        <VBox alignment="TOP_CENTER" prefHeight="700.0" prefWidth="206.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Text fill="#9f9f9f" stroke="#9f9f9f" strokeType="OUTSIDE" strokeWidth="0.0" text="History">
+                                 <font>
+                                    <Font name="Segoe UI" size="18.0" />
+                                 </font>
+                              </Text>
+                              <Separator prefWidth="200.0" />
+                              <VBox fx:id="history" alignment="CENTER" prefHeight="0.0" prefWidth="0.0" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </ScrollPane>
+         </children>
+      </GridPane>
    </children>
-</AnchorPane>
+</VBox>

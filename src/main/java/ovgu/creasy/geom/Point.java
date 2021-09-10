@@ -30,8 +30,16 @@ public class Point {
         this.y = y;
     }
 
+    public Point add(Point other) {
+        return new Point(this.x + other.getX(), this.y + other.getY());
+    }
+
+    public Point multiply(Point other) {
+        return new Point(this.x * other.getX(), this.y * other.getY());
+    }
+
     public double distance(Point other) {
-        return Math.sqrt(Math.pow(other.y-y, 2) + Math.pow(other.x-x, 2));
+        return Math.sqrt(((other.x-x) * (other.x-x)) + ((other.y-y) * (other.y-y)));
     }
 
     /**
@@ -43,19 +51,26 @@ public class Point {
         double dirThisLine = Math.atan2(other.getY() - this.getY(), other.getX() - this.getX());
         double angle = dirAnchorYLine - dirThisLine;
         if (angle > Math.PI) {
-            angle -= 2*Math.PI;
+            angle -= 2 * Math.PI;
         } else if (angle < -Math.PI) {
-            angle += 2* Math.PI;
+            angle += 2 * Math.PI;
         }
         return angle;
     }
 
+    public double dot(Point other) {
+        return this.x * other.x + this.y * other.y;
+    }
+
     @Override
     public String toString() {
-        return "Point{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
+        return """
+               Point
+               {
+                   x: %f,
+                   y: %f
+               }
+               """.formatted(x, y);
     }
 
     @Override

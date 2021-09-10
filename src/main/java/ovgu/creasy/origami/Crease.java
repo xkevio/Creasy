@@ -51,10 +51,13 @@ public class Crease {
 
     @Override
     public String toString() {
-        return "Crease{" +
-                "line=" + line +
-                ", type=" + type +
-                '}';
+        return """
+               Crease
+               {
+               %s,
+                   type: %s
+               }
+               """.formatted(line.toString().indent(4), type);
     }
 
     @Override

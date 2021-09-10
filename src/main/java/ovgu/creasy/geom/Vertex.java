@@ -2,6 +2,9 @@ package ovgu.creasy.geom;
 
 import java.util.Objects;
 
+/**
+ * Type that stores position and vertex type
+ */
 public class Vertex {
     private Point point;
     private Type type;
@@ -11,7 +14,7 @@ public class Vertex {
 
         BORDER,
 
-        VIRTUAL;
+        VIRTUAL
     }
 
     /**
@@ -41,14 +44,14 @@ public class Vertex {
 
     @Override
     public String toString() {
-        return "Vertex{" +
-                "Point=" + point.getX() + point.getY() +
-                ", type=" + type +
-                '}';
+        return """
+               Vertex
+               {
+                   %s,
+                   type: %s
+               }
+               """.formatted(point, type);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(point, type);
-    }
+
 }

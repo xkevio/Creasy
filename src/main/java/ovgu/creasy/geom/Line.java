@@ -43,6 +43,10 @@ public class Line {
         this.end = end;
     }
 
+    public double getSlope() {
+        return (getEnd().getX() - getStart().getX())/(getEnd().getY() - getStart().getY());
+    }
+
     public Point getOppositePoint(Point startOrEnd) {
         if (startOrEnd.equals(this.start)) {
             return this.end;
@@ -50,6 +54,10 @@ public class Line {
             return this.start;
         }
         return null;
+    }
+
+    public double getClockwiseAngle() {
+        return getStart().clockwiseAngle(getEnd());
     }
 
     @Override
@@ -67,9 +75,13 @@ public class Line {
 
     @Override
     public String toString() {
-        return "Line{" +
-                "start=" + start +
-                ", end=" + end +
-                '}';
+        return """
+               Line
+               {
+                   start: %s,
+                   end: %s
+               }
+               """.formatted(start.toString().indent(4),
+                             end.toString().indent(4));
     }
 }
