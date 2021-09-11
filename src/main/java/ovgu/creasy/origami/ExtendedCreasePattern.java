@@ -4,8 +4,6 @@ import ovgu.creasy.geom.Point;
 import ovgu.creasy.geom.Vertex;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -133,21 +131,12 @@ public class ExtendedCreasePattern {
                 //.collect(Collectors.toList());
         List<List<ExtendedCrease>> viableCombinations = findViableCombinations(outgoingCreases);
         List<List<ExtendedCrease>> validCombinations = viableCombinations.stream().filter(combination -> {
-            Vertex p = combination.get(0).getEndVertex();
-            boolean refPoint = true;
-            boolean border = true;
             for (ExtendedCrease extendedCrease : combination) {
-                if (extendedCrease.getExtendedReflectionPath().getEnd() != p){
-                    refPoint = false;
-                }
-                if (extendedCrease.getExtendedReflectionPath().getEnd().getType() != Vertex.Type.BORDER) {
-                    border = false;
-                }
-                if (!border && !refPoint) {
-                    break;
+                if (extendedCrease.getEndVertex().getType() == Vertex.Type.INTERNAL){
+                    return false;
                 }
             }
-            return border || refPoint;
+            return true;
         }).collect(Collectors.toList());
         for (List<ExtendedCrease> validCombination : validCombinations) {
             paths.add(validCombination.stream().map(ExtendedCrease::getExtendedReflectionPath).collect(Collectors.toList()));
@@ -166,10 +155,7 @@ public class ExtendedCreasePattern {
             ExtendedCrease left = outgoingCreases.get((i-1+outgoingCreases.size())%outgoingCreases.size());
             ExtendedCrease right = outgoingCreases.get((i+1)%outgoingCreases.size());
             if (left.getType() == mainType.opposite()
-                    && right.getType() == mainType.opposite()
-                    && left.getExtendedReflectionPath().getStart() == left.getStartVertex()
-                    && right.getExtendedReflectionPath().getStart() == right.getStartVertex()
-                    && middle.getExtendedReflectionPath().getStart() == middle.getStartVertex()) {
+                    && right.getType() == mainType.opposite()) {
 
                 combinations.add(Arrays.asList(left, middle, right));
             }
@@ -181,21 +167,7 @@ public class ExtendedCreasePattern {
         List<ExtendedCrease> outgoing = this.connections.get(vertex);
         return  outgoing.stream()
                 .filter(crease -> crease.getType() != Crease.Type.EDGE)
-                .filter(
-                        crease -> crease.getExtendedReflectionPath().getEnd().getType() == Vertex.Type.BORDER
-                                && crease.getExtendedReflectionPath().getStart().getType() == Vertex.Type.BORDER
-                                || (crease.getExtendedReflectionPath().getStart() == crease.getExtendedReflectionPath().getEnd()
-                        ))
-                .map(ExtendedCrease::getExtendedReflectionPath).filter(distinctOrReverse()).collect(Collectors.toSet());
-
-    }
-
-    private Predicate<ExtendedReflectionPath> distinctOrReverse() {
-        Set<Object> seen = ConcurrentHashMap.newKeySet();
-        return p -> {
-            boolean b = seen.add(p);
-            seen.add(new ExtendedReflectionPath(p.getEnd(), p.getStart(), p.getCreases()));
-            return b;
-        };
+                .filter(ExtendedCrease::isComplete)
+                .map(ExtendedCrease::getExtendedReflectionPath).collect(Collectors.toSet());
     }
 }

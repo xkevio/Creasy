@@ -139,23 +139,22 @@ public class CreasePattern {
                 if (line1.getType() != line2.getType()) {
                     continue;
                 }
-                double slope1 = Math.abs(line1.getLine().getSlope());
-                double slope2 = Math.abs(line2.getLine().getSlope());
-                if (slope2 < 0) {
-                    slope2 = -slope2;
-                }
-                if (Math.abs(slope1-slope2) < 0.00001) {
+                HashSet<Point> points = new HashSet<>();
+                points.add(line1.getLine().getStart());
+                points.add(line1.getLine().getEnd());
+                points.add(line2.getLine().getStart());
+                points.add(line2.getLine().getEnd());
+                Object[] p = points.toArray();
+                Point p1 = (Point) p[0];
+                Point p2 = (Point) p[1];
+                Point p3 = (Point) p[2];
+                double area = 0.5*(p1.getX()*(p2.getY()-p3.getY())+p2.getX()*(p3.getY()-p1.getY())+p3.getX()*(p1.getY()-p2.getY()));
+                if (area < 0.000001) {
                     creasesToRemove.add(line1);
                     creasesToRemove.add(line2);
-                    Point p1, p2;
-                    HashSet<Point> points = new HashSet<>();
-                    points.add(line1.getLine().getStart());
-                    points.add(line1.getLine().getEnd());
-                    points.add(line2.getLine().getStart());
-                    points.add(line2.getLine().getEnd());
                     points.remove(point);
-                    Object[] p = points.toArray();
-                    Crease c = new Crease(new Line((Point)p[0], (Point)p[1]), line1.getType());
+                    Object[] pp = points.toArray();
+                    Crease c = new Crease(new Line((Point)pp[0], (Point)pp[1]), line1.getType());
                     creasesToAdd.add(c);
                 }
             }
@@ -315,9 +314,9 @@ public class CreasePattern {
         intersection.removeAll(other.creases);
 
         intersection.forEach(crease -> {
-            if (crease.getType() != Crease.Type.EDGE) {
+            //if (crease.getType() != Crease.Type.EDGE) {
                 diff.addCrease(crease);
-            }
+            //}
         });
         return diff;
     }

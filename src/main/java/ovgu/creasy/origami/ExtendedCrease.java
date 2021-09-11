@@ -40,6 +40,14 @@ public class ExtendedCrease {
         return extendedReflectionPath;
     }
 
+    public boolean isComplete() {
+        if (getExtendedReflectionPath().getStart().getType() == Vertex.Type.BORDER && getExtendedReflectionPath().getEnd().getType() == Vertex.Type.BORDER) {
+            return true;
+        }
+
+        return false;
+    }
+
     public Vertex getStartVertex() {
         return start;
     }

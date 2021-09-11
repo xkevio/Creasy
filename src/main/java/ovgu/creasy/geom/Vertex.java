@@ -5,6 +5,7 @@ package ovgu.creasy.geom;
  */
 public class Vertex {
     private Point point;
+    private Point positionAfterFolding;
     private Type type;
 
     public enum Type {
@@ -16,11 +17,12 @@ public class Vertex {
     }
 
     /**
-     * @param point is a point in the x-y plane representing the position of the vertex after the model is folded
+     * @param positionBeforeFolding is a point in the x-y plane representing the position of the vertex after the model is folded
      * @param type  is the type of the vertex
      */
-    public Vertex(Point point, Type type) {
-        this.point = point;
+    public Vertex(Point positionBeforeFolding, Point position, Type type) {
+        this.point = positionBeforeFolding;
+        this.positionAfterFolding = position;
         this.type = type;
     }
 
@@ -38,6 +40,10 @@ public class Vertex {
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    public Point getPositionAfterFolding() {
+        return positionAfterFolding;
     }
 
     @Override

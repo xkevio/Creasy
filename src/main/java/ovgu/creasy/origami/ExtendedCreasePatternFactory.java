@@ -1,15 +1,28 @@
 package ovgu.creasy.origami;
 
+import oripa.domain.cptool.LineAdder;
+import oripa.domain.creasepattern.CreasePatternFactory;
+import oripa.domain.creasepattern.CreasePatternInterface;
+import oripa.domain.fold.FoldedModel;
+import oripa.domain.fold.Folder;
+import oripa.domain.fold.halfedge.OrigamiModel;
+import oripa.domain.fold.halfedge.OrigamiModelFactory;
+import oripa.domain.fold.subface.FacesToCreasePatternConverter;
+import oripa.domain.fold.subface.ParentFacesCollector;
+import oripa.domain.fold.subface.SplitFacesToSubFacesConverter;
+import oripa.domain.fold.subface.SubFacesFactory;
 import ovgu.creasy.geom.Point;
 import ovgu.creasy.geom.Vertex;
+import ovgu.creasy.origami.oripa.OripaTypeConverter;
 
+import javax.vecmath.Vector2d;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class ExtendedCreasePatternFactory {
 
     public ExtendedCreasePattern createExtendedCreasePattern(CreasePattern cp) {
-        ReflectionGraphFactory reflGraph = new ReflectionGraphFactory(cp);
+        ReflectionGraphFactory reflGraphFactory = new ReflectionGraphFactory(cp);
         Point defaultPoint = new Point(0, 0);
 
         Set<ExtendedCrease> processedExtendedCreases = new HashSet<>();
@@ -30,11 +43,11 @@ public class ExtendedCreasePatternFactory {
         Map<Vertex, List<ExtendedCrease>> adjacencyLists = createAdjacencyLists(inactiveExtendedCreases);
 
         // set of all reflection graphs
-        Collection<ReflectionGraph> reflectionGraphs = reflGraph.getAllReflectionGraphs();
+        Collection<ReflectionGraph> reflectionGraphs = reflGraphFactory.getAllReflectionGraphs();
 
         for (ReflectionGraph reflectionGraph : reflectionGraphs) {
             // set of local maximum reflection paths in reflectionGraph
-            Collection<ReflectionPath> A = reflGraph.getLocalMaxima(reflectionGraph);
+            Collection<ReflectionPath> A = reflectionGraph.getLocalMaxima();
             if (A.isEmpty()) {
                 continue;
             }
@@ -67,8 +80,9 @@ public class ExtendedCreasePatternFactory {
             processedExtendedCreases.add(exCrease1);
             processedExtendedCreases.add(exCrease2);
 
-            if (vertex1.getPoint() == vertex2.getPoint() && exCrease1.getType() != exCrease2.getType()) {
-                Vertex newVertex = new Vertex(defaultPoint, Vertex.Type.VIRTUAL);
+            if (vertex1.getPositionAfterFolding().distance(vertex2.getPositionAfterFolding()) <= 0.0000001
+                    && exCrease1.getType() != exCrease2.getType()) {
+                Vertex newVertex = new Vertex(defaultPoint, defaultPoint, Vertex.Type.VIRTUAL);
                 exCrease1.setEndVertex(newVertex);
                 ExtendedCrease new_xC1 = new ExtendedCrease(newVertex, vertex1, exCrease1.getType(), true);
                 insertCreaseIntoAdjacencyList(adjacencyLists, new_xC1);
@@ -138,17 +152,29 @@ public class ExtendedCreasePatternFactory {
 
     private Map<Point, Vertex> copyVertices(CreasePattern cp) {
         HashMap<Point, Vertex> vertices = new HashMap<>();
-
-        cp.getPoints().forEach(point -> {
+        Folder folder = new Folder(
+                new SubFacesFactory(
+                        new FacesToCreasePatternConverter(
+                                new CreasePatternFactory(),
+                                new LineAdder()),
+                        new OrigamiModelFactory(),
+                        new SplitFacesToSubFacesConverter(),
+                        new ParentFacesCollector()));
+        CreasePatternInterface oripaCp = OripaTypeConverter.convertToOripaCp(cp);
+        OrigamiModel model = new OrigamiModelFactory().createOrigamiModel(oripaCp, oripaCp.getPaperSize());
+        FoldedModel foldedModel = folder.fold(model, false);
+        foldedModel.getOrigamiModel().getVertices().forEach(oriVertex ->  {
             Vertex.Type type;
-            if (cp.getAdjacentCreases(point).stream()
-                  .anyMatch(c -> c.getType() == Crease.Type.EDGE)
-            ) {
+            if (oriVertex.edgeStream().anyMatch(e -> e.isBoundary())) {
                 type = Vertex.Type.BORDER;
             } else {
                 type = Vertex.Type.INTERNAL;
             }
-            vertices.put(point, new Vertex(point, type));
+            Vector2d posbf = oriVertex.getPositionBeforeFolding();
+            Vector2d pos = oriVertex.getPosition();
+            Point pbf = new Point(posbf.x, posbf.y);
+            Point posPoint = new Point(pos.x, pos.y);
+            vertices.put(pbf, new Vertex(pbf, posPoint, type));
         });
 
         return vertices;

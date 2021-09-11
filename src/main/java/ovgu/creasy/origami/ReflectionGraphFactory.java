@@ -3,7 +3,6 @@ package ovgu.creasy.origami;
 import ovgu.creasy.geom.Point;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Creates Reflection graphs, Explained in chapter 3.1 of the paper (pages 18 - 20)
@@ -93,45 +92,6 @@ public class ReflectionGraphFactory {
             reflectionGraphs.add(graph);
         }
         return reflectionGraphs;
-    }
-
-    /**
-     *
-     * @param reflectionGraph a connected reflectionGraph, can be obtained using getAllSubgraphs
-     * @return A Collection of all locally maximal Reflection paths in the reflectionGraph (see page 29 for explanation of local maxima)
-     */
-    public Collection<ReflectionPath> getLocalMaxima(ReflectionGraph reflectionGraph) {
-        Set<Point> leafNodes = reflectionGraph.getLeafNodes();
-        Set<ReflectionPath> reflectionPaths = new HashSet<>();
-        for (Point leafNode : leafNodes) {
-            // because the point is a leaf node, there is only one adjacent crease in the reflectionGraph
-            Crease startingCrease = reflectionGraph.getAdjacentCreases(leafNode).get(0);
-            List<ReflectionPathBuilder> pathBuilders = new ArrayList<>();
-
-            pathBuilders.add(new ReflectionPathBuilder(startingCrease, leafNode));
-            while (pathBuilders.stream().anyMatch(path -> !path.isDone())) {
-                for (ReflectionPathBuilder pathBuilder : pathBuilders) {
-                    Crease lastCrease = pathBuilder.getLastCrease();
-                    pathBuilder.setCurrentPoint(lastCrease.getLine().getOppositePoint(pathBuilder.getCurrentPoint()));
-                    List<Crease> nextCreases = reflectionGraph.getAdjacentCreases(pathBuilder.getCurrentPoint()).stream()
-                            .filter(crease -> !pathBuilder.getCreases().contains(crease))
-                            .collect(Collectors.toList());
-                    if (nextCreases.size() == 0) {
-                        pathBuilder.setDone(true);
-                        continue;
-                    }
-                    ReflectionPathBuilder tmpPath = pathBuilder.copy();
-                    pathBuilder.addCrease(nextCreases.get(0));
-                    for (int j = 1; j < nextCreases.size(); j++) {
-                        ReflectionPathBuilder newPath = tmpPath.copy();
-                        newPath.addCrease(nextCreases.get(j));
-                    }
-                }
-            }
-            reflectionPaths.addAll(pathBuilders.stream().map(ReflectionPathBuilder::build).collect(Collectors.toList()));
-        }
-
-        return reflectionPaths;
     }
 
     /**
