@@ -309,6 +309,10 @@ public class CreasePattern {
     }
 
     public CreasePattern getDifference(CreasePattern other) {
+        if (getCreases().size() < other.getCreases().size()) {
+            return other.getDifference(this);
+        }
+
         CreasePattern diff = new CreasePattern();
 
         Set<Crease> intersection = new HashSet<>(this.creases);

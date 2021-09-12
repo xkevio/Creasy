@@ -30,7 +30,6 @@ public class Main extends Application {
         ((MainWindow) loader.getController()).setHostServices(getHostServices());
 
         Scene initialScene = new Scene(rootFXML);
-        // TODO insert Icon / Logo:
         stage.getIcons().add(APPLICATION_ICON);
 
         stage.setScene(initialScene);

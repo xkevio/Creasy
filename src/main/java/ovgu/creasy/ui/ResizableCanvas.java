@@ -7,6 +7,9 @@ import ovgu.creasy.origami.CreasePattern;
 
 public class ResizableCanvas extends Canvas {
 
+    public static final int CANVAS_WIDTH = 200;
+    public static final int CANVAS_HEIGHT = 200;
+
     private CreasePattern cp;
 
     private double cpScaleX;
@@ -42,6 +45,11 @@ public class ResizableCanvas extends Canvas {
         for (int i = 0; i < getHeight(); i += cellSize) {
             graphicsContext.strokeLine(0, i, getWidth(), i);
         }
+    }
+
+    public void markAsCurrentlySelected() {
+        getGraphicsContext2D().setFill(Color.color(0.2, 0.2, 0.2, 0.2));
+        getGraphicsContext2D().fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     }
 
     @Override

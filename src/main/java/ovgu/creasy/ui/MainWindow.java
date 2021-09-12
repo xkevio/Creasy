@@ -24,10 +24,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-public class MainWindow {
+import static ovgu.creasy.ui.ResizableCanvas.CANVAS_HEIGHT;
+import static ovgu.creasy.ui.ResizableCanvas.CANVAS_WIDTH;
 
-    private static final int CANVAS_WIDTH = 200;
-    private static final int CANVAS_HEIGHT = 200;
+public class MainWindow {
 
     private final FileChooser openFileChooser;
     private ResizableCanvas activeHistory;
@@ -361,12 +361,7 @@ public class MainWindow {
                     }
                     c.setCursor(Cursor.HAND);
 
-                    CreasePattern diff;
-                    if (c.getParent().equals(history)) {
-                        diff = ((ResizableCanvas) c).getCp().getDifference(mainCanvas.getCp());
-                    } else {
-                        diff = mainCanvas.getCp().getDifference(((ResizableCanvas) c).getCp());
-                    }
+                    CreasePattern diff = mainCanvas.getCp().getDifference(((ResizableCanvas) c).getCp());
                     diff.drawOverCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
                 });
 
@@ -385,9 +380,11 @@ public class MainWindow {
                         if (c.getParent().equals(history)) {
                             ContextMenu contextMenu = new ContextMenu();
                             MenuItem delete = new MenuItem("Delete");
-                            TextLogger.logText("1 item successfully deleted", log);
 
-                            delete.setOnAction(actionEvent -> history.getChildren().remove(c));
+                            delete.setOnAction(actionEvent -> {
+                                history.getChildren().remove(c);
+                                TextLogger.logText("1 item successfully deleted", log);
+                            });
                             contextMenu.getItems().add(delete);
 
                             c.setOnContextMenuRequested(contextMenuEvent -> {
@@ -406,6 +403,17 @@ public class MainWindow {
 
                         if (c.getParent().equals(steps)) {
                             drawHistory(currentStep, history);
+                            history.getChildren().stream().filter(node -> ((ResizableCanvas) node).getCp().equals(currentStep))
+                                    .forEach(node -> {
+                                        if (activeHistory != null) {
+                                            activeHistory.getGraphicsContext2D().clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                                            activeHistory.getCp().drawOnCanvas(activeHistory, 0.45, 0.45);
+                                        }
+
+                                        activeHistory = (ResizableCanvas) node;
+                                        activeHistory.markAsCurrentlySelected();
+                                    }
+                            );
                             TextLogger.logText("Pick this step and add to history... " + ecp.possibleSteps().size() + " new option(s) were calculated", log);
                         }
                         if (c.getParent().equals(history)) {
@@ -415,8 +423,7 @@ public class MainWindow {
                             }
 
                             activeHistory = (ResizableCanvas) c;
-                            graphicsContext.setFill(Color.color(0.2, 0.2, 0.2, 0.2));
-                            graphicsContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                            activeHistory.markAsCurrentlySelected();
                         }
 
                         steps.getChildren().clear();
