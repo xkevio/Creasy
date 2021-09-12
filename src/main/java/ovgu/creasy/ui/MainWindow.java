@@ -148,7 +148,7 @@ public class MainWindow {
      *
      */
     @FXML
-    public void onMenuExportAction() {
+    public void onMenuExportPDFAction() {
         File file = openFileChooser.showSaveDialog(mainCanvas.getScene().getWindow());
 
         if ( file != null ) {
@@ -162,6 +162,22 @@ public class MainWindow {
             }
         }
 
+    }
+
+    @FXML
+    public void onMenuExportSVGAction() {
+        File file = openFileChooser.showSaveDialog(mainCanvas.getScene().getWindow());
+
+        if ( file != null ) {
+            try {
+
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                System.err.println("Error saving file!");
+                TextLogger.logText("Error saving file!", log);
+            }
+        }
     }
 
     /**
