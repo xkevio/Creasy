@@ -30,6 +30,7 @@ public class MainWindow {
     private static final int CANVAS_HEIGHT = 200;
 
     private final FileChooser openFileChooser;
+    private ResizableCanvas activeHistory;
 
     @FXML
     private ScrollPane canvasHolder;
@@ -354,8 +355,10 @@ public class MainWindow {
             ((Pane) parent).getChildren().forEach(c -> {
                 GraphicsContext graphicsContext = ((Canvas) c).getGraphicsContext2D();
                 c.setOnMouseEntered(mouseEvent -> {
-                    graphicsContext.setFill(Color.color(0.2, 0.2, 0.2, 0.2));
-                    graphicsContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                    if (!c.equals(activeHistory)) {
+                        graphicsContext.setFill(Color.color(0.2, 0.2, 0.2, 0.2));
+                        graphicsContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                    }
                     c.setCursor(Cursor.HAND);
 
                     CreasePattern diff;
@@ -368,10 +371,12 @@ public class MainWindow {
                 });
 
                 c.setOnMouseExited(mouseEvent -> {
-                    graphicsContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                    ((ResizableCanvas) c).getCp().drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
-                    c.setCursor(Cursor.DEFAULT);
+                    if (!c.equals(activeHistory)) {
+                        graphicsContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                        ((ResizableCanvas) c).getCp().drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
+                    }
 
+                    c.setCursor(Cursor.DEFAULT);
                     mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
                 });
 
@@ -402,6 +407,16 @@ public class MainWindow {
                         if (c.getParent().equals(steps)) {
                             drawHistory(currentStep, history);
                             TextLogger.logText("Pick this step and add to history... " + ecp.possibleSteps().size() + " new option(s) were calculated", log);
+                        }
+                        if (c.getParent().equals(history)) {
+                            if (activeHistory != null) {
+                                activeHistory.getGraphicsContext2D().clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                                activeHistory.getCp().drawOnCanvas(activeHistory, 0.45, 0.45);
+                            }
+
+                            activeHistory = (ResizableCanvas) c;
+                            graphicsContext.setFill(Color.color(0.2, 0.2, 0.2, 0.2));
+                            graphicsContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
                         }
 
                         steps.getChildren().clear();
