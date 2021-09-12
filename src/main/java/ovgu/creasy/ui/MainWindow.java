@@ -29,7 +29,6 @@ import static ovgu.creasy.ui.ResizableCanvas.CANVAS_WIDTH;
 
 public class MainWindow {
 
-    private final FileChooser openFileChooser;
     private ResizableCanvas activeHistory;
 
     @FXML
@@ -62,11 +61,6 @@ public class MainWindow {
     private VBox steps;
     private String filepath;
 
-    public MainWindow() {
-        openFileChooser = new FileChooser();
-        openFileChooser.setTitle("Open .cp File");
-        openFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Crease Patterns", "*.cp"));
-    }
 
     /* This makes sure that the window scales correctly
        by binding the canvas to the window size and redrawing if
@@ -123,6 +117,10 @@ public class MainWindow {
      */
     @FXML
     public void onMenuImportAction() {
+        FileChooser openFileChooser = new FileChooser();
+        openFileChooser.setTitle("Open .cp File");
+        openFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Crease Patterns", "*.cp"));
+
         File file = openFileChooser.showOpenDialog(mainCanvas.getScene().getWindow());
         var filePath = file == null ? "" : file.getPath();
 
@@ -151,7 +149,7 @@ public class MainWindow {
     @FXML
     public void onMenuExportPDFAction() {
         FileChooser export = new FileChooser();
-        File file = openFileChooser.showSaveDialog(mainCanvas.getScene().getWindow());
+        File file = export.showSaveDialog(mainCanvas.getScene().getWindow());
 
         if ( file != null ) {
             try {
@@ -168,7 +166,8 @@ public class MainWindow {
 
     @FXML
     public void onMenuExportSVGAction() {
-        File file = openFileChooser.showSaveDialog(mainCanvas.getScene().getWindow());
+        FileChooser export = new FileChooser();
+        File file = export.showSaveDialog(mainCanvas.getScene().getWindow());
 
         if ( file != null ) {
             try {
