@@ -149,6 +149,7 @@ public class MainWindow {
      */
     @FXML
     public void onMenuExportPDFAction() {
+        FileChooser export = new FileChooser();
         File file = openFileChooser.showSaveDialog(mainCanvas.getScene().getWindow());
 
         if ( file != null ) {

@@ -19,8 +19,8 @@ public class CreasePatternHelpWindow {
         alertCP.setHeaderText(null);
 
         ImageView icon = new ImageView(Main.APPLICATION_ICON);
-        icon.setFitHeight(60);
-        icon.setFitWidth(60);
+        icon.setFitHeight(48);
+        icon.setFitWidth(48);
         alertCP.getDialogPane().setGraphic(icon);
 
         Text black = buildTextWithColor("Black \n", Color.BLACK);

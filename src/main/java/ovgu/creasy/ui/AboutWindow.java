@@ -19,8 +19,8 @@ public class AboutWindow {
         about.setHeaderText("Creasy " + version);
 
         ImageView icon = new ImageView(Main.APPLICATION_ICON);
-        icon.setFitHeight(60);
-        icon.setFitWidth(60);
+        icon.setFitHeight(48);
+        icon.setFitWidth(48);
         about.getDialogPane().setGraphic(icon);
 
         Hyperlink gitHub = new Hyperlink("https://github.com/xkevio/Creasy");
