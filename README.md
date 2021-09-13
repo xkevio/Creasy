@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="src/main/resources/ovgu/creasy/dickere_Linien_Logo.png" width="200" />
+  <img src="src/main/resources/ovgu/creasy/dickere_Linien_Logo.png" width="150" />
   <br>
   <h1 align="center">Creasy: Turn Crease Patterns into Instructions</h1>
 </p>
