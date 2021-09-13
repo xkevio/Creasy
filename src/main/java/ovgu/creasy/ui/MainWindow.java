@@ -22,6 +22,7 @@ import ovgu.creasy.util.TextLogger;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import static ovgu.creasy.ui.ResizableCanvas.CANVAS_HEIGHT;
@@ -188,7 +189,7 @@ public class MainWindow {
      * Opens an Alert in case of an error while folding the model.
      */
     @FXML
-    public void onShowFoldedModelAction() {
+    public void onShowFoldedModelAction() throws IOException {
         if (model == null) {
             Alert error = new Alert(Alert.AlertType.ERROR,
                     "There is no model to fold, perhaps it wasn't loaded correctly", ButtonType.OK);
