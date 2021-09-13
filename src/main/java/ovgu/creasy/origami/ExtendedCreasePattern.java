@@ -13,10 +13,9 @@ import java.util.stream.Collectors;
  */
 public class ExtendedCreasePattern {
     private Set<Vertex> vertices;
-    private Map<Point, Vertex> vertexMap;
     private Set<ExtendedCrease> creases;
-    private Set<ExtendedReflectionPath> reflectionPaths;
     private Map<Vertex, List<ExtendedCrease>> connections;
+    private List<DiagramStep> possibleSteps;
     private CreasePattern cp;
     /**
      * @param vertices is the set of extended vertices
@@ -26,17 +25,11 @@ public class ExtendedCreasePattern {
     public ExtendedCreasePattern(Set<Vertex> vertices,
                                  Set<ExtendedCrease> creases,
                                  Map<Vertex, List<ExtendedCrease>> connections,
-                                 CreasePattern cp,
-                                 Map<Point, Vertex> vertexMap) {
+                                 CreasePattern cp) {
         this.vertices = vertices;
         this.creases = creases;
         this.connections = connections;
         this.cp = cp;
-        this.reflectionPaths = new HashSet<>();
-        for (ExtendedCrease crease : creases) {
-            reflectionPaths.add(crease.getExtendedReflectionPath());
-        }
-        this.vertexMap = vertexMap;
     }
 
     public CreasePattern toCreasePattern() {
@@ -61,13 +54,20 @@ public class ExtendedCreasePattern {
     }
 
     public List<DiagramStep> possibleSteps() {
+        if (this.possibleSteps == null) {
+            this.possibleSteps = calculatePossibleSteps();
+        }
+        return possibleSteps;
+    }
+
+    private List<DiagramStep> calculatePossibleSteps() {
         List<DiagramStep> steps = new ArrayList<>();
         HashSet<List<ExtendedReflectionPath>> removableCreases = new HashSet<>();
+        System.out.println("finding simple folds");
         for (Vertex vertex : vertices) {
 
             removableCreases.addAll(findSimpleFolds(vertex).stream().map(Collections::singletonList)
                     .collect(Collectors.toList()));
-            //removableCreases.addAll(findReverseFolds(vertex));
         }
         List<CreasePattern> newcps = new ArrayList<>();
         for (List<ExtendedReflectionPath> removablePathList : removableCreases) {
@@ -77,24 +77,38 @@ public class ExtendedCreasePattern {
             newcps.add(newcp);
         }
 
-        SimplificationPattern reverseFold = new SimplificationPattern(
+        List<SimplificationPattern> patterns = new ArrayList<>();
+        SimplificationPattern insideReverseFold = new SimplificationPattern(
                 SimplificationPattern.VertexType.INTERNAL,
                 SimplificationPattern.VertexType.BORDER,
                 SimplificationPattern.VertexType.BORDER,
                 SimplificationPattern.VertexType.BORDER,
                 SimplificationPattern.VertexType.BORDER);
-        reverseFold.addPatternEdge(0, 1, Crease.Type.MOUNTAIN);
-        reverseFold.addPatternEdge(0, 2, Crease.Type.VALLEY);
-        reverseFold.addPatternEdge(0, 3, Crease.Type.MOUNTAIN);
-        reverseFold.addSimplifiedEdge(0,4, Crease.Type.MOUNTAIN);
+        insideReverseFold.addPatternEdge(0, 1, Crease.Type.MOUNTAIN);
+        insideReverseFold.addPatternEdge(0, 2, Crease.Type.VALLEY);
+        insideReverseFold.addPatternEdge(0, 3, Crease.Type.MOUNTAIN);
+        insideReverseFold.addSimplifiedEdge(0,4, Crease.Type.MOUNTAIN);
+        patterns.add(insideReverseFold);
+        SimplificationPattern outsideReverseFold = new SimplificationPattern(
+                SimplificationPattern.VertexType.INTERNAL,
+                SimplificationPattern.VertexType.BORDER,
+                SimplificationPattern.VertexType.BORDER,
+                SimplificationPattern.VertexType.BORDER,
+                SimplificationPattern.VertexType.BORDER);
+        outsideReverseFold.addPatternEdge(0, 1, Crease.Type.MOUNTAIN);
+        outsideReverseFold.addPatternEdge(0, 2, Crease.Type.MOUNTAIN);
+        outsideReverseFold.addPatternEdge(0, 3, Crease.Type.MOUNTAIN);
+        outsideReverseFold.addSimplifiedEdge(0,4, Crease.Type.VALLEY);
+        patterns.add(outsideReverseFold);
 
-        List<Map<Integer, Vertex>> matches = reverseFold.matches(this);
-        for (Map<Integer, Vertex> match : matches) {
-            newcps.add(reverseFold.simplify(this, match));
+        for (SimplificationPattern pattern : patterns) {
+            List<Map<Integer, Vertex>> matches = pattern.matches(this);
+            for (Map<Integer, Vertex> match : matches) {
+                newcps.add(pattern.simplify(this, match));
+            }
         }
-
         newcps.stream().distinct().forEach(cp -> {
-            ExtendedCreasePattern next = new ExtendedCreasePattern(null, new HashSet<>(), null, cp, null); //new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
+            ExtendedCreasePattern next = new ExtendedCreasePattern(null, new HashSet<>(), null, cp); //new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
             steps.add(new DiagramStep(this, next));
         });
         return steps;
@@ -138,47 +152,6 @@ public class ExtendedCreasePattern {
 
         // c_k.angle?
         return ((ExtendedCrease) creases.toArray()[index]).getClockwiseAngle() + (Math.PI - sum);
-    }
-
-    private HashSet<List<ExtendedReflectionPath>> findReverseFolds(Vertex vertex) {
-        List<ExtendedCrease> outgoingCreases = getAdjacencyLists().get(vertex);
-
-        HashSet<List<ExtendedReflectionPath>> paths = new HashSet<>();
-        //outgoingCreases = outgoingCreases.stream()
-                //.filter(crease -> crease.getExtendedReflectionPath().getStart().equals(vertex))
-                //.collect(Collectors.toList());
-        List<List<ExtendedCrease>> viableCombinations = findViableCombinations(outgoingCreases);
-        List<List<ExtendedCrease>> validCombinations = viableCombinations.stream().filter(combination -> {
-            for (ExtendedCrease extendedCrease : combination) {
-                if (extendedCrease.getEndVertex().getType() == Vertex.Type.INTERNAL){
-                    return false;
-                }
-            }
-            return true;
-        }).collect(Collectors.toList());
-        for (List<ExtendedCrease> validCombination : validCombinations) {
-            paths.add(validCombination.stream().map(ExtendedCrease::getExtendedReflectionPath).collect(Collectors.toList()));
-        }
-        return paths;
-    }
-
-    private List<List<ExtendedCrease>> findViableCombinations(List<ExtendedCrease> outgoingCreases) {
-        List<List<ExtendedCrease>> combinations = new ArrayList<>();
-        for (int i = 0; i < outgoingCreases.size(); i++) {
-            Crease.Type mainType = outgoingCreases.get(i).getType();
-            if (mainType == Crease.Type.EDGE) {
-                continue;
-            }
-            ExtendedCrease middle = outgoingCreases.get(i);
-            ExtendedCrease left = outgoingCreases.get((i-1+outgoingCreases.size())%outgoingCreases.size());
-            ExtendedCrease right = outgoingCreases.get((i+1)%outgoingCreases.size());
-            if (left.getType() == mainType.opposite()
-                    && right.getType() == mainType.opposite()) {
-
-                combinations.add(Arrays.asList(left, middle, right));
-            }
-        }
-        return combinations;
     }
 
     private Set<ExtendedReflectionPath> findSimpleFolds(Vertex vertex) {
