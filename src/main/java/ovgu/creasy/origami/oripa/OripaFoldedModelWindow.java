@@ -13,8 +13,6 @@ import oripa.domain.fold.subface.FacesToCreasePatternConverter;
 import oripa.domain.fold.subface.ParentFacesCollector;
 import oripa.domain.fold.subface.SplitFacesToSubFacesConverter;
 import oripa.domain.fold.subface.SubFacesFactory;
-import oripa.util.gui.ChildFrameManager;
-import oripa.view.foldability.FoldabilityCheckFrameFactory;
 import ovgu.creasy.origami.CreasePattern;
 import ovgu.creasy.origami.oripa.ui.EstimationResultLauncher;
 

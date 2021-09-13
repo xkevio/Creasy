@@ -5,6 +5,8 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -20,40 +22,53 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
          <children>
-            <HBox prefHeight="36.0" prefWidth="240.0">
-               <children>
-                  <ButtonBar prefHeight="40.0" prefWidth="200.0">
-                     <buttons>
-                        <Button mnemonicParsing="false" text="Prev" />
-                        <Button mnemonicParsing="false" text="Next" />
-                     </buttons>
-                  </ButtonBar>
-               </children>
-            </HBox>
-            <Label text="Folded Model [1/5]" />
-            <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
+            <Label fx:id="indexLabel" text="Folded Model [1/5]" />
+            <ButtonBar buttonOrder="U+L_HE+FBIX_NCYOA_R" prefHeight="40.0" prefWidth="200.0">
+               <buttons>
+                  <Button mnemonicParsing="false" onAction="#onPrevAction" text="◀ Prev" />
+                  <Button mnemonicParsing="false" onAction="#onNextAction" text="Next ▶" />
+               </buttons>
+            </ButtonBar>
+            <Separator prefWidth="200.0" />
+            <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                      <children>
-                        <CheckBox mnemonicParsing="false" text="Flip" />
-                        <CheckBox mnemonicParsing="false" text="Use Color" />
-                        <CheckBox mnemonicParsing="false" text="FillFace" />
+                        <CheckBox fx:id="flip" mnemonicParsing="false" onAction="#onFlipAction" text="Flip" />
+                        <CheckBox fx:id="useColor" mnemonicParsing="false" onAction="#onUseColorAction" selected="true" text="Use Color" />
+                        <CheckBox fx:id="fillFace" mnemonicParsing="false" onAction="#onFillFaceAction" selected="true" text="FillFace" />
                      </children>
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                      <children>
-                        <CheckBox mnemonicParsing="false" text="Shade" />
-                        <CheckBox mnemonicParsing="false" text="Draw Edge" />
+                        <CheckBox fx:id="shade" mnemonicParsing="false" onAction="#onShadeAction" text="Shade" />
+                        <CheckBox fx:id="drawEdge" mnemonicParsing="false" onAction="#onDrawEdgeAction" selected="true" text="Draw Edge" />
                      </children>
                   </VBox>
                </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
             </HBox>
-            <Label text="Left click: Drag  &#10;Right click: Rotate &#10;Mousewheel: Zoom" textAlignment="CENTER" />
+            <Label text="Left click: Drag  &#10;Right click: Rotate &#10;Scroll: Zoom">
+               <padding>
+                  <Insets bottom="10.0" />
+               </padding>
+            </Label>
+            <Separator prefWidth="200.0" />
+            <VBox VBox.vgrow="ALWAYS">
+               <children>
+                  <TextArea fx:id="oripaLog" editable="false" VBox.vgrow="ALWAYS" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </VBox>
          </children>
          <GridPane.margin>
-            <Insets top="50.0" />
+            <Insets top="10.0" />
          </GridPane.margin>
       </VBox>
    </children>

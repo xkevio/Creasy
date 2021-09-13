@@ -338,9 +338,7 @@ public class FoldedModelScreen extends Canvas {
 
         }
         long time1 = System.currentTimeMillis();
-
         System.out.println("render time = " + (time1 - time0) + "ms");
-
 
         renderImage = new WritableImage(BUFFERW, BUFFERH);
         renderImage.getPixelWriter().setPixels(0, 0, BUFFERW, BUFFERH, PixelFormat.getIntArgbInstance(), pbuf, 0, BUFFERW);
