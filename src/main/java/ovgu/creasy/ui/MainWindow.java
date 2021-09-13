@@ -4,8 +4,6 @@ import javafx.application.HostServices;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
-import javafx.scene.Parent;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
@@ -24,6 +22,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import static ovgu.creasy.ui.ResizableCanvas.CANVAS_HEIGHT;
 import static ovgu.creasy.ui.ResizableCanvas.CANVAS_WIDTH;
@@ -38,6 +38,9 @@ public class MainWindow {
     private HostServices hostServices;
     private OrigamiModel model;
     private CreasePattern cp;
+
+    private List<ResizableCanvas> historyCanvasList;
+    private List<ResizableCanvas> stepsCanvasList;
 
     public ResizableCanvas mainCanvas;
     public ResizableCanvas gridCanvas;
@@ -60,6 +63,7 @@ public class MainWindow {
     private VBox history;
     @FXML
     private VBox steps;
+
     private String filepath;
 
 
@@ -95,6 +99,9 @@ public class MainWindow {
                 scrollEvent.consume();
             }
         });
+
+        historyCanvasList = new ArrayList<>();
+        stepsCanvasList = new ArrayList<>();
 
         TextLogger.logText("Starting up ... Welcome to " + Main.APPLICATION_TITLE + " " + version + "!", log);
     }
@@ -142,21 +149,18 @@ public class MainWindow {
         export.getExtensionFilters().add(new FileChooser.ExtensionFilter("Adobe Acrobat Document", ".pdf"));
         File file = export.showSaveDialog(mainCanvas.getScene().getWindow());
 
-        if ( file != null ) {
+        if (file != null) {
             try {
 
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Error saving file!");
                 TextLogger.logText("Error saving file!", log);
             }
-        }
-        else{
+        } else {
             System.err.println("File download failed!");
             TextLogger.logText("Error saving file!", log);
         }
-
     }
 
     @FXML
@@ -164,11 +168,10 @@ public class MainWindow {
         FileChooser export = new FileChooser();
         File file = export.showSaveDialog(mainCanvas.getScene().getWindow());
 
-        if ( file != null ) {
+        if (file != null) {
             try {
 
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Error saving file!");
                 TextLogger.logText("Error saving file!", log);
@@ -312,12 +315,12 @@ public class MainWindow {
         System.out.println("size = " + ecp.possibleSteps().size());
 
         // should be called when the algorithm is executed, aka once the amount of steps is known
-        createCanvases(steps, ecp.possibleSteps().size(), CANVAS_WIDTH, CANVAS_HEIGHT);
+        createCanvases(steps, stepsCanvasList, ecp.possibleSteps().size());
 
         drawSteps(ecp, steps);
         drawHistory(cp, history);
 
-        setupMouseEvents(steps, history);
+        setupMouseEvents(stepsCanvasList, historyCanvasList);
 
         // after reading the file, if the file is valid:
         foldedModelMenuItem.setDisable(false);
@@ -327,27 +330,28 @@ public class MainWindow {
         exportMenu.setDisable(false);
     }
 
-    private void drawSteps(ExtendedCreasePattern ecp, Parent steps) {
+    private void drawSteps(ExtendedCreasePattern ecp, Pane steps) {
         for (int i = 0; i < ecp.possibleSteps().size(); i++) {
             DiagramStep step = ecp.possibleSteps().get(i);
-            step.to.toCreasePattern().drawOnCanvas((ResizableCanvas) ((Pane) steps).getChildren().get(i),
+            step.to.toCreasePattern().drawOnCanvas(stepsCanvasList.get(i),
                     0.45, 0.45);
         }
     }
 
-    private void drawHistory(CreasePattern cp, Parent history) {
-        createCanvases(history, 1, CANVAS_WIDTH, CANVAS_HEIGHT);
-        ((Pane) history).getChildren().forEach(c -> {
-            if (((ResizableCanvas) c).getCp() == null) {
-                cp.drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
+    private void drawHistory(CreasePattern cp, Pane history) {
+        createCanvases(history, historyCanvasList, 1);
+        historyCanvasList.forEach(c -> {
+            if (c.getCp() == null) {
+                cp.drawOnCanvas(c, 0.45, 0.45);
             }
         });
     }
 
-    private void setupMouseEvents(Parent... parents) {
-        for (Parent parent : parents) {
-            ((Pane) parent).getChildren().forEach(c -> {
-                GraphicsContext graphicsContext = ((Canvas) c).getGraphicsContext2D();
+    @SafeVarargs
+    private void setupMouseEvents(List<ResizableCanvas>... lists) {
+        for (var list : lists) {
+            list.forEach(c -> {
+                GraphicsContext graphicsContext = c.getGraphicsContext2D();
                 c.setOnMouseEntered(mouseEvent -> {
                     if (!c.equals(activeHistory)) {
                         graphicsContext.setFill(Color.color(0.2, 0.2, 0.2, 0.2));
@@ -355,14 +359,14 @@ public class MainWindow {
                     }
                     c.setCursor(Cursor.HAND);
 
-                    CreasePattern diff = mainCanvas.getCp().getDifference(((ResizableCanvas) c).getCp());
+                    CreasePattern diff = mainCanvas.getCp().getDifference(c.getCp());
                     diff.drawOverCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
                 });
 
                 c.setOnMouseExited(mouseEvent -> {
                     if (!c.equals(activeHistory)) {
                         graphicsContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                        ((ResizableCanvas) c).getCp().drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
+                        c.getCp().drawOnCanvas(c, 0.45, 0.45);
                     }
 
                     c.setCursor(Cursor.DEFAULT);
@@ -387,21 +391,21 @@ public class MainWindow {
                         }
                     } else {
                         var startCP = cp.copy();
-                        var currentStep = ((ResizableCanvas) c).getCp();
+                        var currentStep = c.getCp();
 
                         currentStep.drawOnCanvas(mainCanvas, 1, 1);
                         ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(currentStep);
 
                         if (c.getParent().equals(steps)) {
                             drawHistory(currentStep, history);
-                            history.getChildren().stream().filter(node -> ((ResizableCanvas) node).getCp().equals(currentStep))
+                            historyCanvasList.stream().filter(node -> node.getCp().equals(currentStep))
                                     .forEach(node -> {
                                         if (activeHistory != null) {
                                             activeHistory.getGraphicsContext2D().clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
                                             activeHistory.getCp().drawOnCanvas(activeHistory, 0.45, 0.45);
                                         }
 
-                                        activeHistory = (ResizableCanvas) node;
+                                        activeHistory = node;
                                         activeHistory.markAsCurrentlySelected();
                                     }
                             );
@@ -413,14 +417,15 @@ public class MainWindow {
                                 activeHistory.getCp().drawOnCanvas(activeHistory, 0.45, 0.45);
                             }
 
-                            activeHistory = (ResizableCanvas) c;
+                            activeHistory = c;
                             activeHistory.markAsCurrentlySelected();
                         }
 
                         steps.getChildren().clear();
+                        stepsCanvasList.clear();
 
-                        createCanvases(steps, ecp.possibleSteps().size(), CANVAS_WIDTH, CANVAS_HEIGHT);
-                        setupMouseEvents(steps, history);
+                        createCanvases(steps, stepsCanvasList, ecp.possibleSteps().size());
+                        setupMouseEvents(stepsCanvasList, historyCanvasList);
                         drawSteps(ecp, steps);
                     }
                 });
@@ -447,6 +452,9 @@ public class MainWindow {
         resetMenuItem.setDisable(true);
         exportMenu.setDisable(true);
 
+        stepsCanvasList.clear();
+        historyCanvasList.clear();
+
         cp = null;
     }
 
@@ -454,14 +462,16 @@ public class MainWindow {
      * Creates new canvases in the sidebar when necessary to show
      * the steps needed
      *
-     * @param parent the VBox or HBox in which to add the Canvases to
+     * @param pane the VBox or HBox in which to add the Canvases to
+     * @param list the list to add the Canvases to
      * @param amount the amount of Canvases needed
-     * @param width  width of the Canvas
-     * @param height height of the Canvas
      */
-    private void createCanvases(Parent parent, int amount, int width, int height) {
+    private void createCanvases(Pane pane, List<ResizableCanvas> list, int amount) {
         for (int i = 0; i < amount; ++i) {
-            ((Pane) parent).getChildren().add(new ResizableCanvas(width, height));
+            ResizableCanvas canvas = new ResizableCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+            pane.getChildren().add(canvas);
+            pane.getChildren().add(new Separator());
+            list.add(canvas);
         }
     }
 

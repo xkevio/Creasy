@@ -94,8 +94,4 @@ public class ResizableCanvas extends Canvas {
     public int getCurrentCellSize() {
         return currentCellSize;
     }
-
-    public void setCurrentCellSize(int currentCellSize) {
-        this.currentCellSize = currentCellSize;
-    }
 }
