@@ -16,6 +16,9 @@ public class ReflectionGraphFactory {
         this.cp = cp;
         this.reflectionCreases = new HashMap<>();
         for (Point point : cp.getPoints()) {
+            if (cp.getAdjacentCreases(point).stream().anyMatch(crease -> crease.getType() == Crease.Type.EDGE)) {
+                continue;
+            }
             findReflectionCreases(cp.getAdjacentCreases(point), point);
         }
     }
@@ -74,20 +77,27 @@ public class ReflectionGraphFactory {
             }
             ReflectionGraph graph = new ReflectionGraph(cp);
             graph.addCrease(crease);
-            Set<Crease> newCreases = new HashSet<>();
+            List<Collection<Crease>> newCreases = new ArrayList<>();
             do {
                 newCreases.clear();
+                List<Crease> originalCreases = new ArrayList<>();
                 for (Crease connectedCrease : graph.getCreases()) {
                     if (done.contains(connectedCrease)) {
                         continue;
                     }
                     done.add(connectedCrease);
-                    newCreases.addAll(getReflectionCreases(connectedCrease));
+                    var refCreases = getReflectionCreases(connectedCrease);
+                    newCreases.add(refCreases);
+                    originalCreases.add(connectedCrease);
+
                 }
                 if (newCreases.isEmpty()) {
                     break;
                 }
-                graph.addAllCreases(newCreases);
+                for (int i = 0; i < newCreases.size(); i++) {
+                    Collection<Crease> newCrease = newCreases.get(i);
+                    graph.addAllCreases(newCrease, originalCreases.get(i));
+                }
             } while (!newCreases.isEmpty());
             reflectionGraphs.add(graph);
         }

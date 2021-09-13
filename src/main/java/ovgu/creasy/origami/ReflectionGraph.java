@@ -1,5 +1,6 @@
 package ovgu.creasy.origami;
 
+import javafx.util.Pair;
 import ovgu.creasy.geom.Point;
 
 import java.util.*;
@@ -15,10 +16,12 @@ public class ReflectionGraph {
 
     private final Set<Crease> creases;
     private final Set<Point> points;
+    private final Set<Pair<Crease, Crease>> creasePairs;
 
     public ReflectionGraph(CreasePattern cp) {
         this.cp = cp;
         this.creases = new HashSet<>();
+        this.creasePairs = new HashSet<>();
         this.points = new HashSet<>();
     }
 
@@ -41,15 +44,21 @@ public class ReflectionGraph {
         points.add(crease.getLine().getStart());
     }
 
+    public void addCreasePair(Pair<Crease, Crease> pair) {
+        this.creasePairs.add(pair);
+        this.creasePairs.add(new Pair<>(pair.getKey(), pair.getValue()));
+    }
+
     public boolean isLeafNode(Point p) {
         List<Crease> adjacentCreases = cp.getAdjacentCreases(p);
         long adjacentLinesInReflectionGraph = adjacentCreases.stream().filter(getCreases()::contains).count();
         return adjacentLinesInReflectionGraph == 1;
     }
 
-    public void addAllCreases(Collection<Crease> creases) {
+    public void addAllCreases(Collection<Crease> creases, Crease originateFrom) {
         for (Crease crease : creases) {
             addCrease(crease);
+            addCreasePair(new Pair<>(originateFrom, crease));
         }
     }
 
@@ -82,6 +91,7 @@ public class ReflectionGraph {
                     pathBuilder.setCurrentPoint(lastCrease.getLine().getOppositePoint(pathBuilder.getCurrentPoint()));
                     List<Crease> nextCreases = getAdjacentCreases(pathBuilder.getCurrentPoint()).stream()
                             .filter(crease -> !pathBuilder.getCreases().contains(crease))
+                            .filter(crease -> creasePairs.contains(new Pair<>(crease, lastCrease)))
                             .collect(Collectors.toList());
                     if (nextCreases.size() == 0) {
                         pathBuilder.setDone(true);
