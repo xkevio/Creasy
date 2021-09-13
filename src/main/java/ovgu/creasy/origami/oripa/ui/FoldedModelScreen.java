@@ -1,6 +1,7 @@
 package ovgu.creasy.origami.oripa.ui;
 
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelFormat;
@@ -17,6 +18,7 @@ import oripa.domain.fold.halfedge.TriangleVertex;
 import oripa.domain.fold.origeom.OverlapRelationValues;
 import oripa.geom.RectangleDomain;
 import ovgu.creasy.geom.Point;
+import ovgu.creasy.util.TextLogger;
 
 import javax.vecmath.Vector2d;
 import java.util.List;
@@ -61,11 +63,12 @@ public class FoldedModelScreen extends Canvas {
     double transX;
     double transY;
     private Point preMousePoint;
-    private final Affine affineTransform;
 
     private OrigamiModel origamiModel = null;
     private OverlapRelationList overlapRelationList = null;
     private RectangleDomain domain;
+
+    private Node logger;
 
     public FoldedModelScreen() {
         BUFFERW = 600;
@@ -93,7 +96,6 @@ public class FoldedModelScreen extends Canvas {
         drawOrigami();
         rotateAngle = 0;
         scale = 1.0;
-        affineTransform = new Affine();
         updateAffineTransform();
 
         this.setOnMousePressed(mouseEvent -> preMousePoint = new Point(mouseEvent.getX(), mouseEvent.getY()));
@@ -124,6 +126,10 @@ public class FoldedModelScreen extends Canvas {
             paintComponent();
         });
 
+    }
+
+    public void setLogger(Node logger) {
+        this.logger = logger;
     }
 
     private void resetViewMatrix() {
@@ -339,6 +345,9 @@ public class FoldedModelScreen extends Canvas {
         }
         long time1 = System.currentTimeMillis();
         System.out.println("render time = " + (time1 - time0) + "ms");
+        if (logger != null) {
+            TextLogger.logText("(render time = " + (time1 - time0) + "ms)", logger);
+        }
 
         renderImage = new WritableImage(BUFFERW, BUFFERH);
         renderImage.getPixelWriter().setPixels(0, 0, BUFFERW, BUFFERH, PixelFormat.getIntArgbInstance(), pbuf, 0, BUFFERW);
@@ -503,9 +512,6 @@ public class FoldedModelScreen extends Canvas {
         }
     }
 
-    public void setScale(final double newScale) {
-        scale = newScale;
-    }
     public boolean isFaceOrderFlipped() {
         return faceOrderFlip;
     }

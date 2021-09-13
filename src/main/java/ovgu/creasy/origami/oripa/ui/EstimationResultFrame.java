@@ -12,9 +12,10 @@ import ovgu.creasy.util.TextLogger;
 public class EstimationResultFrame {
 
     private final FoldedModelScreen screen;
-    public TextArea oripaLog;
     private OverlapRelationList overlapRelationList = null;
 
+    @FXML
+    private TextArea oripaLog;
     @FXML
     private Label indexLabel;
     @FXML
@@ -38,10 +39,11 @@ public class EstimationResultFrame {
         grid.add(screen, 1, 0);
 
         screen.setModel(foldedModel);
+        screen.setLogger(oripaLog);
         this.overlapRelationList = foldedModel.getOverlapRelationList();
 
         updateIndexLabel();
-        TextLogger.logText("Generated all the possible models...", oripaLog);
+        TextLogger.logText("Generated all " + foldedModel.getFoldablePatternCount() + " possible models", oripaLog);
     }
 
     private void updateIndexLabel() {
@@ -60,7 +62,9 @@ public class EstimationResultFrame {
         screen.redrawOrigami();
         updateIndexLabel();
 
-        TextLogger.logText("Load previous model...", oripaLog);
+        TextLogger.logText("Model "
+                + (overlapRelationList.getCurrentORmatIndex() + 1) + "/"
+                + overlapRelationList.getFoldablePatternCount() + " loaded", oripaLog);
     }
 
     @FXML
@@ -69,41 +73,38 @@ public class EstimationResultFrame {
         screen.redrawOrigami();
         updateIndexLabel();
 
-        TextLogger.logText("Load next model...", oripaLog);
+        TextLogger.logText("Model "
+                + (overlapRelationList.getCurrentORmatIndex() + 1) + "/"
+                + overlapRelationList.getFoldablePatternCount() + " loaded", oripaLog);
     }
 
     @FXML
     private void onFlipAction() {
         screen.flipFaces(flip.isSelected());
-
-        TextLogger.logText("Select flip action", oripaLog);
+        TextLogger.logText("Flip model", oripaLog);
     }
 
     @FXML
     private void onUseColorAction() {
         screen.setUseColor(useColor.isSelected());
-
-        TextLogger.logText("Coloring the model...", oripaLog);
+        TextLogger.logText(useColor.isSelected() ? "Colors added to model" : "Colors removed from model", oripaLog);
     }
 
     @FXML
     private void onFillFaceAction() {
         screen.setFillFace(fillFace.isSelected());
-
-        TextLogger.logText("Filling the faces of the model...", oripaLog);
+        TextLogger.logText(fillFace.isSelected() ? "Faces of the model filled" : "Faces of the model cleared", oripaLog);
     }
 
     @FXML
     private void onShadeAction() {
         screen.shadeFaces(shade.isSelected());
-
-        TextLogger.logText("Activating shadows...", oripaLog);
+        TextLogger.logText(shade.isSelected() ? "Shadows added to model" : "Shadows removed from model", oripaLog);
     }
 
     @FXML
     private void onDrawEdgeAction() {
         screen.drawEdge(drawEdge.isSelected());
-
-        TextLogger.logText("Drawing the edges...", oripaLog);
+        TextLogger.logText(drawEdge.isSelected() ? "Edges added to model" : "Edges removed from model", oripaLog);
     }
 }

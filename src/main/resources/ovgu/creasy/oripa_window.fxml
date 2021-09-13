@@ -60,10 +60,10 @@
             <Separator prefWidth="200.0" />
             <VBox VBox.vgrow="ALWAYS">
                <children>
-                  <TextArea fx:id="oripaLog" editable="false" VBox.vgrow="ALWAYS" />
+                  <TextArea fx:id="oripaLog" editable="false" wrapText="true" VBox.vgrow="ALWAYS" />
                </children>
                <VBox.margin>
-                  <Insets bottom="10.0" />
+                  <Insets />
                </VBox.margin>
             </VBox>
          </children>

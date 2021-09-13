@@ -22,7 +22,7 @@ public class EstimationResultLauncher {
         stage.setResizable(false);
         stage.getIcons().add(Main.APPLICATION_ICON);
 
-        stage.setTitle("Folded Origami");
+        stage.setTitle("Folded Origami - " + Main.APPLICATION_TITLE);
         stage.setScene(scene);
         stage.sizeToScene();
 
