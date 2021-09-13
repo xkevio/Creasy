@@ -5,6 +5,7 @@ import oripa.domain.creasepattern.CreasePatternFactory;
 import oripa.domain.creasepattern.CreasePatternInterface;
 import oripa.domain.fold.FoldedModel;
 import oripa.domain.fold.Folder;
+import oripa.domain.fold.halfedge.OriEdge;
 import oripa.domain.fold.halfedge.OrigamiModel;
 import oripa.domain.fold.halfedge.OrigamiModelFactory;
 import oripa.domain.fold.subface.FacesToCreasePatternConverter;
@@ -99,7 +100,7 @@ public class ExtendedCreasePatternFactory {
                 exCrease2.setEndVertex(vertex1);
             }
         }
-        return new ExtendedCreasePattern(vertices, processedExtendedCreases, adjacencyLists, cp, vertexMap);
+        return new ExtendedCreasePattern(vertices, processedExtendedCreases, adjacencyLists, cp);
     }
 
     private void insertCreaseIntoAdjacencyList(Map<Vertex, List<ExtendedCrease>> adjacencyLists, ExtendedCrease c) {
@@ -165,7 +166,7 @@ public class ExtendedCreasePatternFactory {
         FoldedModel foldedModel = folder.fold(model, false);
         foldedModel.getOrigamiModel().getVertices().forEach(oriVertex ->  {
             Vertex.Type type;
-            if (oriVertex.edgeStream().anyMatch(e -> e.isBoundary())) {
+            if (oriVertex.edgeStream().anyMatch(OriEdge::isBoundary)) {
                 type = Vertex.Type.BORDER;
             } else {
                 type = Vertex.Type.INTERNAL;
