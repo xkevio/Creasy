@@ -96,18 +96,6 @@ public class MainWindow {
             }
         });
 
-//        mainCanvas.widthProperty().addListener((observableValue, number, t1) -> {
-//            if (cp != null) {
-//                cp.drawOnCanvas(mainCanvas, 1, 1);
-//            }
-//        });
-//
-//        mainCanvas.heightProperty().addListener((observableValue, number, t1) -> {
-//            if (cp != null) {
-//                cp.drawOnCanvas(mainCanvas, 1, 1);
-//            }
-//        });
-
         TextLogger.logText("Starting up ... Welcome to " + Main.APPLICATION_TITLE + " " + version + "!", log);
     }
 
@@ -401,9 +389,6 @@ public class MainWindow {
                         var startCP = cp.copy();
                         var currentStep = ((ResizableCanvas) c).getCp();
 
-                        System.out.println(history.getChildren().size());
-                        System.out.println(currentStep.equals(cp) ? "equals" : "not equals");
-
                         currentStep.drawOnCanvas(mainCanvas, 1, 1);
                         ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(currentStep);
 
@@ -475,9 +460,7 @@ public class MainWindow {
      * @param height height of the Canvas
      */
     private void createCanvases(Parent parent, int amount, int width, int height) {
-        System.out.println("amount = " + amount);
         for (int i = 0; i < amount; ++i) {
-            System.out.println("i = " + i);
             ((Pane) parent).getChildren().add(new ResizableCanvas(width, height));
         }
     }

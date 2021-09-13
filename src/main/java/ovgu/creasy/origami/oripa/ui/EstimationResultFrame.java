@@ -1,13 +1,17 @@
 package ovgu.creasy.origami.oripa.ui;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
 import oripa.domain.fold.FoldedModel;
 import oripa.domain.fold.OverlapRelationList;
 import ovgu.creasy.util.TextLogger;
+
+import java.io.File;
 
 public class EstimationResultFrame {
 
@@ -106,5 +110,15 @@ public class EstimationResultFrame {
     private void onDrawEdgeAction() {
         screen.drawEdge(drawEdge.isSelected());
         TextLogger.logText(drawEdge.isSelected() ? "Edges added to model" : "Edges removed from model", oripaLog);
+    }
+
+    @FXML
+    private void onExportOripaAction() {
+        FileChooser exportSVG = new FileChooser();
+        exportSVG.setTitle("Save as SVG");
+        exportSVG.getExtensionFilters().add(new FileChooser.ExtensionFilter("Vector format", "*.svg"));
+
+        File file = exportSVG.showSaveDialog(screen.getScene().getWindow());
+        //TODO...
     }
 }

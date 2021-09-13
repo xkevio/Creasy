@@ -31,7 +31,6 @@ import java.util.List;
  */
 public class FoldedModelScreen extends Canvas {
 
-    // private Canvas bufferImage;
     private GraphicsContext bufferGraphicsContext;
 
     private final int[] pbuf; // 32bit pixel buffer
@@ -147,7 +146,6 @@ public class FoldedModelScreen extends Canvas {
         clear();
         drawOrigami();
         paintComponent();
-        // repaint();
     }
 
     public void setUseColor(final boolean b) {
@@ -205,21 +203,15 @@ public class FoldedModelScreen extends Canvas {
     }
 
     public void paintComponent() {
-        // super.paintComponent(g);
-
         if (bufferGraphicsContext == null) {
             bufferGraphicsContext = this.getGraphicsContext2D();
             updateAffineTransform();
         }
-        bufferGraphicsContext.setImageSmoothing(true);
-        // bufferGraphicsContext.setTransform(new Affine());
+        bufferGraphicsContext.setImageSmoothing(false);
 
         // Clear image
-        // bufferGraphicsContext.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
         bufferGraphicsContext.setFill(Color.WHITE);
         bufferGraphicsContext.fillRect(0, 0, getWidth(), getHeight());
-
-        // bufferGraphicsContext.setTransform(affineTransform);
 
         if (renderImage != null) {
             bufferGraphicsContext.drawImage(renderImage, 0, 0);

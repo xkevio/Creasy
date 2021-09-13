@@ -52,11 +52,28 @@
                   <Insets top="10.0" />
                </VBox.margin>
             </HBox>
-            <Label text="Left click: Drag  &#10;Right click: Rotate &#10;Scroll: Zoom">
-               <padding>
-                  <Insets bottom="10.0" />
-               </padding>
-            </Label>
+            <HBox>
+               <children>
+                  <VBox HBox.hgrow="ALWAYS">
+                     <children>
+                        <ButtonBar>
+                           <buttons>
+                              <Button mnemonicParsing="false" onAction="#onExportOripaAction" text="Export" />
+                           </buttons>
+                        </ButtonBar>
+                     </children>
+                  </VBox>
+                  <VBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label text="Left click: Drag  &#10;Right click: Rotate &#10;Scroll: Zoom">
+                           <padding>
+                              <Insets bottom="10.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
             <Separator prefWidth="200.0" />
             <VBox VBox.vgrow="ALWAYS">
                <children>
