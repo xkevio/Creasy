@@ -17,6 +17,7 @@ public class ExtendedCreasePattern {
     private Set<ExtendedCrease> creases;
     private Set<ExtendedReflectionPath> reflectionPaths;
     private Map<Vertex, List<ExtendedCrease>> connections;
+    private List<DiagramStep> possibleSteps;
     private CreasePattern cp;
     /**
      * @param vertices is the set of extended vertices
@@ -61,8 +62,16 @@ public class ExtendedCreasePattern {
     }
 
     public List<DiagramStep> possibleSteps() {
+        if (this.possibleSteps == null) {
+            this.possibleSteps = calculatePossibleSteps();
+        }
+        return possibleSteps;
+    }
+
+    private List<DiagramStep> calculatePossibleSteps() {
         List<DiagramStep> steps = new ArrayList<>();
         HashSet<List<ExtendedReflectionPath>> removableCreases = new HashSet<>();
+        System.out.println("finding simple folds");
         for (Vertex vertex : vertices) {
 
             removableCreases.addAll(findSimpleFolds(vertex).stream().map(Collections::singletonList)
@@ -77,6 +86,7 @@ public class ExtendedCreasePattern {
             newcps.add(newcp);
         }
 
+        System.out.println("finding reverse folds");
         SimplificationPattern reverseFold = new SimplificationPattern(
                 SimplificationPattern.VertexType.INTERNAL,
                 SimplificationPattern.VertexType.BORDER,
@@ -92,7 +102,7 @@ public class ExtendedCreasePattern {
         for (Map<Integer, Vertex> match : matches) {
             newcps.add(reverseFold.simplify(this, match));
         }
-
+        System.out.println("making ecps");
         newcps.stream().distinct().forEach(cp -> {
             ExtendedCreasePattern next = new ExtendedCreasePattern(null, new HashSet<>(), null, cp, null); //new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
             steps.add(new DiagramStep(this, next));
