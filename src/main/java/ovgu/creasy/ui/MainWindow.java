@@ -22,14 +22,15 @@ import ovgu.creasy.util.TextLogger;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+
+import static ovgu.creasy.ui.ResizableCanvas.CANVAS_HEIGHT;
+import static ovgu.creasy.ui.ResizableCanvas.CANVAS_WIDTH;
 
 public class MainWindow {
 
-    private static final int CANVAS_WIDTH = 200;
-    private static final int CANVAS_HEIGHT = 200;
-
-    private final FileChooser openFileChooser;
+    private ResizableCanvas activeHistory;
 
     @FXML
     private ScrollPane canvasHolder;
@@ -61,11 +62,6 @@ public class MainWindow {
     private VBox steps;
     private String filepath;
 
-    public MainWindow() {
-        openFileChooser = new FileChooser();
-        openFileChooser.setTitle("Open .cp File");
-        openFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Crease Patterns", "*.cp"));
-    }
 
     /* This makes sure that the window scales correctly
        by binding the canvas to the window size and redrawing if
@@ -122,6 +118,10 @@ public class MainWindow {
      */
     @FXML
     public void onMenuImportAction() {
+        FileChooser openFileChooser = new FileChooser();
+        openFileChooser.setTitle("Open .cp File");
+        openFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Crease Patterns", "*.cp"));
+
         File file = openFileChooser.showOpenDialog(mainCanvas.getScene().getWindow());
         var filePath = file == null ? "" : file.getPath();
 
@@ -148,8 +148,9 @@ public class MainWindow {
      *
      */
     @FXML
-    public void onMenuExportAction() {
-        File file = openFileChooser.showSaveDialog(mainCanvas.getScene().getWindow());
+    public void onMenuExportPDFAction() {
+        FileChooser export = new FileChooser();
+        File file = export.showSaveDialog(mainCanvas.getScene().getWindow());
 
         if ( file != null ) {
             try {
@@ -164,6 +165,23 @@ public class MainWindow {
 
     }
 
+    @FXML
+    public void onMenuExportSVGAction() {
+        FileChooser export = new FileChooser();
+        File file = export.showSaveDialog(mainCanvas.getScene().getWindow());
+
+        if ( file != null ) {
+            try {
+
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                System.err.println("Error saving file!");
+                TextLogger.logText("Error saving file!", log);
+            }
+        }
+    }
+
     /**
      * Opens Oripa with the folded 3d model,
      * calls foldModel() method.
@@ -171,7 +189,7 @@ public class MainWindow {
      * Opens an Alert in case of an error while folding the model.
      */
     @FXML
-    public void onShowFoldedModelAction() {
+    public void onShowFoldedModelAction() throws IOException {
         if (model == null) {
             Alert error = new Alert(Alert.AlertType.ERROR,
                     "There is no model to fold, perhaps it wasn't loaded correctly", ButtonType.OK);
@@ -337,24 +355,23 @@ public class MainWindow {
             ((Pane) parent).getChildren().forEach(c -> {
                 GraphicsContext graphicsContext = ((Canvas) c).getGraphicsContext2D();
                 c.setOnMouseEntered(mouseEvent -> {
-                    graphicsContext.setFill(Color.color(0.2, 0.2, 0.2, 0.2));
-                    graphicsContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                    if (!c.equals(activeHistory)) {
+                        graphicsContext.setFill(Color.color(0.2, 0.2, 0.2, 0.2));
+                        graphicsContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                    }
                     c.setCursor(Cursor.HAND);
 
-                    CreasePattern diff;
-                    if (c.getParent().equals(history)) {
-                        diff = ((ResizableCanvas) c).getCp().getDifference(mainCanvas.getCp());
-                    } else {
-                        diff = mainCanvas.getCp().getDifference(((ResizableCanvas) c).getCp());
-                    }
+                    CreasePattern diff = mainCanvas.getCp().getDifference(((ResizableCanvas) c).getCp());
                     diff.drawOverCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
                 });
 
                 c.setOnMouseExited(mouseEvent -> {
-                    graphicsContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                    ((ResizableCanvas) c).getCp().drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
-                    c.setCursor(Cursor.DEFAULT);
+                    if (!c.equals(activeHistory)) {
+                        graphicsContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                        ((ResizableCanvas) c).getCp().drawOnCanvas((ResizableCanvas) c, 0.45, 0.45);
+                    }
 
+                    c.setCursor(Cursor.DEFAULT);
                     mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
                 });
 
@@ -363,9 +380,11 @@ public class MainWindow {
                         if (c.getParent().equals(history)) {
                             ContextMenu contextMenu = new ContextMenu();
                             MenuItem delete = new MenuItem("Delete");
-                            TextLogger.logText("1 item successfully deleted", log);
 
-                            delete.setOnAction(actionEvent -> history.getChildren().remove(c));
+                            delete.setOnAction(actionEvent -> {
+                                history.getChildren().remove(c);
+                                TextLogger.logText("1 item successfully deleted", log);
+                            });
                             contextMenu.getItems().add(delete);
 
                             c.setOnContextMenuRequested(contextMenuEvent -> {
@@ -384,7 +403,27 @@ public class MainWindow {
 
                         if (c.getParent().equals(steps)) {
                             drawHistory(currentStep, history);
+                            history.getChildren().stream().filter(node -> ((ResizableCanvas) node).getCp().equals(currentStep))
+                                    .forEach(node -> {
+                                        if (activeHistory != null) {
+                                            activeHistory.getGraphicsContext2D().clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                                            activeHistory.getCp().drawOnCanvas(activeHistory, 0.45, 0.45);
+                                        }
+
+                                        activeHistory = (ResizableCanvas) node;
+                                        activeHistory.markAsCurrentlySelected();
+                                    }
+                            );
                             TextLogger.logText("Pick this step and add to history... " + ecp.possibleSteps().size() + " new option(s) were calculated", log);
+                        }
+                        if (c.getParent().equals(history)) {
+                            if (activeHistory != null) {
+                                activeHistory.getGraphicsContext2D().clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                                activeHistory.getCp().drawOnCanvas(activeHistory, 0.45, 0.45);
+                            }
+
+                            activeHistory = (ResizableCanvas) c;
+                            activeHistory.markAsCurrentlySelected();
                         }
 
                         steps.getChildren().clear();

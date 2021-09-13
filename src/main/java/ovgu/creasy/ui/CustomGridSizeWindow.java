@@ -4,6 +4,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import ovgu.creasy.Main;
 
 public class CustomGridSizeWindow {
 
@@ -11,6 +13,7 @@ public class CustomGridSizeWindow {
         Alert customSlider = new Alert(Alert.AlertType.CONFIRMATION);
         customSlider.setTitle("Select a cell size");
         customSlider.setHeaderText("Change grid cell size to custom size");
+        ((Stage) customSlider.getDialogPane().getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
 
         int oldSize = canvas.getCurrentCellSize();
 

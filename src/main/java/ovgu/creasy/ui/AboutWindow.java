@@ -6,6 +6,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Stage;
 import ovgu.creasy.Main;
 
 public class AboutWindow {
@@ -17,10 +18,11 @@ public class AboutWindow {
         Alert about = new Alert(Alert.AlertType.INFORMATION);
         about.setTitle("About Creasy");
         about.setHeaderText("Creasy " + version);
+        ((Stage) about.getDialogPane().getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
 
         ImageView icon = new ImageView(Main.APPLICATION_ICON);
-        icon.setFitHeight(60);
-        icon.setFitWidth(60);
+        icon.setFitHeight(48);
+        icon.setFitWidth(48);
         about.getDialogPane().setGraphic(icon);
 
         Hyperlink gitHub = new Hyperlink("https://github.com/xkevio/Creasy");
