@@ -150,6 +150,8 @@ public class MainWindow {
     @FXML
     public void onMenuExportPDFAction() {
         FileChooser export = new FileChooser();
+        export.setTitle("Save as .pdf");
+        export.getExtensionFilters().add(new FileChooser.ExtensionFilter("Adobe Acrobat Document", ".pdf"));
         File file = export.showSaveDialog(mainCanvas.getScene().getWindow());
 
         if ( file != null ) {
@@ -161,6 +163,10 @@ public class MainWindow {
                 System.err.println("Error saving file!");
                 TextLogger.logText("Error saving file!", log);
             }
+        }
+        else{
+            System.err.println("File download failed!");
+            TextLogger.logText("Error saving file!", log);
         }
 
     }
