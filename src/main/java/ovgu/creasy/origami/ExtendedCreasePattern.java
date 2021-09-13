@@ -67,7 +67,7 @@ public class ExtendedCreasePattern {
 
             removableCreases.addAll(findSimpleFolds(vertex).stream().map(Collections::singletonList)
                     .collect(Collectors.toList()));
-            removableCreases.addAll(findReverseFolds(vertex));
+            //removableCreases.addAll(findReverseFolds(vertex));
         }
         List<CreasePattern> newcps = new ArrayList<>();
         for (List<ExtendedReflectionPath> removablePathList : removableCreases) {
@@ -76,8 +76,25 @@ public class ExtendedCreasePattern {
             newcp.removeLinearPoints();
             newcps.add(newcp);
         }
+
+        SimplificationPattern reverseFold = new SimplificationPattern(
+                SimplificationPattern.VertexType.INTERNAL,
+                SimplificationPattern.VertexType.BORDER,
+                SimplificationPattern.VertexType.BORDER,
+                SimplificationPattern.VertexType.BORDER,
+                SimplificationPattern.VertexType.BORDER);
+        reverseFold.addPatternEdge(0, 1, Crease.Type.MOUNTAIN);
+        reverseFold.addPatternEdge(0, 2, Crease.Type.VALLEY);
+        reverseFold.addPatternEdge(0, 3, Crease.Type.MOUNTAIN);
+        reverseFold.addSimplifiedEdge(0,4, Crease.Type.MOUNTAIN);
+
+        List<Map<Integer, Vertex>> matches = reverseFold.matches(this);
+        for (Map<Integer, Vertex> match : matches) {
+            newcps.add(reverseFold.simplify(this, match));
+        }
+
         newcps.stream().distinct().forEach(cp -> {
-            ExtendedCreasePattern next = new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
+            ExtendedCreasePattern next = new ExtendedCreasePattern(null, new HashSet<>(), null, cp, null); //new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
             steps.add(new DiagramStep(this, next));
         });
         return steps;
@@ -125,6 +142,7 @@ public class ExtendedCreasePattern {
 
     private HashSet<List<ExtendedReflectionPath>> findReverseFolds(Vertex vertex) {
         List<ExtendedCrease> outgoingCreases = getAdjacencyLists().get(vertex);
+
         HashSet<List<ExtendedReflectionPath>> paths = new HashSet<>();
         //outgoingCreases = outgoingCreases.stream()
                 //.filter(crease -> crease.getExtendedReflectionPath().getStart().equals(vertex))
