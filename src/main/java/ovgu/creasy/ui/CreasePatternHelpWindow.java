@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Stage;
 import ovgu.creasy.Main;
 
 public class CreasePatternHelpWindow {
@@ -17,6 +18,7 @@ public class CreasePatternHelpWindow {
         Alert alertCP = new Alert(Alert.AlertType.INFORMATION);
         alertCP.setTitle("What are Crease Patterns?");
         alertCP.setHeaderText(null);
+        ((Stage) alertCP.getDialogPane().getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
 
         ImageView icon = new ImageView(Main.APPLICATION_ICON);
         icon.setFitHeight(48);
