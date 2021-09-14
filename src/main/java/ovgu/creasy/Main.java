@@ -15,7 +15,7 @@ public class Main extends Application {
     public static final String APPLICATION_TITLE = "Creasy";
     public static final Image APPLICATION_ICON = new Image(
             Objects.requireNonNull(
-                    Main.class.getResourceAsStream("dickere_Linien_Logo.png")
+                    Main.class.getResourceAsStream("logo_farbe.png")
             )
     );
 
