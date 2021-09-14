@@ -1,6 +1,5 @@
 package ovgu.creasy.origami.oripa.ui;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -41,6 +40,7 @@ public class EstimationResultFrame {
 
     public void setModel(final FoldedModel foldedModel) {
         grid.add(screen, 1, 0);
+        grid.getChildren().get(1).toBack();
 
         screen.setModel(foldedModel);
         screen.setLogger(oripaLog);
