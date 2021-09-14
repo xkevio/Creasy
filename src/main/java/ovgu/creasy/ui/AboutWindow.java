@@ -26,8 +26,8 @@ public class AboutWindow {
         ((Stage) about.getDialogPane().getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
 
         ImageView icon = new ImageView(Main.APPLICATION_ICON);
-        icon.setFitHeight(50);
-        icon.setFitWidth(50);
+        icon.setFitHeight(48);
+        icon.setFitWidth(48);
         // about.getDialogPane().setGraphic(icon);
 
         Hyperlink gitHub = new Hyperlink("https://github.com/xkevio/Creasy");
