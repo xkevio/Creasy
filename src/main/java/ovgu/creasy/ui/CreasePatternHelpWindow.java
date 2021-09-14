@@ -20,10 +20,10 @@ public class CreasePatternHelpWindow {
         alertCP.setHeaderText(null);
         ((Stage) alertCP.getDialogPane().getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
 
-        ImageView icon = new ImageView(Main.APPLICATION_ICON);
-        icon.setFitHeight(48);
-        icon.setFitWidth(48);
-        alertCP.getDialogPane().setGraphic(icon);
+//        ImageView icon = new ImageView(Main.APPLICATION_ICON);
+//        icon.setFitHeight(48);
+//        icon.setFitWidth(48);
+//        alertCP.getDialogPane().setGraphic(icon);
 
         Text black = buildTextWithColor("Black \n", Color.BLACK);
         Text blue = buildTextWithColor("Blue \n", Color.BLUE);

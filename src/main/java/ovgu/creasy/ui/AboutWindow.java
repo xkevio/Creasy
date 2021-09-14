@@ -1,10 +1,13 @@
 package ovgu.creasy.ui;
 
 import javafx.application.HostServices;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -23,9 +26,9 @@ public class AboutWindow {
         ((Stage) about.getDialogPane().getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
 
         ImageView icon = new ImageView(Main.APPLICATION_ICON);
-        icon.setFitHeight(48);
-        icon.setFitWidth(48);
-        about.getDialogPane().setGraphic(icon);
+        icon.setFitHeight(50);
+        icon.setFitWidth(50);
+        // about.getDialogPane().setGraphic(icon);
 
         Hyperlink gitHub = new Hyperlink("https://github.com/xkevio/Creasy");
         gitHub.setOnAction(e -> hostServices.showDocument("https://github.com/xkevio/Creasy"));
@@ -51,15 +54,21 @@ public class AboutWindow {
         license.setWrapText(true);
         license.setEditable(false);
 
-        about.getDialogPane().setContent(new VBox(
-                new TextFlow(
-                    new Text("""
-                    Creasy is a software that allows you to convert
-                    crease patterns into simple step-by-step instructions.
-                    
-                    Find us here:"""),
-                gitHub, new Text("\n")), license));
+        var iconWrapper = new VBox(icon);
+        iconWrapper.setAlignment(Pos.CENTER);
+        HBox.setHgrow(iconWrapper, Priority.ALWAYS);
 
+        about.getDialogPane().setContent(new VBox(
+                new HBox(
+                        new TextFlow(
+                                new Text("""
+                                        Creasy is a software that allows you to convert
+                                        crease patterns into simple step-by-step instructions.
+                                                                
+                                        Find us here:"""),
+                                gitHub), iconWrapper), license));
+
+        ((VBox) about.getDialogPane().getContent()).setSpacing(10);
         about.showAndWait();
     }
 }
