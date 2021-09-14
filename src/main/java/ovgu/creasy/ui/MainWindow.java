@@ -144,12 +144,12 @@ public class MainWindow {
      */
     @FXML
     public void onMenuExportPDFAction() {
-        FileChooser export = new FileChooser();
-        export.setTitle("Save as .pdf");
-        export.getExtensionFilters().add(new FileChooser.ExtensionFilter("Adobe Acrobat Document", ".pdf"));
-        File file = export.showSaveDialog(mainCanvas.getScene().getWindow());
+        FileChooser export_pdf = new FileChooser();
+        export_pdf.setTitle("Save as .pdf");
+        export_pdf.getExtensionFilters().add(new FileChooser.ExtensionFilter("Adobe Acrobat Document", ".pdf"));
+        File file_pdf = export_pdf.showSaveDialog(mainCanvas.getScene().getWindow());
 
-        if (file != null) {
+        if (file_pdf != null) {
             try {
 
             } catch (Exception e) {
@@ -165,10 +165,12 @@ public class MainWindow {
 
     @FXML
     public void onMenuExportSVGAction() {
-        FileChooser export = new FileChooser();
-        File file = export.showSaveDialog(mainCanvas.getScene().getWindow());
+        FileChooser export_svg = new FileChooser();
+        export_svg.setTitle("Save as .svg");
+        export_svg.getExtensionFilters().add(new FileChooser.ExtensionFilter("Scalable Vector Graphics", ".svg"));
+        File file_svg = export_svg.showSaveDialog(mainCanvas.getScene().getWindow());
 
-        if (file != null) {
+        if (file_svg != null) {
             try {
 
             } catch (Exception e) {
@@ -176,6 +178,10 @@ public class MainWindow {
                 System.err.println("Error saving file!");
                 TextLogger.logText("Error saving file!", log);
             }
+        }
+        else {
+            System.err.println("File download failed!");
+            TextLogger.logText("Error saving file!", log);
         }
     }
 
