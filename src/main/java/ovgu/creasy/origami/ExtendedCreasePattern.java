@@ -102,8 +102,8 @@ public class ExtendedCreasePattern {
         patterns.add(outsideReverseFold);
 
         for (SimplificationPattern pattern : patterns) {
-            List<Map<Integer, Vertex>> matches = pattern.matches(this);
-            for (Map<Integer, Vertex> match : matches) {
+            List<SimplificationPattern.Match> matches = pattern.matches(this);
+            for (SimplificationPattern.Match match : matches) {
                 newcps.add(pattern.simplify(this, match));
             }
         }

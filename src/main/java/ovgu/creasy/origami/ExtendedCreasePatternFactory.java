@@ -82,7 +82,8 @@ public class ExtendedCreasePatternFactory {
             processedExtendedCreases.add(exCrease2);
 
             if (vertex1.getPositionAfterFolding().distance(vertex2.getPositionAfterFolding()) <= 0.0000001
-                    && exCrease1.getType() != exCrease2.getType()) {
+                    && exCrease1.getType() != exCrease2.getType()
+                    && vertex1.getType() != Vertex.Type.BORDER && vertex2.getType() != Vertex.Type.BORDER) {
                 Vertex newVertex = new Vertex(defaultPoint, defaultPoint, Vertex.Type.VIRTUAL);
                 exCrease1.setEndVertex(newVertex);
                 ExtendedCrease new_xC1 = new ExtendedCrease(newVertex, vertex1, exCrease1.getType(), true);
