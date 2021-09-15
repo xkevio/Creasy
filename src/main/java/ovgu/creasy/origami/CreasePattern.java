@@ -331,6 +331,69 @@ public class CreasePattern {
         return copy;
     }
 
+    public double calculateNewAngle(Point point) {
+        List<Double> angles = new ArrayList<>();
+        List<Crease> outgoingCreases = adjacentCreases.get(point);
+        for (int i = 0; i < outgoingCreases.size(); i++) {
+            Crease crease = outgoingCreases.get(i);
+            // flip crease if it doesnt start in point
+            if (!crease.getLine().getStart().equals(point)) {
+                outgoingCreases.remove(i);
+                outgoingCreases.add(i, new Crease(
+                        new Line(crease.getLine().getEnd(), crease.getLine().getStart()),
+                        crease.getType()));
+            }
+        }
+        if (outgoingCreases.size() == 1) {
+            System.out.println("d");
+            return outgoingCreases.get(0).getLine().getClockwiseAngle()+Math.PI;
+        }
+        // double biggestAngle = 0.0;
+        int sum = 0;
+
+        for (int i = 0; i < outgoingCreases.size(); i++) {
+            // TODO
+            Crease crease = outgoingCreases.get(i);
+            Crease nextCrease = outgoingCreases.get((i+1)%outgoingCreases.size());
+            Point a = crease.getLine().getDir();
+            Point b = nextCrease.getLine().getDir();
+
+            //double angle = Math.acos((a.dot(b)) / ((a.distance(a)) * (b.distance(b))));
+            double angle = nextCrease.getLine().getClockwiseAngle() - crease.getLine().getClockwiseAngle();
+            if (angle<0) {
+                angle += Math.PI * 2;
+            }
+            angles.add(angle);
+        }
+
+        double currentMax = 0;
+        int index = 0;
+        for (int i = 0; i < angles.size(); i++) {
+            if (angles.get(i) > currentMax) {
+                currentMax = angles.get(i);
+                index = i;
+            }
+        }
+
+        // biggestAngle = currentMax;
+        if (index % 2 == 0) {
+            for (int i = 2; i < index; i += 2) {
+                sum += angles.get(i);
+            }
+        } else {
+            for (int i = 1; i < index; i += 2) {
+                sum += angles.get(i);
+            }
+        }
+        double sumUpToBiggest = 0;
+        for (int i = 0; i < index; i++) {
+            sumUpToBiggest += angles.get(i);
+        }
+
+        // c_k.angle?
+        return angles.get(index) + (Math.PI - sum) + sumUpToBiggest;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
