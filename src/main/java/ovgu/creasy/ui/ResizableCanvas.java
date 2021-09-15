@@ -52,6 +52,20 @@ public class ResizableCanvas extends Canvas {
         getGraphicsContext2D().fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     }
 
+    public void zoomIn() {
+        if (cp != null) {
+            cp.drawOnCanvas(this, this.getCpScaleX() + 0.1, this.getCpScaleY() + 0.1);
+        }
+    }
+
+    public void zoomOut() {
+        if (cp != null) {
+            if (this.getCpScaleX() >= 0.1) {
+                cp.drawOnCanvas(this, this.getCpScaleX() - 0.1, this.getCpScaleY() - 0.1);
+            }
+        }
+    }
+
     @Override
     public boolean isResizable() {
         return true;
