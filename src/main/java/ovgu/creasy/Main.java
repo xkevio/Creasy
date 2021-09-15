@@ -18,6 +18,7 @@ public class Main extends Application {
                     Main.class.getResourceAsStream("logo_farbe2.png")
             )
     );
+    public static final String VERSION = "v0.1.0";
 
     public static void main(String[] args) {
         launch();

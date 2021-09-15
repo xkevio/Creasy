@@ -58,7 +58,6 @@ public class MainWindow {
 
     @FXML
     private TextArea log;
-    private final String version = "v0.1.0";
     @FXML
     private VBox history;
     @FXML
@@ -103,7 +102,7 @@ public class MainWindow {
         historyCanvasList = new ArrayList<>();
         stepsCanvasList = new ArrayList<>();
 
-        TextLogger.logText("Starting up ... Welcome to " + Main.APPLICATION_TITLE + " " + version + "!", log);
+        TextLogger.logText("Starting up... Welcome to " + Main.APPLICATION_TITLE + " " + Main.VERSION + "!", log);
     }
 
     /**
@@ -144,12 +143,12 @@ public class MainWindow {
      */
     @FXML
     public void onMenuExportPDFAction() {
-        FileChooser export_pdf = new FileChooser();
-        export_pdf.setTitle("Save as .pdf");
-        export_pdf.getExtensionFilters().add(new FileChooser.ExtensionFilter("Adobe Acrobat Document", ".pdf"));
-        File file_pdf = export_pdf.showSaveDialog(mainCanvas.getScene().getWindow());
+        FileChooser exportPdf = new FileChooser();
+        exportPdf.setTitle("Save as .pdf");
+        exportPdf.getExtensionFilters().add(new FileChooser.ExtensionFilter("Adobe Acrobat Document", ".pdf"));
+        File filePdf = exportPdf.showSaveDialog(mainCanvas.getScene().getWindow());
 
-        if (file_pdf != null) {
+        if (filePdf != null) {
             try {
 
             } catch (Exception e) {
@@ -158,19 +157,18 @@ public class MainWindow {
                 TextLogger.logText("Error saving file!", log);
             }
         } else {
-            System.err.println("File download failed!");
             TextLogger.logText("Error saving file!", log);
         }
     }
 
     @FXML
     public void onMenuExportSVGAction() {
-        FileChooser export_svg = new FileChooser();
-        export_svg.setTitle("Save as .svg");
-        export_svg.getExtensionFilters().add(new FileChooser.ExtensionFilter("Scalable Vector Graphics", ".svg"));
-        File file_svg = export_svg.showSaveDialog(mainCanvas.getScene().getWindow());
+        FileChooser exportSvg = new FileChooser();
+        exportSvg.setTitle("Save as .svg");
+        exportSvg.getExtensionFilters().add(new FileChooser.ExtensionFilter("Scalable Vector Graphics", ".svg"));
+        File fileSvg = exportSvg.showSaveDialog(mainCanvas.getScene().getWindow());
 
-        if (file_svg != null) {
+        if (fileSvg != null) {
             try {
 
             } catch (Exception e) {
@@ -180,7 +178,6 @@ public class MainWindow {
             }
         }
         else {
-            System.err.println("File download failed!");
             TextLogger.logText("Error saving file!", log);
         }
     }
