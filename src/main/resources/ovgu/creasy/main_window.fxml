@@ -22,7 +22,7 @@
             <Menu mnemonicParsing="false" text="File">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#onMenuImportAction" text="Import" />
-                  <Menu fx:id="exportMenu" mnemonicParsing="false" text="Export">
+                  <Menu fx:id="exportMenu" disable="true" mnemonicParsing="false" text="Export">
                     <items>
                       <MenuItem mnemonicParsing="false" onAction="#onMenuExportPDFAction" text="PDF" />
                         <MenuItem mnemonicParsing="false" onAction="#onMenuExportSVGAction" text="SVG" />

@@ -115,8 +115,8 @@ public class EstimationResultFrame {
     @FXML
     private void onExportOripaAction() {
         FileChooser exportSVG = new FileChooser();
-        exportSVG.setTitle("Save as SVG");
-        exportSVG.getExtensionFilters().add(new FileChooser.ExtensionFilter("Vector format", "*.svg"));
+        exportSVG.setTitle("Save as .svg");
+        exportSVG.getExtensionFilters().add(new FileChooser.ExtensionFilter("Scalable Vector Graphics", "*.svg"));
 
         File file = exportSVG.showSaveDialog(screen.getScene().getWindow());
         //TODO...
