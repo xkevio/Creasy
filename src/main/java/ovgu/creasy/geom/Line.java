@@ -1,6 +1,7 @@
 package ovgu.creasy.geom;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 2d Line segment
@@ -56,8 +57,29 @@ public class Line {
         return null;
     }
 
+    public Point getDir() {
+        return new Point(end.getX() - start.getX(), end.getY() - start.getY());
+    }
+
     public double getClockwiseAngle() {
         return getStart().clockwiseAngle(getEnd());
+    }
+
+    public Optional<Point> intersection(Line other) {
+        Point dirA = this.getDir();
+        Point dirB = other.getDir();
+        Point p = new Point(-dirA.getY(), dirA.getX());
+        double h = (new Point(start.getX()-other.start.getX(), start.getY() - other.start.getY()).dot(p))/dirB.dot(p);
+        if (h > -0.000001 && h < 1.00001){
+            if (Math.abs(h) < 0.000001) {
+                return Optional.of(other.start);
+            }
+            if (Math.abs(h-1) < 0.000001) {
+                return Optional.of(other.end);
+            }
+            return Optional.of(other.getPointAt(h));
+        }
+        return Optional.empty();
     }
 
     @Override
