@@ -15,14 +15,14 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="727.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ovgu.creasy.ui.MainWindow">
+<VBox prefHeight="720.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ovgu.creasy.ui.MainWindow">
    <children>
       <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="25.0" minWidth="640.0">
          <menus>
             <Menu mnemonicParsing="false" text="File">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#onMenuImportAction" text="Import" />
-                  <Menu mnemonicParsing="false" fx:id="exportMenu"  text="Export">
+                  <Menu fx:id="exportMenu" mnemonicParsing="false" text="Export">
                     <items>
                       <MenuItem mnemonicParsing="false" onAction="#onMenuExportPDFAction" text="PDF" />
                         <MenuItem mnemonicParsing="false" onAction="#onMenuExportSVGAction" text="SVG" />
@@ -41,8 +41,8 @@
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <Menu mnemonicParsing="false" text="Change grid size">
                     <items>
-                      <MenuItem fx:id="onGridIncrease" mnemonicParsing="false" onAction="#onGridIncreaseAction" text="Increase (x2)" accelerator="COMMA"/>
-                        <MenuItem fx:id="onGridDecrease" mnemonicParsing="false" onAction="#onGridDecreaseAction" text="Decrease (x0.5)" accelerator="PERIOD"/>
+                      <MenuItem fx:id="onGridIncrease" accelerator="COMMA" mnemonicParsing="false" onAction="#onGridIncreaseAction" text="Increase (x2)" />
+                        <MenuItem fx:id="onGridDecrease" accelerator="PERIOD" mnemonicParsing="false" onAction="#onGridDecreaseAction" text="Decrease (x0.5)" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="onCustomGridSize" mnemonicParsing="false" onAction="#onGridCustomAction" text="Custom" />
                     </items>
