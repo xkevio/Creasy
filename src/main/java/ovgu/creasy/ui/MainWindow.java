@@ -31,6 +31,7 @@ import static ovgu.creasy.ui.ResizableCanvas.CANVAS_WIDTH;
 public class MainWindow {
 
     private ResizableCanvas activeHistory;
+    private double zoomFactor = 0.1;
 
     @FXML
     private ScrollPane canvasHolder;
@@ -91,9 +92,9 @@ public class MainWindow {
         canvasHolder.addEventFilter(ScrollEvent.ANY, scrollEvent -> {
             if (mainCanvas.getCp() != null) {
                 if (scrollEvent.getDeltaY() < 0) {
-                    mainCanvas.getCp().drawOnCanvas(mainCanvas, 0.9 * mainCanvas.getCpScaleX(), 0.9 * mainCanvas.getCpScaleY());
+                    mainCanvas.zoomOut();
                 }  else {
-                    mainCanvas.getCp().drawOnCanvas(mainCanvas, 1.1 * mainCanvas.getCpScaleX(), 1.1 * mainCanvas.getCpScaleY());
+                    mainCanvas.zoomIn();
                 }
                 scrollEvent.consume();
             }
@@ -212,14 +213,12 @@ public class MainWindow {
     // Handling different kinds of zoom
     @FXML
     public void onZoomInMenuItem() {
-        CreasePattern mainCP = mainCanvas.getCp();
-        mainCP.drawOnCanvas(mainCanvas, 1.1 * mainCanvas.getCpScaleX(), 1.1 * mainCanvas.getCpScaleY());
+        mainCanvas.zoomIn();
     }
 
     @FXML
     public void onZoomOutMenuItem() {
-        CreasePattern mainCP = mainCanvas.getCp();
-        mainCP.drawOnCanvas(mainCanvas, 0.9 * mainCanvas.getCpScaleX(), 0.9 * mainCanvas.getCpScaleY());
+        mainCanvas.zoomOut();
     }
 
     @FXML
@@ -421,7 +420,7 @@ public class MainWindow {
                             }
 
                             activeHistory = c;
-                            activeHistory.markAsCurrentlySelected();
+                            // activeHistory.markAsCurrentlySelected();
                         }
 
                         steps.getChildren().clear();
