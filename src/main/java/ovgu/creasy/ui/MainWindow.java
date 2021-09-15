@@ -1,6 +1,7 @@
 package ovgu.creasy.ui;
 
 import javafx.application.HostServices;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -23,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static ovgu.creasy.ui.ResizableCanvas.CANVAS_HEIGHT;
@@ -479,5 +481,18 @@ public class MainWindow {
 
     public void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
+    }
+
+    @FXML
+    private void reverseHistory() {
+        List<ResizableCanvas> reverseList = new ArrayList<>();
+        for (int i = historyCanvasList.size() - 1; i >= 0; i--) {
+            reverseList.add(new ResizableCanvas(historyCanvasList.get(i)));
+        }
+
+        for (int i = 0, reverseListSize = reverseList.size(); i < reverseListSize; i++) {
+            ResizableCanvas canvas = reverseList.get(i);
+            canvas.getCp().drawOnCanvas(historyCanvasList.get(i), 0.45, 0.45);
+        }
     }
 }

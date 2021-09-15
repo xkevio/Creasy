@@ -24,6 +24,11 @@ public class ResizableCanvas extends Canvas {
         this.currentCellSize = 50;
     }
 
+    public ResizableCanvas(ResizableCanvas clone) {
+        this(clone.getWidth(), clone.getHeight());
+        this.setCp(clone.getCp());
+    }
+
     public void drawGrid() {
         drawGrid(currentCellSize);
     }

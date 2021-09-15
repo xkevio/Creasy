@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -10,10 +12,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
 <VBox prefHeight="720.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ovgu.creasy.ui.MainWindow">
    <children>
@@ -97,11 +99,11 @@
                      <children>
                         <VBox alignment="TOP_CENTER" prefHeight="700.0" prefWidth="206.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Text fill="#9f9f9f" stroke="#9f9f9f" strokeType="OUTSIDE" strokeWidth="0.0" text="Possible steps">
+                              <Label text="Possible steps" textFill="#9f9f9f">
                                  <font>
-                                    <Font name="Segoe UI" size="18.0" />
+                                    <Font size="18.0" />
                                  </font>
-                              </Text>
+                              </Label>
                               <Separator prefWidth="200.0" />
                               <VBox fx:id="steps" alignment="CENTER" />
                            </children>
@@ -116,11 +118,16 @@
                      <children>
                         <VBox alignment="TOP_CENTER" prefHeight="700.0" prefWidth="206.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Text fill="#9f9f9f" stroke="#9f9f9f" strokeType="OUTSIDE" strokeWidth="0.0" text="History">
-                                 <font>
-                                    <Font name="Segoe UI" size="18.0" />
-                                 </font>
-                              </Text>
+                              <HBox alignment="CENTER" spacing="10.0">
+                                 <children>
+                                    <Label text="History" textFill="#9f9f9f">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </Label>
+                                    <CheckBox mnemonicParsing="false" onAction="#reverseHistory" text="Reverse" />
+                                 </children>
+                              </HBox>
                               <Separator prefWidth="200.0" />
                               <VBox fx:id="history" alignment="CENTER" prefHeight="0.0" prefWidth="0.0" />
                            </children>
