@@ -433,6 +433,8 @@ public class MainWindow {
         historyCanvasList.clear();
 
         cp = null;
+
+        TextLogger.logText("-----------------", log);
     }
 
     /**

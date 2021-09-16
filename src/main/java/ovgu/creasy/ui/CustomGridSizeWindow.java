@@ -33,7 +33,7 @@ public class CustomGridSizeWindow {
             canvas.drawGrid(newValue.intValue());
         });
 
-        // currentValue.setOnAction(actionEvent -> slider.setValue(Double.parseDouble(currentValue.getText())));
+        currentValue.setOnKeyTyped(keyEvent -> slider.setValue(Double.parseDouble(currentValue.getText())));
 
         labelAndTextField.getChildren().addAll(label, currentValue);
         labelAndTextField.setAlignment(Pos.CENTER);
