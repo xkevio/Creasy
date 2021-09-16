@@ -28,6 +28,8 @@ import static ovgu.creasy.ui.ResizableCanvas.CANVAS_WIDTH;
 
 public class MainWindow {
 
+    @FXML
+    private Label historyLabel;
     private ResizableCanvas activeHistory;
 
     @FXML
@@ -329,6 +331,7 @@ public class MainWindow {
                 cp.drawOnCanvas(c, 0.45, 0.45);
             }
         });
+        historyLabel.setText("History (" + historyCanvasList.size() + " steps)");
     }
 
     @SafeVarargs
@@ -386,6 +389,7 @@ public class MainWindow {
                                         if (activeHistory != null) {
                                             activeHistory.getGraphicsContext2D().clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
                                             activeHistory.getCp().drawOnCanvas(activeHistory, 0.45, 0.45);
+                                            activeHistory.setSelected(false);
                                         }
 
                                         activeHistory = node;
@@ -398,9 +402,11 @@ public class MainWindow {
                             if (activeHistory != null) {
                                 activeHistory.getGraphicsContext2D().clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
                                 activeHistory.getCp().drawOnCanvas(activeHistory, 0.45, 0.45);
+                                activeHistory.setSelected(false);
                             }
 
                             activeHistory = c;
+                            activeHistory.setSelected(true);
                             // activeHistory.markAsCurrentlySelected();
                         }
 
@@ -425,6 +431,8 @@ public class MainWindow {
         mainCanvas.setCp(null);
         mainCanvas.getGraphicsContext2D().clearRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
         ((Stage) mainCanvas.getScene().getWindow()).setTitle(Main.APPLICATION_TITLE);
+
+        historyLabel.setText("History (0 steps)");
 
         steps.getChildren().clear();
         history.getChildren().clear();
@@ -467,9 +475,17 @@ public class MainWindow {
             reverseList.add(new ResizableCanvas(historyCanvasList.get(i)));
         }
 
+        activeHistory.setSelected(false);
+
         for (int i = 0, reverseListSize = reverseList.size(); i < reverseListSize; i++) {
             ResizableCanvas canvas = reverseList.get(i);
             canvas.getCp().drawOnCanvas(historyCanvasList.get(i), 0.45, 0.45);
+
+            if (canvas.isSelected()) {
+                System.out.println("is selected");
+                activeHistory = historyCanvasList.get(i);
+                activeHistory.markAsCurrentlySelected();
+            }
         }
     }
 

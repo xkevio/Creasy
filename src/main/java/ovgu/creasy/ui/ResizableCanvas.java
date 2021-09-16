@@ -16,6 +16,7 @@ public class ResizableCanvas extends Canvas {
     private double cpScaleY;
 
     private int currentCellSize;
+    private boolean isSelected = false;
 
     public ResizableCanvas(double width, double height) {
         super(width, height);
@@ -27,6 +28,7 @@ public class ResizableCanvas extends Canvas {
     public ResizableCanvas(ResizableCanvas clone) {
         this(clone.getWidth(), clone.getHeight());
         this.setCp(clone.getCp());
+        this.isSelected = clone.isSelected();
     }
 
     public void drawGrid() {
@@ -53,6 +55,7 @@ public class ResizableCanvas extends Canvas {
     }
 
     public void markAsCurrentlySelected() {
+        isSelected = true;
         getGraphicsContext2D().setFill(Color.color(0.2, 0.2, 0.2, 0.2));
         getGraphicsContext2D().fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     }
@@ -112,5 +115,13 @@ public class ResizableCanvas extends Canvas {
 
     public int getCurrentCellSize() {
         return currentCellSize;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
     }
 }
