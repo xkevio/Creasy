@@ -1,36 +1,38 @@
 package ovgu.creasy.ui;
 
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
-import javafx.scene.image.ImageView;
-import javafx.stage.Modality;
+import javafx.stage.Stage;
 import ovgu.creasy.Main;
-
-import java.util.Optional;
+import ovgu.creasy.util.AbstractExporter;
 
 public class ClosingWindow {
 
-    public static void open() {
-        Alert closing = new Alert(Alert.AlertType.CONFIRMATION);
-        closing.setTitle("Want to close Creasy?!");
-        closing.setHeaderText("Are your sure yo want to close this program?");
+    public static void open(String modelName, AbstractExporter exporter) {
+        Alert closing = new Alert(Alert.AlertType.WARNING);
 
-        ImageView icon = new ImageView(Main.APPLICATION_ICON);
-        icon.setFitHeight(60);
-        icon.setFitWidth(60);
-        closing.getDialogPane().setGraphic(icon);
+        closing.setTitle(Main.APPLICATION_TITLE);
+        closing.setHeaderText("You have some unsaved changes");
+        closing.setContentText("Save the instructions for " + modelName + " before closing?");
+        ((Stage) closing.getDialogPane().getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
 
-        Button exitButton = (Button) closing.getDialogPane().lookupButton(ButtonType.OK);
-        exitButton.setText("Exit");
-        closing.initModality(Modality.APPLICATION_MODAL);
-        //closing.initOwner(mainCanvas);
+        ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+        ButtonType no = new ButtonType("No", ButtonBar.ButtonData.NO);
+        ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-        Optional<ButtonType> closeResponse = closing.showAndWait();
-        if (!ButtonType.OK.equals(closeResponse.get())) {
-            //event.consume();
+        closing.getDialogPane().lookupButton(ButtonType.OK).setVisible(false);
+        closing.getButtonTypes().addAll(yes, no, cancel);
+
+        var result = closing.showAndWait();
+        if (result.isPresent()) {
+            switch (result.get().getButtonData()) {
+                case YES -> exporter.export();
+                case NO -> Platform.exit();
+                default -> closing.close();
+            }
         }
-
     }
 }
 

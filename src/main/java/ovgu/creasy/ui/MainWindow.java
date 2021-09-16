@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import ovgu.creasy.Main;
 import ovgu.creasy.origami.*;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
+import ovgu.creasy.util.PDFExporter;
 import ovgu.creasy.util.TextLogger;
 
 import java.io.*;
@@ -131,8 +132,7 @@ public class MainWindow {
 
     /**
      * Opens a file explorer dialogue which lets the user export
-     * the .cp file
-     *
+     * the history to either pdf or svg
      */
     @FXML
     public void onMenuExportPDFAction() {
@@ -299,6 +299,12 @@ public class MainWindow {
         drawHistory(cp, history);
 
         setupMouseEvents(stepsCanvasList, historyCanvasList);
+        mainCanvas.getScene().getWindow().setOnCloseRequest(windowEvent -> {
+            if (!historyCanvasList.isEmpty()) {
+                ClosingWindow.open(filePath, new PDFExporter(historyCanvasList));
+                windowEvent.consume();
+            }
+        });
 
         // after reading the file, if the file is valid:
         foldedModelMenuItem.setDisable(false);

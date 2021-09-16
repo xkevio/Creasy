@@ -55,9 +55,10 @@ public class CreasePatternHelpWindow {
         alertCP.showAndWait();
     }
 
-    private static Text buildTextWithColor(String text, Color strokeColor) {
+    private static Text buildTextWithColor(String text, Color color) {
         Text coloredText = new Text(text);
-        coloredText.setStroke(strokeColor);
+        coloredText.setFill(color);
+        coloredText.setStroke(color);
         return coloredText;
     }
 }
