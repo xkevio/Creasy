@@ -68,18 +68,18 @@ public class MainWindow {
      */
     @FXML
     public void initialize() {
-        mainCanvas = new ResizableCanvas(1000, 1000);
+        mainCanvas = new ResizableCanvas(2000, 2000);
         mainCanvas.setId("main");
         mainCanvas.setManaged(false);
 
         mainCanvas.getGraphicsContext2D().setFill(Color.TRANSPARENT);
-        mainCanvas.getGraphicsContext2D().clearRect(0, 0, 1000,1000);
+        mainCanvas.getGraphicsContext2D().clearRect(0, 0, 2000,2000);
 
-        gridCanvas = new ResizableCanvas(1000, 1000);
+        gridCanvas = new ResizableCanvas(2000, 2000);
         gridCanvas.setManaged(false);
 
         gridCanvas.getGraphicsContext2D().setFill(Color.WHITE);
-        gridCanvas.getGraphicsContext2D().fillRect(0, 0, 1000,1000);
+        gridCanvas.getGraphicsContext2D().fillRect(0, 0, 2000,2000);
         gridCanvas.drawGrid();
 
         canvasHolder.setContent(new Group(gridCanvas, mainCanvas));
