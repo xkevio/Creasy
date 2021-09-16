@@ -368,6 +368,8 @@ public class MainWindow {
 
                             delete.setOnAction(actionEvent -> {
                                 history.getChildren().remove(c);
+                                historyCanvasList.remove(c);
+                                historyLabel.setText("History (" + historyCanvasList.size() + " steps)");
                                 TextLogger.logText("1 step in history successfully deleted", log);
                             });
                             contextMenu.getItems().add(delete);
