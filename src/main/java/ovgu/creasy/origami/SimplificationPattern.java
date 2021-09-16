@@ -1,5 +1,7 @@
 package ovgu.creasy.origami;
 
+import ovgu.creasy.geom.Line;
+import ovgu.creasy.geom.Point;
 import ovgu.creasy.geom.Vertex;
 
 import java.util.*;
@@ -42,19 +44,21 @@ public class SimplificationPattern {
     class Match {
         private Map<Integer, Vertex> vertices;
         private Map<Edge, ExtendedCrease> edges;
+        private boolean inverted;
 
-        public Match() {
+        public Match(boolean inverted) {
+            this.inverted = inverted;
             this.vertices = new HashMap<>();
             this.edges = new HashMap<>();
         }
 
-        public Match(int vertexId, Vertex vertex) {
-            this();
+        public Match(int vertexId, Vertex vertex, boolean inverted) {
+            this(inverted);
             addVertex(vertexId, vertex);
         }
 
         public Match(Match other) {
-            this();
+            this(other.inverted);
             this.vertices.putAll(other.vertices);
             this.edges.putAll(other.edges);
         }
@@ -82,10 +86,6 @@ public class SimplificationPattern {
 
         private void addEdge(Edge e, ExtendedCrease crease) {
             edges.put(e, crease);
-        }
-
-        private void removeEdge(Edge e, ExtendedCrease crease) {
-            edges.remove(e, crease);
         }
     }
 
@@ -121,19 +121,62 @@ public class SimplificationPattern {
     public CreasePattern simplify(ExtendedCreasePattern ecp, Match match) {
         CreasePattern simplified = new CreasePattern();
         Set<Crease> omittedLines = new HashSet<>();
-        int i = 0;
         for (Edge edge : pattern) {
             if (match.edges.containsKey(edge)) {
                 omittedLines.addAll(match.edges.get(edge).getExtendedReflectionPath().getCreases());
-                i++;
             }
         }
-        System.out.println(i);
         for (Crease crease : ecp.toCreasePattern().getCreases()  ) {
             if (!omittedLines.contains(crease)){
                 simplified.addCrease(crease);
             }
         }
+        simplified.removeLinearPoints();
+        for (Integer vertexId : this.simplifiedOutgoingEdges.keySet()) {
+            if (match.vertices.containsKey(vertexId)) {
+                Vertex v = match.vertices.get(vertexId);
+                System.out.println(match.vertices);
+                Edge e = simplifiedOutgoingEdges.get(vertexId).get(0);
+                Crease.Type type = e.type;
+                if (match.inverted) {
+                    type = type.opposite();
+                }
+                Point start = v.getPoint();
+                double angle = simplified.calculateNewAngle(start);
+                Point end = new Point(start.getX()+Math.cos(angle)*600, start.getY()+Math.sin(angle)*600);
+                Line newLine = new Line(start, end);
+                Point nearestIntersection = end;
+                Crease intersectionCrease = null;
+                for (Crease crease : simplified.getCreases()) {
+                    if (crease.getLine().getStart().equals(start) || crease.getLine().getEnd().equals(start)) {
+                        continue;
+                    }
+                    Optional<Point> intersection = newLine.intersection(crease.getLine());
+                    if (intersection.isPresent() && intersection.get().distance(start) < start.distance(nearestIntersection)) {
+                        nearestIntersection = intersection.get();
+                        intersectionCrease = crease;
+                    }
+                }
+                Crease c = new Crease(new Line(start, nearestIntersection), type);
+                System.out.println(c);
+                simplified.addCrease(c);
+                System.out.println(c);
+
+                System.out.println("//////////////////////////");
+                if (intersectionCrease != null) {
+                    Set<Point> points = new HashSet<>();
+                    points.add(intersectionCrease.getLine().getStart());
+                    points.add(intersectionCrease.getLine().getEnd());
+                    points.add(nearestIntersection);
+                    if (points.size() == 3) {
+                        simplified.removeCrease(intersectionCrease);
+                        simplified.addCrease(new Crease(new Line(intersectionCrease.getLine().getStart(), nearestIntersection), intersectionCrease.getType()));
+                        simplified.addCrease(new Crease(new Line(intersectionCrease.getLine().getEnd(), nearestIntersection), intersectionCrease.getType()));
+                    }
+                }
+            }
+        }
+        simplified.removeLinearPoints();
         return simplified;
     }
 
@@ -187,7 +230,7 @@ public class SimplificationPattern {
                                                    boolean inverted) {
         if (vertexTypes.get(point) == VertexType.BORDER) {
             if (vertex.getType() == Vertex.Type.BORDER || vertex.getType() == Vertex.Type.VIRTUAL) {
-                return Collections.singletonList(new Match(point, vertex));
+                return Collections.singletonList(new Match(point, vertex, inverted));
             } else {
                 return Collections.emptyList();
             }
@@ -201,7 +244,7 @@ public class SimplificationPattern {
                 if (validatingCreases.contains(outgoingCrease) || !checkMV(outgoingEdges.get(0), outgoingCrease, inverted)) {
                     continue;
                 }
-                Match currentMapping = new Match(point, vertex);
+                Match currentMapping = new Match(point, vertex, inverted);
                 List<Match> currentMappings = new ArrayList<>();
                 currentMappings.add(currentMapping);
                 Set<Edge> vEdges = new HashSet<>();

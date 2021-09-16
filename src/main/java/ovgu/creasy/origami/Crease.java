@@ -8,8 +8,8 @@ import java.util.Objects;
  * A single crease in a Crease Pattern
  */
 public class Crease {
-    private final Line line;
-    private final Type type;
+    private Line line;
+    private Type type;
 
     public enum Type {
         /**
@@ -47,6 +47,10 @@ public class Crease {
 
     public Type getType() {
         return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     @Override

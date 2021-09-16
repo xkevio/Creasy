@@ -145,6 +145,10 @@ public class CreasePattern {
                 points.add(line2.getLine().getStart());
                 points.add(line2.getLine().getEnd());
                 Object[] p = points.toArray();
+                if (p.length == 2) {
+                    System.out.println("how");
+                    System.out.println(line1.equals( line2));
+                }
                 Point p1 = (Point) p[0];
                 Point p2 = (Point) p[1];
                 Point p3 = (Point) p[2];
@@ -166,8 +170,20 @@ public class CreasePattern {
 
     public void addCrease(Crease crease) {
         addOrMergePoints(crease);
+        if (crease.getLine().getStart().distance(crease.getLine().getEnd())<0.00001) {
+            return;
+        }
+        Line revLine = new Line(crease.getLine().getEnd(), crease.getLine().getStart());
+        for (Crease oldCrease : creases) {
+            if (oldCrease.getLine().equals(crease.getLine()) || oldCrease.getLine().equals(revLine)) {
+                System.out.println("Found duplicate line>");
+                oldCrease.setType(crease.getType());
+                return;
+            }
+        }
         this.creases.add(crease);
         addToAdjacentCreases(crease);
+
     }
 
     public List<Crease> getAdjacentCreases(Point p) {
@@ -345,8 +361,8 @@ public class CreasePattern {
             }
         }
         if (outgoingCreases.size() == 1) {
-            System.out.println("d");
-            return outgoingCreases.get(0).getLine().getClockwiseAngle()+Math.PI;
+            double angle = outgoingCreases.get(0).getLine().getClockwiseAngle();
+            return angle-Math.PI/2;
         }
         // double biggestAngle = 0.0;
         int sum = 0;

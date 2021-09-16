@@ -130,8 +130,6 @@ public class ExtendedCreasePatternFactory {
     }
 
     private Set<ExtendedCrease> createExtendedCreases(CreasePattern cp, Map<Point, Vertex> extendedVertices) {
-        Set<ExtendedCrease> xC = new HashSet<>();
-
         // if reverse == false --> xC = (v1, v2, a, false)
         // if reverse == true --> xC = (v2, v1, a, false)
         return cp.getCreases().stream().map(c -> {
