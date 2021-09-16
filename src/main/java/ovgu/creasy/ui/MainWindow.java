@@ -1,7 +1,6 @@
 package ovgu.creasy.ui;
 
 import javafx.application.HostServices;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -19,12 +18,8 @@ import ovgu.creasy.origami.*;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
 import ovgu.creasy.util.TextLogger;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static ovgu.creasy.ui.ResizableCanvas.CANVAS_HEIGHT;
@@ -33,7 +28,6 @@ import static ovgu.creasy.ui.ResizableCanvas.CANVAS_WIDTH;
 public class MainWindow {
 
     private ResizableCanvas activeHistory;
-    private double zoomFactor = 0.1;
 
     @FXML
     private ScrollPane canvasHolder;
@@ -65,8 +59,6 @@ public class MainWindow {
     private VBox history;
     @FXML
     private VBox steps;
-
-    private String filepath;
 
 
     /* This makes sure that the window scales correctly
@@ -111,7 +103,7 @@ public class MainWindow {
     /**
      * Opens a file explorer dialogue which lets the user select
      * .cp files and upon loading them, calls setupGUI() -- drawing the
-     * Pattern to the screen.
+     * pattern to the screen.
      */
     @FXML
     public void onMenuImportAction() {
@@ -123,16 +115,14 @@ public class MainWindow {
         var filePath = file == null ? "" : file.getPath();
 
         if (file != null && file.exists()) {
+            resetGUI();
+            TextLogger.logText("Import: " + filePath, log);
             try {
-                resetGUI();
-                TextLogger.logText("Import: " + filePath, log);
-                setupCreasePattern(new FileInputStream(file), filePath);
-                TextLogger.logText("CreasePattern successfully loaded!", log);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.err.println("Error loading file " + filePath + "!");
-                TextLogger.logText("Error loading file!", log);
+                setupUI(new FileInputStream(file), filePath);
+            } catch (FileNotFoundException e) {
+                TextLogger.logText("File not found or invalid!", log);
             }
+            TextLogger.logText("Crease Pattern successfully loaded!", log);
         } else {
             System.err.println("No file selected or path is invalid!");
             TextLogger.logText("No file selected or path is invalid!", log);
@@ -152,13 +142,7 @@ public class MainWindow {
         File filePdf = exportPdf.showSaveDialog(mainCanvas.getScene().getWindow());
 
         if (filePdf != null) {
-            try {
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.err.println("Error saving file!");
-                TextLogger.logText("Error saving file!", log);
-            }
         } else {
             TextLogger.logText("Error saving file!", log);
         }
@@ -172,13 +156,7 @@ public class MainWindow {
         File fileSvg = exportSvg.showSaveDialog(mainCanvas.getScene().getWindow());
 
         if (fileSvg != null) {
-            try {
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.err.println("Error saving file!");
-                TextLogger.logText("Error saving file!", log);
-            }
         }
         else {
             TextLogger.logText("Error saving file!", log);
@@ -225,16 +203,14 @@ public class MainWindow {
 
     @FXML
     public void onGridIncreaseAction() {
-        // TODO
         gridCanvas.drawGrid(gridCanvas.getCurrentCellSize() * 2);
-        TextLogger.logText("Increased Grid (x2)", log);
+        TextLogger.logText("Increased Grid (x2), new grid cell size: " + gridCanvas.getCurrentCellSize(), log);
     }
 
     @FXML
     public void onGridDecreaseAction() {
-        // TODO
         gridCanvas.drawGrid(gridCanvas.getCurrentCellSize() / 2);
-        TextLogger.logText("Decreased Grid (x0.5)", log);
+        TextLogger.logText("Decreased Grid (x0.5), new grid cell size: " + gridCanvas.getCurrentCellSize(), log);
     }
 
     @FXML
@@ -254,32 +230,29 @@ public class MainWindow {
     // Loading example files
     @FXML
     public void onLoadExampleBird() {
-        filepath = "example/bird.cp";
         resetGUI();
-        InputStream is = Main.class.getResourceAsStream(filepath);
-        setupCreasePattern(is, filepath);
+        InputStream is = Main.class.getResourceAsStream("example/bird.cp");
+        setupUI(is, "example/bird.cp");
         TextLogger.logText("Import: example/bird.cp", log);
-        TextLogger.logText("CreasePattern successfully loaded!", log);
+        TextLogger.logText("Crease Pattern successfully loaded!", log);
     }
 
     @FXML
     public void onLoadExamplePenguin() {
-        filepath = "example/penguin_hideo_komatsu.cp";
         resetGUI();
-        InputStream is = Main.class.getResourceAsStream(filepath);
-        setupCreasePattern(is, filepath);
+        InputStream is = Main.class.getResourceAsStream("example/penguin_hideo_komatsu.cp");
+        setupUI(is, "example/penguin_hideo_komatsu.cp");
         TextLogger.logText("Import: example/penguin_hideo_komatsu.cp", log);
-        TextLogger.logText("CreasePattern successfully loaded!", log);
+        TextLogger.logText("Crease Pattern successfully loaded!", log);
     }
 
     @FXML
     public void onLoadExampleCrane() {
-        filepath = "example/crane.cp";
         resetGUI();
-        InputStream is = Main.class.getResourceAsStream(filepath);
-        setupCreasePattern(is, filepath);
+        InputStream is = Main.class.getResourceAsStream("example/crane.cp");
+        setupUI(is, "example/crane.cp");
         TextLogger.logText("Import: example/crane.cp", log);
-        TextLogger.logText("CreasePattern successfully loaded!", log);
+        TextLogger.logText("Crease Pattern successfully loaded!", log);
     }
     // -------------------------
 
@@ -307,21 +280,22 @@ public class MainWindow {
      * @param is the InputStream that is the crease pattern file
      * @param filePath what is displayed in the title bar of the window
      */
-    private void setupCreasePattern(InputStream is, String filePath) {
-        cp = CreasePattern.createFromFile(is);
+    private void setupUI(InputStream is, String filePath) {
         ((Stage) mainCanvas.getScene().getWindow()).setTitle(filePath + " - " + Main.APPLICATION_TITLE);
+
+        cp = CreasePattern.createFromFile(is);
+        if (cp != null) cp.drawOnCanvas(mainCanvas, 1, 1);
 
         model = new OrigamiModel(cp);
 
-        cp.drawOnCanvas(mainCanvas, 1, 1);
-
         ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
+        TextLogger.logText(ecp.possibleSteps().size() + " possible step(s) were calculated", log);
         System.out.println("size = " + ecp.possibleSteps().size());
 
         // should be called when the algorithm is executed, aka once the amount of steps is known
         createCanvases(steps, stepsCanvasList, ecp.possibleSteps().size());
 
-        drawSteps(ecp, steps);
+        drawSteps(ecp);
         drawHistory(cp, history);
 
         setupMouseEvents(stepsCanvasList, historyCanvasList);
@@ -334,7 +308,7 @@ public class MainWindow {
         exportMenu.setDisable(false);
     }
 
-    private void drawSteps(ExtendedCreasePattern ecp, Pane steps) {
+    private void drawSteps(ExtendedCreasePattern ecp) {
         for (int i = 0; i < ecp.possibleSteps().size(); i++) {
             DiagramStep step = ecp.possibleSteps().get(i);
             step.to.toCreasePattern().drawOnCanvas(stepsCanvasList.get(i),
@@ -385,7 +359,7 @@ public class MainWindow {
 
                             delete.setOnAction(actionEvent -> {
                                 history.getChildren().remove(c);
-                                TextLogger.logText("1 item successfully deleted", log);
+                                TextLogger.logText("1 step in history successfully deleted", log);
                             });
                             contextMenu.getItems().add(delete);
 
@@ -394,8 +368,7 @@ public class MainWindow {
                             });
                         }
                     } else {
-                        var startCP = cp.copy();
-                        var currentStep = c.getCp();
+                        CreasePattern currentStep = c.getCp();
 
                         currentStep.drawOnCanvas(mainCanvas, 1, 1);
                         ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(currentStep);
@@ -430,7 +403,7 @@ public class MainWindow {
 
                         createCanvases(steps, stepsCanvasList, ecp.possibleSteps().size());
                         setupMouseEvents(stepsCanvasList, historyCanvasList);
-                        drawSteps(ecp, steps);
+                        drawSteps(ecp);
                     }
                 });
             });
@@ -479,10 +452,6 @@ public class MainWindow {
         }
     }
 
-    public void setHostServices(HostServices hostServices) {
-        this.hostServices = hostServices;
-    }
-
     @FXML
     private void reverseHistory() {
         List<ResizableCanvas> reverseList = new ArrayList<>();
@@ -494,5 +463,9 @@ public class MainWindow {
             ResizableCanvas canvas = reverseList.get(i);
             canvas.getCp().drawOnCanvas(historyCanvasList.get(i), 0.45, 0.45);
         }
+    }
+
+    public void setHostServices(HostServices hostServices) {
+        this.hostServices = hostServices;
     }
 }
