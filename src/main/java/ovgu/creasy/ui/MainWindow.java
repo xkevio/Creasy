@@ -477,7 +477,7 @@ public class MainWindow {
             reverseList.add(new ResizableCanvas(historyCanvasList.get(i)));
         }
 
-        activeHistory.setSelected(false);
+        if (activeHistory != null) activeHistory.setSelected(false);
 
         for (int i = 0, reverseListSize = reverseList.size(); i < reverseListSize; i++) {
             ResizableCanvas canvas = reverseList.get(i);
