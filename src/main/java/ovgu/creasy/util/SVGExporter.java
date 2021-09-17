@@ -7,6 +7,7 @@ import ovgu.creasy.ui.ResizableCanvas;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import org.jfree.svg.*;
 
 public class SVGExporter extends AbstractExporter {
 

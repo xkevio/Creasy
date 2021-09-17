@@ -17,6 +17,7 @@ import ovgu.creasy.Main;
 import ovgu.creasy.origami.*;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
 import ovgu.creasy.util.PDFExporter;
+import ovgu.creasy.util.SVGExporter;
 import ovgu.creasy.util.TextLogger;
 
 import java.io.*;
