@@ -42,6 +42,8 @@ public class MainWindow {
     private List<ResizableCanvas> historyCanvasList;
     private List<ResizableCanvas> stepsCanvasList;
 
+    private boolean wasSaved = false;
+
     public ResizableCanvas mainCanvas;
     public ResizableCanvas gridCanvas;
 
@@ -138,30 +140,37 @@ public class MainWindow {
      */
     @FXML
     public void onMenuExportPDFAction() {
-        FileChooser exportPdf = new FileChooser();
-        exportPdf.setTitle("Save as .pdf");
-        exportPdf.getExtensionFilters().add(new FileChooser.ExtensionFilter("Adobe Acrobat Document", ".pdf"));
-        File filePdf = exportPdf.showSaveDialog(mainCanvas.getScene().getWindow());
+        PDFExporter pdfExporter = new PDFExporter(historyCanvasList);
+        var file = pdfExporter.open(mainCanvas.getScene().getRoot());
 
-        if (filePdf != null) {
+        if (file.isPresent()) {
+            if (pdfExporter.export(file.get())) {
+                TextLogger.logText("Saved " + file.get().getName() + " successfully", log);
+                wasSaved = true;
 
-        } else {
-            TextLogger.logText("Error saving file!", log);
+                String title = ((Stage) mainCanvas.getScene().getWindow()).getTitle();
+                ((Stage) mainCanvas.getScene().getWindow()).setTitle(title.replace("*", ""));
+            } else {
+                TextLogger.logText("Error while exporting to PDF", log);
+            }
         }
     }
 
     @FXML
     public void onMenuExportSVGAction() {
-        FileChooser exportSvg = new FileChooser();
-        exportSvg.setTitle("Save as .svg");
-        exportSvg.getExtensionFilters().add(new FileChooser.ExtensionFilter("Scalable Vector Graphics", ".svg"));
-        File fileSvg = exportSvg.showSaveDialog(mainCanvas.getScene().getWindow());
+        SVGExporter svgExporter = new SVGExporter(historyCanvasList);
+        var file = svgExporter.open(mainCanvas.getScene().getRoot());
 
-        if (fileSvg != null) {
+        if (file.isPresent()) {
+            if (svgExporter.export(file.get())) {
+                TextLogger.logText("Saved " + file.get().getName() + " successfully", log);
+                wasSaved = true;
 
-        }
-        else {
-            TextLogger.logText("Error saving file!", log);
+                String title = ((Stage) mainCanvas.getScene().getWindow()).getTitle();
+                ((Stage) mainCanvas.getScene().getWindow()).setTitle(title.replace("*", ""));
+            } else {
+                TextLogger.logText("Error while exporting to SVG", log);
+            }
         }
     }
 
@@ -283,7 +292,7 @@ public class MainWindow {
      * @param filePath what is displayed in the title bar of the window
      */
     private void setupUI(InputStream is, String filePath) {
-        ((Stage) mainCanvas.getScene().getWindow()).setTitle(filePath + " - " + Main.APPLICATION_TITLE);
+        ((Stage) mainCanvas.getScene().getWindow()).setTitle(filePath + "* - " + Main.APPLICATION_TITLE);
 
         cp = CreasePattern.createFromFile(is);
         if (cp != null) cp.drawOnCanvas(mainCanvas, 1, 1);
@@ -302,7 +311,7 @@ public class MainWindow {
 
         setupMouseEvents(stepsCanvasList, historyCanvasList);
         mainCanvas.getScene().getWindow().setOnCloseRequest(windowEvent -> {
-            if (!historyCanvasList.isEmpty()) {
+            if (!historyCanvasList.isEmpty() && !wasSaved) {
                 ClosingWindow.open(filePath, new PDFExporter(historyCanvasList));
                 windowEvent.consume();
             }
@@ -449,6 +458,7 @@ public class MainWindow {
         historyCanvasList.clear();
 
         cp = null;
+        wasSaved = false;
 
         TextLogger.logText("-----------------", log);
     }

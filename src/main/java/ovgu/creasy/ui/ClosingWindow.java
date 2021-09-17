@@ -30,7 +30,7 @@ public class ClosingWindow {
         var result = closing.showAndWait();
         if (result.isPresent()) {
             switch (result.get().getButtonData()) {
-                case YES -> exporter.export();
+                // case YES -> exporter.export();
                 case NO -> Platform.exit();
                 default -> closing.close();
             }
