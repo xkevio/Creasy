@@ -45,6 +45,7 @@ public class CustomGridSizeWindow {
         ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
         customSlider.getButtonTypes().setAll(apply, cancel);
+        customSlider.getDialogPane().getStylesheets().add(Main.STYLESHEET);
         var result = customSlider.showAndWait();
 
         if (result.isPresent() && result.get() == apply) {

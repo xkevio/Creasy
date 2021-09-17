@@ -1,0 +1,800 @@
+.separator:horizontal .line {
+    -fx-border-color: transparent transparent transparent transparent,
+    #999 transparent transparent transparent;
+    -fx-border-insets: 0, 1 7 0 7;
+}
+.root {
+    /* Root variables */
+    accent_color: #0078d7;
+}
+
+
+/********************************* Menu Bar ************************************/
+
+.menu-button {
+    menu_button_background_color: #ccc;
+    menu_button_text_color: #111;
+    menu_border_hover_color: #7a7a7a;
+    menu_button_pressed_color: #999;
+}
+
+.menu-bar {
+    text_color: #111;
+
+    menu_button_hover_color: #dadada;
+}
+
+.menu-item {
+    text_color: #111;
+
+    menu_background_color: #f2f2f2;
+
+    graphic_color: #0a0a0a;
+
+    hover_color: #dadada;
+    pressed_color: #c2c2c2;
+}
+
+/********************************* Menu Bar ************************************/
+
+.menu-bar {
+    -fx-background-color: #f3f3f3;
+    -fx-background-insets: 0 0 0 0;
+    -fx-font-family: "Segoe UI";
+}
+
+.menu-bar > .container {
+    -fx-background-color: transparent;
+}
+
+.menu-bar > .container > .menu-button {
+    -fx-background-color: transparent;
+}
+
+.menu-bar > .container > .menu-button {
+    -fx-padding: 0.4em 1em 0.4em 0.666667em; /* 6 12 6 8 */
+    -fx-border-width: 0;
+}
+
+.menu-bar > .container > .menu-button > .arrow-button > .arrow {
+    -fx-padding: 0.167em 0 0.25em 0; /* 2 0 3 0 */
+}
+
+.menu-bar > .container > .menu-button > .label {
+    -fx-padding: 0;
+    -fx-label-padding: 0 0 0 0;
+}
+
+.menu-bar > .container > .menu > .arrow-button {
+    -fx-padding: 0.5em 0 0.5em 0; /* 6 0 6 0 */
+}
+
+.menu-bar > .container > .menu-button:hover,
+.menu-bar > .container > .menu-button:focused,
+.menu-bar > .container > .menu-button:showing {
+    -fx-background-color: menu_button_hover_color;
+
+}
+
+.menu-bar > .container > .menu-button > .label,
+.menu-bar > .container > .menu-button:hover > .label,
+.menu-bar > .container > .menu-button:focused > .label,
+.menu-bar > .container > .menu-button:showing  > .label {
+    -fx-text-fill: text_color;
+}
+
+/********************************* Menu Item ***********************************/
+
+.menu-item {
+    -fx-text-fill: text_color;
+    -fx-background-color: menu_background_color;
+    -fx-padding: 0.583333em 1em 0.583333em 1em;   /*7 12 7 12 */
+}
+
+.menu-item > .right-container,
+.menu-item > .left-container {
+    -fx-background-color: menu_background_color;
+}
+
+.menu-item .label {
+    -fx-padding: 0em 1.333333em 0em 0em; /* 0 16 0 0 */
+    -fx-text-fill: text_color;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 1em; /* 12 */
+}
+
+.menu-item > .graphic-container {
+    -fx-padding: 0em 0.75em 0em 0em; /* 0 9 0 0 */
+}
+
+.radio-menu-item:checked > .left-container > .radio {
+    -fx-shape: "M17.939,5.439L7.5,15.889l-5.439-5.449l0.879-0.879L7.5,14.111 l9.561-9.551L17.939,5.439z";
+
+    -fx-padding: 0.416667em 0.583333em 0.416667em 0.583333em;  /* 5 7 5 7 */
+    -fx-scale-shape: true;
+}
+
+.check-menu-item:checked > .left-container > .check {
+    -fx-shape: "M17.939,5.439L7.5,15.889l-5.439-5.449l0.879-0.879L7.5,14.111 l9.561-9.551L17.939,5.439z";
+
+    -fx-padding: 0.416667em 0.583333em 0.416667em 0.583333em;; /* 5 7 5 7 */
+    -fx-scale-shape: true;
+}
+
+.check-menu-item:checked > .left-container {
+    -fx-padding: 0em 1em 0em 0.5em; /* 0 12 0 6 */
+}
+
+.radio-menu-item:checked > .left-container {
+    -fx-padding: 0em 1em 0em 0.5em; /* 0 12 0 6 */
+}
+
+.menu > .right-container > .arrow {
+    -fx-padding: 0.458em 0.333333em 0.458em 0.333333em; /* >5 4 >5 4 */
+    -fx-shape: "M8.06,20.938L7,20l8-8L7,4l1.06-0.938L16.917,12L8.06,20.938z";
+    -fx-scale-shape: true;
+}
+
+.radio-menu-item:checked > .left-container > .radio,
+.check-menu-item:checked > .left-container > .check,
+.menu > .right-container > .arrow {
+    -fx-background-color: graphic_color;
+}
+
+/* hover */
+.menu-item:hover,
+.menu-item:focused,
+.menu-item:hover > .right-container,
+.menu-item:hover > .left-container,
+.menu-item:focused > .right-container,
+.menu-item:focused > .left-container {
+    -fx-background-color: hover_color;
+}
+
+/* pressed */
+.menu-item:pressed,
+.menu-item:pressed > .right-container,
+.menu-item:pressed > .left-container {
+    -fx-background-color: pressed_color;
+}
+
+/* disabled */
+.menu-item:disabled:hover,
+.menu-item:disabled:focused,
+.menu-item:disabled:pressed {
+    -fx-background-color: transparent;
+}
+
+.menu-button {
+    -fx-background-color: menu_button_background_color;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0em 0em 0em 0em; /* 0 8 0 8 */
+
+    -fx-border-color: transparent;
+    -fx-border-width: 2px;
+}
+
+.menu-button > .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.menu-button > .label {
+    -fx-font-family: "Segoe UI Semilight";
+    -fx-font-size: 1em; /* 12 */
+
+    -fx-text-fill: menu_button_text_color;
+}
+
+.menu-button:hover {
+    -fx-border-color: menu_border_hover_color;
+}
+
+.menu-button:pressed {
+    -fx-border-color: menu_button_pressed_color;
+    -fx-background-color: menu_button_pressed_color;
+}
+
+.menu-button:focused {
+    -fx-border-color: transparent, white;
+    -fx-border-width: 1, 1;
+    /*noinspection CssInvalidFunction*/
+    -fx-border-style: solid, segments(1, 2);
+    -fx-border-radius: 0, 0;
+    -fx-border-insets: 1 1 1 1, 0;
+}
+
+.menu-button:disabled {
+    -fx-opacity: 0.4;
+    -fx-background-color: menu_button_background_color;
+    -fx-text-fill: menu_button_text_color;
+}
+
+.combo-box-base > .arrow-button > .arrow ,
+.choice-box > .open-button > .arrow ,
+.menu-button > .arrow-button > .arrow ,
+.split-menu-button > .arrow-button > .arrow {
+    -fx-padding: 0.208em 0.358em 0.208em 0.358em; /* 2.5px 4.29px 2.5px 4.29px */
+    -fx-shape: "M21.361,12.736l0.527,0.527L16,19.152l-5.889-5.889l0.527-0.527L16,18.098L21.361,12.736z";
+
+    -fx-background-color: #111;
+}
+
+.menu-button:openvertically > .arrow-button > .arrow {
+    -fx-shape: "M 4.21875 10.78125 L 2.78125 12.21875 L 15.28125 24.71875 L 16 25.40625 L 16.71875 24.71875 L 29.21875 12.21875 L 27.78125 10.78125 L 16 22.5625 Z ";
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Check Box                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+.check-box {
+    -fx-text-fill: #111;
+}
+
+.check-box > .box > .mark {
+    -fx-shape: "M17.939,5.439L7.5,15.889l-5.439-5.449l0.879-0.879L7.5,14.111 l9.561-9.551L17.939,5.439z";
+
+    -fx-pref-width: 16px;
+    -fx-pref-height: 12px;
+
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+/* unselected */
+.check-box > .box {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+
+    -fx-border-color: #333333;
+    -fx-border-width: 2px;
+    -fx-border-style: solid;
+
+    -fx-padding: 0.166667em 0px 0.166667em 0px;     /* 2 0 2 0 */
+}
+
+/* hover */
+.check-box:hover > .box, .check-box:selected:hover > .box  {
+    -fx-border-color: #333333;
+}
+
+/* selected */
+.check-box:selected > .box{
+    -fx-background-color: accent_color;
+    -fx-border-color: accent_color;
+}
+
+.check-box:selected > .box > .mark{
+    -fx-background-color: white;
+}
+
+/* pressed */
+.check-box:pressed > .box, .check-box:selected:pressed > .box
+{
+    -fx-background-color: #666666;
+    -fx-border-color: #666666;
+}
+
+/* indeterminate */
+.check-box:indeterminate > .box {
+    -fx-padding: 3px;
+
+    -fx-border-color: accent_color;
+}
+
+.check-box:indeterminate > .box > .mark {
+    -fx-shape: null;
+
+    -fx-pref-width: 10px;
+    -fx-max-width: 10px;
+    -fx-min-width: 10px;
+    -fx-pref-height: 10px;
+    -fx-max-height: 10px;
+    -fx-min-height: 10px;
+
+    -fx-background-color: #333333;
+    /*-fx-background-insets: 3px;*/
+}
+
+/* -- indeterminate - pressed */
+.check-box:indeterminate:pressed > .box > .mark {
+    -fx-background-color: #666666;
+}
+
+.check-box:indeterminate:pressed > .box {
+    -fx-background-color: white;
+    -fx-border-color: #666666;
+}
+
+/* focused */
+
+.check-box:focused > .box{
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    /* - first border is focus ring
+       - second border is control border */
+    -fx-border-color: #111, #333333;
+    -fx-border-width: 1, 2;
+    /*noinspection CssInvalidFunction*/
+    -fx-border-style: segments(1, 2), solid;
+    -fx-border-insets: -3, 0;
+}
+
+/* -- focused - selected */
+.check-box:focused:selected > .box{
+    -fx-border-color: #111, accent_color;
+}
+
+/* -- focused - selected, hover */
+.check-box:focused:selected:hover > .box{
+    -fx-border-color: #111, #333333;
+}
+
+/* -- focused - pressed */
+.check-box:focused:pressed > .box{
+    -fx-border-color: #111, #666666;
+}
+
+.check-box:focused:selected:pressed > .box{
+    -fx-border-color: #111, #666666;
+}
+
+.check-box:focused:indeterminate:pressed > .box{
+    -fx-border-color: #111, #666666;
+}
+
+/* -- focused - indeterminate*/
+.check-box:focused:indeterminate > .box {
+    -fx-border-color: white, accent_color;
+}
+
+/* disabled */
+.check-box:disabled {
+    -fx-opacity: 0.4;
+}
+
+.check-box:disabled > .box {
+    -fx-background-color: #cdcdcd;
+    -fx-border-color: #aaa;
+}
+
+/*==================== buttons, toggle buttons, menu button ==================*/
+
+.tool-bar .button,
+.tool-bar .toggle-button,
+.tool-bar .menu-button,
+.tool-bar .split-menu-button, .tool-bar .split-menu-button > .label, .tool-bar .split-menu-button > .arrow-button {
+    -fx-background-color: transparent;
+}
+
+/* - hover */
+
+.tool-bar .button:hover,
+.tool-bar .toggle-button:hover,
+.tool-bar .menu-button:hover {
+    -fx-background-color: #7a7a7a;
+}
+
+/* - pressed */
+.tool-bar .button:pressed,
+.tool-bar .toggle-button:pressed,
+.tool-bar .menu-button:pressed {
+    -fx-background-color: #c2c2c2;
+}
+
+/*============================= Menu Buttons =================================*/
+.tool-bar .menu-button {
+    -fx-border-color: transparent;
+}
+
+.tool-bar .menu-button:showing {
+    -fx-background-color: #999;
+}
+
+.scroll-bar {
+    thumb_color: #c2c7ca;
+    thumb_hover_color: #838689;
+    thumb_pressed_color: #585a5c;
+
+    track_color: #e9e9e9;
+
+    inc_dec_button_color: #e8e6e3;
+    inc_dec_button_hover_color: #c6cacf;
+    inc_dec_button_pressed_color: #585a5c;
+
+    arrow_color: #5a5a59;
+    arrow_pressed_color: white;
+}
+
+.scroll-bar > .thumb{
+    -fx-background-color: thumb_color;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.scroll-bar > .thumb:hover {
+    -fx-background-color: thumb_hover_color;
+}
+
+.scroll-bar > .thumb:pressed {
+    -fx-background-color: thumb_pressed_color;
+}
+
+.scroll-bar > .track {
+    -fx-background-color: track_color;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+.scroll-bar > .track-background {
+    -fx-background-insets: 0;
+}
+
+/* Buttons */
+.scroll-bar > .increment-button,
+.scroll-bar > .decrement-button {
+    -fx-background-color: inc_dec_button_color;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+
+    -fx-padding: 0.5em 0.25em 0.5em 0.25em; /* 6 3 6 3*/
+}
+
+.scroll-bar:horizontal > .increment-button,
+.scroll-bar:horizontal > .decrement-button {
+    -fx-padding: 0.25em 0.5em 0.25em 0.5em ; /* 3 6 3 6*/
+}
+
+.scroll-bar > .increment-button:hover,
+.scroll-bar > .decrement-button:hover  {
+    -fx-background-color: inc_dec_button_hover_color;
+}
+
+.scroll-bar > .increment-button:pressed,
+.scroll-bar > .decrement-button:pressed {
+    -fx-background-color: inc_dec_button_pressed_color;
+}
+
+/* Disabled */
+.scroll-bar:disabled {
+    -fx-opacity: 0.4;
+}
+
+/* ARROW SHAPES */
+.scroll-bar:horizontal > .increment-button > .increment-arrow {
+    -fx-shape: "M14.4,18.611l3.633-3.637L14.4,11.338l0.352-0.352l3.992,3.988 l-3.992,3.988L14.4,18.611z";
+}
+
+.scroll-bar:horizontal > .decrement-button > .decrement-arrow {
+    -fx-shape: "M18.393,18.963L14.4,14.975l3.992-3.988l0.352,0.352l-3.633,3.637 l3.633,3.637L18.393,18.963z";
+}
+
+.scroll-bar:vertical > .increment-button > .increment-arrow {
+    -fx-shape: "M20.561,13.154l-3.988,3.992l-3.988-3.992l0.352-0.352 l3.637,3.633l3.637-3.633L20.561,13.154z";
+}
+
+.scroll-bar:vertical > .decrement-button > .decrement-arrow {
+    -fx-shape: "M20.209,17.146l-3.637-3.633l-3.637,3.633l-0.352-0.352 l3.988-3.992l3.988,3.992L20.209,17.146z";
+}
+
+.scroll-bar > .decrement-button:pressed > .decrement-arrow,
+.scroll-bar > .increment-button:pressed > .increment-arrow {
+    -fx-background-color: transparent, white;
+    -fx-effect: null;
+}
+
+.scroll-bar:vertical > .increment-button > .increment-arrow,
+.scroll-bar:vertical > .decrement-button > .decrement-arrow {
+    -fx-padding: 0.208333em 0.333333em 0.208333em 0.333333em; /* 2.5 4 2.5 4*/
+}
+
+.scroll-bar:horizontal > .increment-button > .increment-arrow,
+.scroll-bar:horizontal > .decrement-button > .decrement-arrow {
+    -fx-padding: 0.333333em 0.208333em 0.333333em 0.208333em; /* 4 2.5 4 2.5 */
+    -fx-translate-y: -1; /* HACK:  Somehow the arrow is not centered so we add this to center it */
+}
+
+.scroll-bar > .decrement-button > .decrement-arrow,
+.scroll-bar > .increment-button > .increment-arrow{
+    -fx-background-insets: 1 0 -1 0, 0;
+    -fx-background-color: arrow_color;
+    -fx-effect: null;
+}
+
+.scroll-bar > .increment-button:pressed > .increment-arrow,
+.scroll-bar > .decrement-button:pressed > .decrement-arrow {
+    -fx-background-color: arrow_pressed_color;
+}
+
+/****************************** Context Menu **********************************/
+
+.context-menu {
+    -fx-background-color: menu_background_color;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 0 0 0 0, 0 0 0 0, 0 0 0 0;
+    -fx-padding: 0.5em 0em 0.5em 0em; /* 6 0 6 0 */
+
+    -fx-border-color: context_menu_border_color;
+    -fx-border-style: solid;
+}
+
+.context-menu StackPane {
+    -fx-background-color: transparent;
+}
+
+/* separator */
+.context-menu .separator {
+    -fx-padding: 0.58333275em 1em 0.58333275em 1em;  /*7 12 7 12 */
+}
+
+.context-menu {
+    menu_background_color: #f2f2f2;
+    context_menu_border_color: #cccccc;
+
+    separator_color: #c3c3c3;
+}
+
+.context-menu .separator:horizontal .line {
+    -fx-border-color: separator_color transparent transparent transparent;
+    -fx-border-insets: 0;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Text Common (TextField, PasswordField, TextArea)                            *
+ *                                                                             *
+ ******************************************************************************/
+.text-input {
+    border_color: #999999;
+    border_hover_color: #666666;
+    border_disabled_color: #d9d9d9;
+
+    text_input_background_color: white;
+    background_focused_color: white;
+    background_hover_color: white;
+    background_disabled_color: #eaeaea;
+
+    text_color: #111;
+    text_focused_color: #111;
+    text_disabled_color: #adadad;
+    prompt_text_color: #666666;
+
+    highlight_color: accent_color;
+    highlighted_text_color: white;
+
+    graphic_color: #747474;
+}
+
+.text-input {
+    -fx-background-radius: 0, 0;
+
+    -fx-background-color: border_color, text_input_background_color;
+    -fx-background-insets: 0, 2;
+
+    -fx-prompt-text-fill: prompt_text_color;
+
+    -fx-highlight-fill: highlight_color;
+    -fx-highlight-text-fill: highlighted_text_color;
+
+    -fx-font-size: 1em; /* 12 */
+
+    -fx-text-fill: text_color;
+}
+
+.text-input > Pane {
+    -fx-background-color: transparent;
+}
+
+/* hover */
+.text-input:hover{
+    -fx-background-color: border_hover_color, background_hover_color;
+}
+
+/* focused */
+.text-input:focused{
+    -fx-background-color: accent_color, background_focused_color;
+
+    -fx-text-fill: text_focused_color;
+}
+
+/* disabled */
+.text-input:disabled
+{
+    -fx-opacity: 1;
+    -fx-background-insets: 0, 2;
+    -fx-background-color: border_disabled_color, background_disabled_color;
+    -fx-text-fill: text_disabled_color;
+    -fx-prompt-text-fill: text_disabled_color;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Text Field (and PasswordField)                                              *
+ *                                                                             *
+ ******************************************************************************/
+
+/* Issue #149: Need to use TextField because ColorPicker has custom textfields with "text-field" styleclass that aren't actually of type
+   TextField which will cause an IllegalArgumentException when creating the impl.jfxtras.styles.jmetro.TextFieldSkin object and passing it,
+   for instance, the WebColorField */
+TextField {
+    /* -fx-skin: "impl.jfxtras.styles.jmetro.TextFieldSkin"; */
+
+    -right-button-visible: true;
+}
+
+.text-field > .right-button > .right-button-graphic {
+    -fx-shape: "M221.738,305.873l6.135,6.16l-2.875,2.863l-6.135-6.159l-6.263,6.237l-2.864-2.875l6.263-6.238l-6.177-6.202l2.875-2.863l6.177,6.201l6.244-6.22l2.864,2.876L221.738,305.873z";
+
+    -fx-padding: 0.416667em;
+    -fx-background-color: graphic_color;
+}
+
+.text-field > .right-button{
+    -fx-cursor: default;
+
+    -fx-background-insets: -0.1666665em -0.45em -0.1666665em -0.45em; /* 4 7 4 7 -> this values are subtracted by 2px in em because of the border of the textfield */
+    -fx-background-color: background_focused_color;  /* We must give it a color so that it reacts to the mouse */
+}
+
+.text-field > .right-button:hover > .right-button-graphic {
+    -fx-background-color: accent_color;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Password Field                                                              *
+ *                                                                             *
+ ******************************************************************************/
+
+.password-field {
+    -fx-skin: "impl.jfxtras.styles.jmetro.PasswordFieldSkin";
+
+    -right-button-visible: true;
+}
+
+.password-field > .right-button {
+    -fx-padding: 0 0.166667em 0 0.166667em;
+}
+
+.password-field > .right-button > .right-button-graphic {
+    -fx-shape            : "M307.688,399.564c0,1.484-1.203,2.688-2.688,2.688c-1.484,0-2.688-1.203-2.688-2.688s1.203-2.688,2.688-2.688C306.484,396.876,307.688,398.08,307.688,399.564z M297.5,399h2.5c0,0,1.063-4,5-4c3.688,0,5,4,5,4h2.5c0,0-2.063-6.5-7.5-6.5C299,392.5,297.5,399,297.5,399z";
+    -fx-scale-shape: false;
+    -fx-background-color: #111;
+}
+
+.password-field > .right-button:pressed {
+    -fx-background-color: accent_color;
+}
+
+.password-field > .right-button:pressed > .right-button-graphic {
+    -fx-background-color: white;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Text Area                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+.text-area .content {
+    -fx-background-color: border_color, text_input_background_color;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 1;
+}
+
+.text-area:hover .content {
+    -fx-background-color: border_color, background_hover_color;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 1;
+}
+
+.text-area:focused .content {
+    -fx-background-color: accent_color, background_focused_color;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 1;
+}
+
+.text-area:disabled .content {
+    -fx-background-color: border_disabled_color, background_disabled_color;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0, 1;
+}
+
+/* TODO: below not working */
+.text-area:disabled .content .text {
+    -fx-fill: text_disabled_color;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Slider                                                                      *
+ *                                                                             *
+ ******************************************************************************/
+.slider {
+    track_hover_color: #666666;
+    thumb_hover_color: #171717;
+
+    thumb_pressed_color: #cccccc;
+}
+
+
+.slider {
+    /*-fx-skin: "impl.jfxtras.styles.jmetro.SliderSkin";*/
+}
+
+.slider {
+    -show-value-on-interaction: true;
+}
+
+.slider .thumb {
+    -fx-background-color: accent_color;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0.5em; /* 6 */
+
+    -fx-padding: 1em 0.333333em 1em 0.333333em;  /* 12 4 12 4 */
+
+    -fx-effect: null;
+}
+
+.slider:vertical .thumb {
+    -fx-padding: 0.333333em 1em 0.333333em 1em; /* 4 12 4 12 */
+}
+
+.slider .track {
+    -fx-background-color: #c6c6c6;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 0.083333em; /* 1 */
+
+}
+
+.slider .fill {
+    -fx-background-color: accent_color;
+    -fx-padding: 0.083333em; /* 1 */
+}
+
+/* hover */
+.slider:hover .track{
+    -fx-background-color: track_hover_color;
+}
+
+.slider:hover .thumb{
+    -fx-background-color: thumb_hover_color;
+}
+
+/* pressed */
+.slider .thumb:pressed {
+    -fx-background-color: thumb_pressed_color;
+}
+
+/* disabled */
+.slider:disabled {
+    -fx-opacity: 0.2;
+}
+
+/* Slider popup showing its value */
+.slider-popup .label {
+    -fx-background-color: #f2f2f2;
+    -fx-border-color: #cccccc;
+
+    -fx-text-fill: #111;
+
+    -fx-padding: 0.5em 0.75em 0.5em 0.75em; /* 6 9 6 9 */
+}
+
+.button {
+    -fx-background-color: #dddddd;
+    -fx-border-width: 1;
+    -fx-border-color: #d0d0d0;
+}
+
+.button:hover {
+    -fx-background-color: #cccccc;
+}
+
+.button:pressed {
+    -fx-background-color: #d0d0d0;
+}

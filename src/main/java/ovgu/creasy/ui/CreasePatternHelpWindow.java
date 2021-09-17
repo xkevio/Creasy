@@ -52,6 +52,7 @@ public class CreasePatternHelpWindow {
         container.setPadding(new Insets(20, 20, 0, 10));
 
         alertCP.getDialogPane().setContent(container);
+        alertCP.getDialogPane().getStylesheets().add(Main.STYLESHEET);
         alertCP.showAndWait();
     }
 

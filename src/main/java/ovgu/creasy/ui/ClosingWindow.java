@@ -25,6 +25,8 @@ public class ClosingWindow {
         closing.getDialogPane().lookupButton(ButtonType.OK).setVisible(false);
         closing.getButtonTypes().addAll(yes, no, cancel);
 
+        closing.getDialogPane().getStylesheets().add(Main.STYLESHEET);
+
         var result = closing.showAndWait();
         if (result.isPresent()) {
             switch (result.get().getButtonData()) {

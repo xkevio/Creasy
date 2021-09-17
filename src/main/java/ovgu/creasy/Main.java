@@ -19,6 +19,7 @@ public class Main extends Application {
             )
     );
     public static final String VERSION = "v0.1.0";
+    public static final String STYLESHEET = String.valueOf(Main.class.getResource("test.css"));
 
     public static void main(String[] args) {
         launch();
@@ -32,6 +33,8 @@ public class Main extends Application {
 
         Scene initialScene = new Scene(rootFXML);
         stage.getIcons().add(APPLICATION_ICON);
+
+        initialScene.getStylesheets().add(STYLESHEET);
 
         stage.setScene(initialScene);
         stage.sizeToScene();

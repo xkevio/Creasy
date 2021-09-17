@@ -66,6 +66,7 @@ public class AboutWindow {
                                 gitHub), iconWrapper), license));
 
         ((VBox) about.getDialogPane().getContent()).setSpacing(10);
+        about.getDialogPane().getStylesheets().add(Main.STYLESHEET);
         about.showAndWait();
     }
 }
