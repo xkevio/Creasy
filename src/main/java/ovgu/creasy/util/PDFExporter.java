@@ -7,12 +7,12 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDTrueTypeFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.util.Matrix;
 import ovgu.creasy.geom.Point;
 import ovgu.creasy.origami.Crease;
+import ovgu.creasy.origami.CreasePattern;
 import ovgu.creasy.ui.ResizableCanvas;
 
 import java.awt.*;
@@ -49,23 +49,19 @@ public class PDFExporter extends AbstractExporter {
             PDPage page = new PDPage(PDRectangle.A4);
             try {
                 PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(document, 400, 400);
-                pdfBoxGraphics2D.setColor(Color.BLACK);
 
-                for (Crease crease : canvas.getCp().getCreases()) {
-                    Color color = switch (crease.getType()) {
-                        case EDGE -> Color.BLACK;
-                        case VALLEY -> Color.BLUE;
-                        case MOUNTAIN -> Color.RED;
-                    };
+                // first draw normal crease pattern
+                drawCreasePatternOnPage(canvas.getCp(), pdfBoxGraphics2D);
+                // then draw thick difference over it
+                if (i > 0) {
+                    pdfBoxGraphics2D.setStroke(new BasicStroke(5));
 
-                    pdfBoxGraphics2D.setColor(color);
-                    // TODO: draw difference over it with thicker stroke
+                    CreasePattern prev = resizableCanvas.get(resizableCanvas.size() - 1 - i + 1).getCp();
+                    CreasePattern diff = canvas.getCp().getDifference(prev);
 
-                    Point start = crease.getLine().getStart();
-                    Point end = crease.getLine().getEnd();
-                    pdfBoxGraphics2D.draw(new Line2D.Double(start.getX() + 200, start.getY() + 200,
-                            end.getX() + 200, end.getY() + 200));
+                    drawCreasePatternOnPage(diff, pdfBoxGraphics2D);
                 }
+
                 pdfBoxGraphics2D.dispose();
 
                 PDFormXObject xObject = pdfBoxGraphics2D.getXFormObject();
@@ -95,6 +91,23 @@ public class PDFExporter extends AbstractExporter {
             return false;
         }
         return true;
+    }
+
+    private void drawCreasePatternOnPage(CreasePattern creasePattern, PdfBoxGraphics2D pdfBoxGraphics2D) {
+        for (Crease crease : creasePattern.getCreases()) {
+            Color color = switch (crease.getType()) {
+                case EDGE -> Color.BLACK;
+                case VALLEY -> Color.BLUE;
+                case MOUNTAIN -> Color.RED;
+            };
+
+            pdfBoxGraphics2D.setColor(color);
+
+            Point start = crease.getLine().getStart();
+            Point end = crease.getLine().getEnd();
+            pdfBoxGraphics2D.draw(new Line2D.Double(start.getX() + 200, start.getY() + 200,
+                    end.getX() + 200, end.getY() + 200));
+        }
     }
 
     private void drawText(String text, PDPageContentStream contentStream) throws IOException {
