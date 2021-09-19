@@ -13,9 +13,12 @@ import oripa.domain.fold.subface.FacesToCreasePatternConverter;
 import oripa.domain.fold.subface.ParentFacesCollector;
 import oripa.domain.fold.subface.SplitFacesToSubFacesConverter;
 import oripa.domain.fold.subface.SubFacesFactory;
+import oripa.util.gui.ChildFrameManager;
+import oripa.view.foldability.FoldabilityCheckFrameFactory;
 import ovgu.creasy.origami.CreasePattern;
 import ovgu.creasy.origami.oripa.ui.EstimationResultLauncher;
 
+import javax.swing.*;
 import java.io.IOException;
 
 public class OripaFoldedModelWindow {
@@ -66,15 +69,15 @@ public class OripaFoldedModelWindow {
     }
 
     public void showError() {
-//        JFrame f = new FoldabilityCheckFrameFactory(new ChildFrameManager()).createFrame(null, model, cp, true);
-//        f.setVisible(true);
+        JFrame f = new FoldabilityCheckFrameFactory(new ChildFrameManager()).createFrame(null, model, cp, true);
+        f.setVisible(true);
 
-        Alert error = new Alert(Alert.AlertType.ERROR);
-        error.setTitle("Foldability error");
-        error.setHeaderText(null);
-        error.setContentText("""
-                            An error has occurred while trying to fold your crease pattern!
-                            Will show more info in the future.
-                            """);
+//        Alert error = new Alert(Alert.AlertType.ERROR);
+//        error.setTitle("Foldability error");
+//        error.setHeaderText(null);
+//        error.setContentText("""
+//                            An error has occurred while trying to fold your crease pattern!
+//                            Will show more info in the future.
+//                            """);
     }
 }
