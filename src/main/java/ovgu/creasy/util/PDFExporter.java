@@ -73,11 +73,26 @@ public class PDFExporter extends AbstractExporter {
                 contentStream.transform(translate);
                 contentStream.drawForm(xObject);
 
-                drawText((i + 1) + ". step", contentStream);
+                drawText((i + 1) + ". step", 25, 500, contentStream);
+
+                if (i == 0) {
+                    drawText("Made with Creasy", 300, 500, contentStream);
+                    drawText("Mountain Fold", 320, 460, contentStream);
+                    drawText("Valley Fold", 320, 440, contentStream);
+
+                    contentStream.setNonStrokingColor(Color.RED);
+                    contentStream.addRect(300, 460, 10, 10);
+                    contentStream.fill();
+
+                    contentStream.setNonStrokingColor(Color.BLUE);
+                    contentStream.addRect(300, 440, 10, 10);
+                    contentStream.fill();
+                }
 
                 contentStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
+                return false;
             }
 
             document.addPage(page);
@@ -110,11 +125,11 @@ public class PDFExporter extends AbstractExporter {
         }
     }
 
-    private void drawText(String text, PDPageContentStream contentStream) throws IOException {
+    private void drawText(String text, int x, int y, PDPageContentStream contentStream) throws IOException {
         contentStream.beginText();
         contentStream.setFont(PDType1Font.HELVETICA, 12);
 
-        contentStream.newLineAtOffset(25, 500);
+        contentStream.newLineAtOffset(x, y);
         contentStream.showText(text);
 
         contentStream.endText();
