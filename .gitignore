@@ -32,3 +32,5 @@ target/
 *.iml
 
 *.exe
+
+dependency-reduced-pom.xml
