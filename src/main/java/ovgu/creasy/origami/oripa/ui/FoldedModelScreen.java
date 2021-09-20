@@ -507,4 +507,8 @@ public class FoldedModelScreen extends Canvas {
     public boolean isFaceOrderFlipped() {
         return faceOrderFlip;
     }
+
+    public OrigamiModel getOrigamiModel() {
+        return origamiModel;
+    }
 }

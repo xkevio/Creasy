@@ -6,11 +6,17 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
+import org.jfree.svg.SVGGraphics2D;
 import oripa.domain.fold.FoldedModel;
 import oripa.domain.fold.OverlapRelationList;
+import oripa.domain.fold.halfedge.OriVertex;
 import ovgu.creasy.util.TextLogger;
 
+import java.awt.*;
+import java.awt.geom.Line2D;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class EstimationResultFrame {
 
@@ -119,6 +125,28 @@ public class EstimationResultFrame {
         exportSVG.getExtensionFilters().add(new FileChooser.ExtensionFilter("Scalable Vector Graphics", "*.svg"));
 
         File file = exportSVG.showSaveDialog(screen.getScene().getWindow());
-        //TODO...
+
+        SVGGraphics2D svgGraphics2D = new SVGGraphics2D(1000, 1000);
+        svgGraphics2D.setColor(Color.BLUE);
+        svgGraphics2D.translate(500, 500);
+
+        screen.getOrigamiModel().getEdges().forEach(oriEdge -> {
+            OriVertex start = oriEdge.getStartVertex();
+            OriVertex end = oriEdge.getEndVertex();
+
+            svgGraphics2D.draw(new Line2D.Double(start.getPosition().x, start.getPosition().y,
+                    end.getPosition().x, end.getPosition().y));
+        });
+
+        try {
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(svgGraphics2D.getSVGDocument());
+            fileWriter.close();
+
+            TextLogger.logText("Saved " + file.getName() + " successfully", oripaLog);
+        } catch (IOException e) {
+            e.printStackTrace();
+            TextLogger.logText("Error while saving " + file.getName(), oripaLog);
+        }
     }
 }

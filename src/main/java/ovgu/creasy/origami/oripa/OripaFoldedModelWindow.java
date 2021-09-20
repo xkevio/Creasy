@@ -1,6 +1,5 @@
 package ovgu.creasy.origami.oripa;
 
-import javafx.scene.control.Alert;
 import oripa.domain.cptool.LineAdder;
 import oripa.domain.creasepattern.CreasePatternFactory;
 import oripa.domain.creasepattern.CreasePatternInterface;
