@@ -24,8 +24,8 @@ public class Line {
     public Point getPointAt(double t) {
         if (t < 0 || t > 1) throw new ArithmeticException("t should be between 0 and 1!");
 
-        return new Point(start.getX() + t * (end.getX() - start.getX()),
-                         start.getY() + t * (end.getY() - start.getY()));
+        return new Point(start.getX() + t * getDir().getX(),
+                         start.getY() + t * getDir().getY());
     }
 
     public Point getStart() {
@@ -57,6 +57,10 @@ public class Line {
         return null;
     }
 
+    public boolean contains(Point p) {
+        return Math.abs(start.distance(p) + end.distance(p) - start.distance(end)) < 0.00001;
+    }
+
     public Point getDir() {
         return new Point(end.getX() - start.getX(), end.getY() - start.getY());
     }
@@ -71,13 +75,17 @@ public class Line {
         Point p = new Point(-dirA.getY(), dirA.getX());
         double h = (new Point(start.getX()-other.start.getX(), start.getY() - other.start.getY()).dot(p))/dirB.dot(p);
         if (h > -0.000001 && h < 1.00001){
+            Point intersection;
             if (Math.abs(h) < 0.000001) {
-                return Optional.of(other.start);
+                intersection = other.start;
+            } else if (Math.abs(h-1) < 0.000001) {
+                intersection = other.end;
+            } else {
+                intersection = other.getPointAt(h);
             }
-            if (Math.abs(h-1) < 0.000001) {
-                return Optional.of(other.end);
+            if (this.contains(intersection)) {
+                return Optional.of(intersection);
             }
-            return Optional.of(other.getPointAt(h));
         }
         return Optional.empty();
     }

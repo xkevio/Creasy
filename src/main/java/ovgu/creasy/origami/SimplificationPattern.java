@@ -135,7 +135,6 @@ public class SimplificationPattern {
         for (Integer vertexId : this.simplifiedOutgoingEdges.keySet()) {
             if (match.vertices.containsKey(vertexId)) {
                 Vertex v = match.vertices.get(vertexId);
-                System.out.println(match.vertices);
                 Edge e = simplifiedOutgoingEdges.get(vertexId).get(0);
                 Crease.Type type = e.type;
                 if (match.inverted) {
@@ -158,11 +157,8 @@ public class SimplificationPattern {
                     }
                 }
                 Crease c = new Crease(new Line(start, nearestIntersection), type);
-                System.out.println(c);
                 simplified.addCrease(c);
-                System.out.println(c);
 
-                System.out.println("//////////////////////////");
                 if (intersectionCrease != null) {
                     Set<Point> points = new HashSet<>();
                     points.add(intersectionCrease.getLine().getStart());

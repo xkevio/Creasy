@@ -47,12 +47,12 @@ public class Point {
      * @return clockwise angle of the line from this point to other, to a Line parallel to the y axis through this point
      */
     public double clockwiseAngle(Point other) {
-        double dirAnchorYLine = Math.atan2(1, 0);
+        double dirAnchorYLine = Math.atan2(0, 1);
         double dirThisLine = Math.atan2(other.getY() - this.getY(), other.getX() - this.getX());
         double angle = dirAnchorYLine - dirThisLine;
         if (angle > Math.PI) {
             angle -= 2 * Math.PI;
-        } else if (angle < -Math.PI) {
+        } else if (angle < 0) {
             angle += 2 * Math.PI;
         }
         return angle;

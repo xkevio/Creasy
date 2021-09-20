@@ -146,14 +146,12 @@ public class CreasePattern {
                 points.add(line2.getLine().getEnd());
                 Object[] p = points.toArray();
                 if (p.length == 2) {
-                    System.out.println("how");
-                    System.out.println(line1.equals( line2));
                 }
                 Point p1 = (Point) p[0];
                 Point p2 = (Point) p[1];
                 Point p3 = (Point) p[2];
                 double area = 0.5*(p1.getX()*(p2.getY()-p3.getY())+p2.getX()*(p3.getY()-p1.getY())+p3.getX()*(p1.getY()-p2.getY()));
-                if (area < 0.000001) {
+                if (Math.abs(area) < 0.000001) {
                     creasesToRemove.add(line1);
                     creasesToRemove.add(line2);
                     points.remove(point);
@@ -177,7 +175,7 @@ public class CreasePattern {
         for (Crease oldCrease : creases) {
             if (oldCrease.getLine().equals(crease.getLine()) || oldCrease.getLine().equals(revLine)) {
                 System.out.println("Found duplicate line>");
-                oldCrease.setType(crease.getType());
+                //oldCrease.setType(crease.getType());
                 return;
             }
         }
@@ -353,16 +351,18 @@ public class CreasePattern {
         for (int i = 0; i < outgoingCreases.size(); i++) {
             Crease crease = outgoingCreases.get(i);
             // flip crease if it doesnt start in point
-            if (!crease.getLine().getStart().equals(point)) {
-                outgoingCreases.remove(i);
+            if (crease.getLine().getEnd().equals(point)) {
                 outgoingCreases.add(i, new Crease(
                         new Line(crease.getLine().getEnd(), crease.getLine().getStart()),
                         crease.getType()));
+                outgoingCreases.remove(i+1);
             }
         }
         if (outgoingCreases.size() == 1) {
             double angle = outgoingCreases.get(0).getLine().getClockwiseAngle();
-            return angle-Math.PI/2;
+            System.out.println("Point: " + point);
+            System.out.println("Outgoing angle:" + Math.toDegrees(angle));
+            return -(angle + Math.PI);
         }
         // double biggestAngle = 0.0;
         int sum = 0;
