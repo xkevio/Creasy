@@ -148,8 +148,6 @@ public class CreasePattern {
                 points.add(line2.getLine().getStart());
                 points.add(line2.getLine().getEnd());
                 Object[] p = points.toArray();
-                if (p.length == 2) {
-                }
                 Point p1 = (Point) p[0];
                 Point p2 = (Point) p[1];
                 Point p3 = (Point) p[2];
@@ -322,7 +320,6 @@ public class CreasePattern {
             graphicsContext.strokeLine(start.getX() * scaleX, start.getY() * scaleY,
                     end.getX() * scaleX, end.getY() * scaleY);
         }
-
         graphicsContext.translate(-canvas.getWidth() / 2, -canvas.getHeight() / 2);
     }
 
@@ -395,29 +392,27 @@ public class CreasePattern {
 
         System.out.println(angles);
         double currentMax = 0;
-        int index = 0;
+        int maxIndex = 0;
         for (int i = 0; i < angles.size(); i++) {
             if (angles.get(i) > currentMax) {
                 currentMax = angles.get(i);
-                index = i;
+                maxIndex = i;
             }
         }
-        System.out.println(index);
 
-        int sum = 0;
+        double sum = 0;
         // biggestAngle = currentMax;
-        if (index % 2 == 1) {
-            for (int i = 1; i < index; i += 2) {
+        if (maxIndex % 2 == 0) {
+            for (int i = 0; i < maxIndex; i += 2) {
                 sum += angles.get(i);
             }
         } else {
-            for (int i = 0; i < index; i += 2) {
+            for (int i = 1; i < maxIndex; i += 2) {
                 sum += angles.get(i);
             }
         }
-        System.out.println(sum);
         // c_k.angle?
-        return outgoingCreases.get(index).getLine().getClockwiseAngle() + (Math.PI - sum);
+        return outgoingCreases.get(maxIndex).getLine().getClockwiseAngle() - (Math.PI - sum);
     }
 
     @Override
