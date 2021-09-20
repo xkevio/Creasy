@@ -531,48 +531,49 @@ public class MainWindow {
                                                  new FileChooser.ExtensionFilter("PNG Image", "*.png"));
 
         File file = fileChooser.showSaveDialog(mainCanvas.getScene().getWindow());
+        if (file != null) {
+            switch (fileChooser.getSelectedExtensionFilter().getDescription()) {
+                case "PDF Document" -> {
+                    System.out.println("PDF");
+                    PDDocument document = new PDDocument();
+                    PDPage page = new PDPage(PDRectangle.A4);
+                    try {
+                        PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(document, 400, 400);
+                        cp.drawOnGraphics2D(pdfBoxGraphics2D);
+                        pdfBoxGraphics2D.dispose();
 
-        switch (fileChooser.getSelectedExtensionFilter().getDescription()) {
-            case "PDF Document" -> {
-                System.out.println("PDF");
-                PDDocument document = new PDDocument();
-                PDPage page = new PDPage(PDRectangle.A4);
-                try {
-                    PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(document, 400, 400);
-                    cp.drawOnGraphics2D(pdfBoxGraphics2D);
-                    pdfBoxGraphics2D.dispose();
+                        PDFormXObject xObject = pdfBoxGraphics2D.getXFormObject();
+                        PDPageContentStream contentStream = new PDPageContentStream(document, page);
 
-                    PDFormXObject xObject = pdfBoxGraphics2D.getXFormObject();
-                    PDPageContentStream contentStream = new PDPageContentStream(document, page);
+                        contentStream.transform(new Matrix(AffineTransform.getTranslateInstance(100, 200)));
+                        contentStream.drawForm(xObject);
 
-                    contentStream.transform(new Matrix(AffineTransform.getTranslateInstance(100, 200)));
-                    contentStream.drawForm(xObject);
-
-                    contentStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        contentStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    document.addPage(page);
+                    try {
+                        document.save(file.getPath());
+                        document.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-                document.addPage(page);
-                try {
-                    document.save(file.getPath());
-                    document.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                case "Scalable Vector Graphics" -> {
+                    System.out.println("SVG");
+                    SVGGraphics2D svgGraphics2D = new SVGGraphics2D(400, 400);
+                    cp.drawOnGraphics2D(svgGraphics2D);
+                    try {
+                        FileWriter fileWriter = new FileWriter(file);
+                        fileWriter.write(svgGraphics2D.getSVGDocument());
+                        fileWriter.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+                case "PNG Image" -> System.out.println("PNG");
             }
-            case "Scalable Vector Graphics" -> {
-                System.out.println("SVG");
-                SVGGraphics2D svgGraphics2D = new SVGGraphics2D(400, 400);
-                cp.drawOnGraphics2D(svgGraphics2D);
-                try {
-                    FileWriter fileWriter = new FileWriter(file);
-                    fileWriter.write(svgGraphics2D.getSVGDocument());
-                    fileWriter.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            case "PNG Image" -> System.out.println("PNG");
         }
     }
 }
