@@ -1,6 +1,8 @@
 package ovgu.creasy.ui;
 
+import de.rototor.pdfbox.graphics2d.PdfBoxGraphics2D;
 import javafx.application.HostServices;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -13,6 +15,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
+import org.apache.pdfbox.util.Matrix;
+import org.jfree.svg.SVGGraphics2D;
 import ovgu.creasy.Main;
 import ovgu.creasy.origami.*;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
@@ -20,6 +29,7 @@ import ovgu.creasy.util.PDFExporter;
 import ovgu.creasy.util.SVGExporter;
 import ovgu.creasy.util.TextLogger;
 
+import java.awt.geom.AffineTransform;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +65,7 @@ public class MainWindow {
     @FXML
     private MenuItem zoomOutMenuItem;
     @FXML
-    private MenuItem resetMenuItem;
+    private MenuItem saveMenuItem;
     @FXML
     private Menu exportMenu;
 
@@ -322,8 +332,8 @@ public class MainWindow {
         foldedModelMenuItem.setDisable(false);
         zoomInMenuItem.setDisable(false);
         zoomOutMenuItem.setDisable(false);
-        resetMenuItem.setDisable(false);
         exportMenu.setDisable(false);
+        saveMenuItem.setDisable(false);
     }
 
     private void drawSteps(ExtendedCreasePattern ecp) {
@@ -452,8 +462,8 @@ public class MainWindow {
         foldedModelMenuItem.setDisable(true);
         zoomInMenuItem.setDisable(true);
         zoomOutMenuItem.setDisable(true);
-        resetMenuItem.setDisable(true);
         exportMenu.setDisable(true);
+        saveMenuItem.setDisable(true);
 
         stepsCanvasList.clear();
         historyCanvasList.clear();
@@ -504,5 +514,65 @@ public class MainWindow {
 
     public void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
+    }
+
+    @FXML
+    private void onExit() {
+        Platform.exit();
+    }
+
+    @FXML
+    public void onSaveMainCP() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save crease pattern as...");
+
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PDF Document", "*.pdf"),
+                                                 new FileChooser.ExtensionFilter("Scalable Vector Graphics", "*.svg"),
+                                                 new FileChooser.ExtensionFilter("PNG Image", "*.png"));
+
+        File file = fileChooser.showSaveDialog(mainCanvas.getScene().getWindow());
+
+        switch (fileChooser.getSelectedExtensionFilter().getDescription()) {
+            case "PDF Document" -> {
+                System.out.println("PDF");
+                PDDocument document = new PDDocument();
+                PDPage page = new PDPage(PDRectangle.A4);
+                try {
+                    PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(document, 400, 400);
+                    cp.drawOnGraphics2D(pdfBoxGraphics2D);
+                    pdfBoxGraphics2D.dispose();
+
+                    PDFormXObject xObject = pdfBoxGraphics2D.getXFormObject();
+                    PDPageContentStream contentStream = new PDPageContentStream(document, page);
+
+                    contentStream.transform(new Matrix(AffineTransform.getTranslateInstance(100, 200)));
+                    contentStream.drawForm(xObject);
+
+                    contentStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                document.addPage(page);
+                try {
+                    document.save(file.getPath());
+                    document.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            case "Scalable Vector Graphics" -> {
+                System.out.println("SVG");
+                SVGGraphics2D svgGraphics2D = new SVGGraphics2D(400, 400);
+                cp.drawOnGraphics2D(svgGraphics2D);
+                try {
+                    FileWriter fileWriter = new FileWriter(file);
+                    fileWriter.write(svgGraphics2D.getSVGDocument());
+                    fileWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            case "PNG Image" -> System.out.println("PNG");
+        }
     }
 }

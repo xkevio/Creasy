@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?language <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
@@ -24,7 +25,10 @@
          <menus>
             <Menu mnemonicParsing="false" text="File">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#onMenuImportAction" text="Import" />
+                  <MenuItem mnemonicParsing="false" onAction="#onMenuResetAction" text="New" />
+                  <MenuItem mnemonicParsing="false" onAction="#onMenuImportAction" text="Open..." />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="saveMenuItem" disable="true" mnemonicParsing="false" onAction="#onSaveMainCP" text="Save CP As..." />
                   <Menu fx:id="exportMenu" disable="true" mnemonicParsing="false" text="Export">
                     <items>
                       <MenuItem mnemonicParsing="false" onAction="#onMenuExportPDFAction" text="PDF" />
@@ -32,7 +36,7 @@
                     </items>
                   </Menu>
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="resetMenuItem" disable="true" mnemonicParsing="false" onAction="#onMenuResetAction" text="Reset" />
+                  <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="View">
