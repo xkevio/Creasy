@@ -49,7 +49,7 @@ public class Point {
     public double clockwiseAngle(Point other) {
         double dirAnchorYLine = Math.atan2(0, 1);
         double dirThisLine = Math.atan2(other.getY() - this.getY(), other.getX() - this.getX());
-        double angle = dirAnchorYLine - dirThisLine;
+        double angle = -(dirAnchorYLine - dirThisLine);
         if (angle > Math.PI) {
             angle -= 2 * Math.PI;
         } else if (angle < 0) {

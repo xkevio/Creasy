@@ -9,8 +9,8 @@ import ovgu.creasy.ui.ResizableCanvas;
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.io.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * A collection of creases that, when folded, create an origami Model.
@@ -380,30 +380,20 @@ public class CreasePattern {
                 outgoingCreases.remove(i+1);
             }
         }
-        if (outgoingCreases.size() == 1) {
-            double angle = outgoingCreases.get(0).getLine().getClockwiseAngle();
-            System.out.println("Point: " + point);
-            System.out.println("Outgoing angle:" + Math.toDegrees(angle));
-            return -(angle + Math.PI);
-        }
         // double biggestAngle = 0.0;
-        int sum = 0;
 
         for (int i = 0; i < outgoingCreases.size(); i++) {
-            // TODO
             Crease crease = outgoingCreases.get(i);
             Crease nextCrease = outgoingCreases.get((i+1)%outgoingCreases.size());
-            Point a = crease.getLine().getDir();
-            Point b = nextCrease.getLine().getDir();
 
-            //double angle = Math.acos((a.dot(b)) / ((a.distance(a)) * (b.distance(b))));
-            double angle = nextCrease.getLine().getClockwiseAngle() - crease.getLine().getClockwiseAngle();
-            if (angle<0) {
+            double angle = crease.getLine().getClockwiseAngle() - nextCrease.getLine().getClockwiseAngle();
+            while (angle<0) {
                 angle += Math.PI * 2;
             }
             angles.add(angle);
         }
 
+        System.out.println(angles);
         double currentMax = 0;
         int index = 0;
         for (int i = 0; i < angles.size(); i++) {
@@ -412,24 +402,22 @@ public class CreasePattern {
                 index = i;
             }
         }
+        System.out.println(index);
 
+        int sum = 0;
         // biggestAngle = currentMax;
-        if (index % 2 == 0) {
-            for (int i = 2; i < index; i += 2) {
-                sum += angles.get(i);
-            }
-        } else {
+        if (index % 2 == 1) {
             for (int i = 1; i < index; i += 2) {
                 sum += angles.get(i);
             }
+        } else {
+            for (int i = 0; i < index; i += 2) {
+                sum += angles.get(i);
+            }
         }
-        double sumUpToBiggest = 0;
-        for (int i = 0; i < index; i++) {
-            sumUpToBiggest += angles.get(i);
-        }
-
+        System.out.println(sum);
         // c_k.angle?
-        return angles.get(index) + (Math.PI - sum) + sumUpToBiggest;
+        return outgoingCreases.get(index).getLine().getClockwiseAngle() + (Math.PI - sum);
     }
 
     @Override
