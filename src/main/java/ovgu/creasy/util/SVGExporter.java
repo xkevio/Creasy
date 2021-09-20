@@ -2,12 +2,16 @@ package ovgu.creasy.util;
 
 import javafx.scene.Parent;
 import javafx.stage.FileChooser;
+import org.jfree.svg.SVGGraphics2D;
+import ovgu.creasy.origami.CreasePattern;
 import ovgu.creasy.ui.ResizableCanvas;
 
+import java.awt.*;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import org.jfree.svg.*;
 
 public class SVGExporter extends AbstractExporter {
 
@@ -28,16 +32,43 @@ public class SVGExporter extends AbstractExporter {
 
     @Override
     public boolean export(File file) {
+        SVGGraphics2D svgGraphics2D = new SVGGraphics2D(this.history.size() * 450, 400);
 
+        List<ResizableCanvas> resizableCanvas = this.history;
+        for (int i = 0, resizableCanvasSize = resizableCanvas.size(); i < resizableCanvasSize; i++) {
+            ResizableCanvas canvas = resizableCanvas.get((resizableCanvasSize - 1) - i);
+            canvas.getCp().drawOnGraphics2D(svgGraphics2D);
 
-        this.history.forEach(canvas -> {
-            SVGGraphics2D svg = new SVGGraphics2D(200,200);
+            if (i > 0) {
+                CreasePattern prev = resizableCanvas.get((resizableCanvasSize - 1) - i + 1).getCp();
+                CreasePattern diff = canvas.getCp().getDifference(prev);
 
-            // TODO: see PDFExporter, it is similar
+                svgGraphics2D.setStroke(new BasicStroke(5));
+                diff.drawOnGraphics2D(svgGraphics2D);
+                svgGraphics2D.setStroke(new BasicStroke(1));
+            }
 
-        });
+            if (i < resizableCanvasSize - 1) {
+                drawArrow(svgGraphics2D);
+                svgGraphics2D.translate(450, 0);
+            }
+        }
 
+        try {
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(svgGraphics2D.getSVGDocument());
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
 
         return true;
+    }
+
+    private void drawArrow(SVGGraphics2D svgGraphics2D) {
+        svgGraphics2D.setColor(Color.BLACK);
+        svgGraphics2D.fillRect(400, 200, 45, 10);
+        svgGraphics2D.fillPolygon(new int[] {445, 450, 445}, new int[] {195, 205, 215}, 3);
     }
 }

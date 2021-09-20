@@ -6,8 +6,11 @@ import ovgu.creasy.geom.Line;
 import ovgu.creasy.geom.Point;
 import ovgu.creasy.ui.ResizableCanvas;
 
+import java.awt.*;
+import java.awt.geom.Line2D;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * A collection of creases that, when folded, create an origami Model.
@@ -286,7 +289,7 @@ public class CreasePattern {
         graphicsContext.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
         graphicsContext.setLineWidth(2);
 
-        drawCreasePattern(canvas, scaleX, scaleY, graphicsContext);
+        drawCreasePattern(canvas, scaleX, scaleY);
     }
 
     public void drawOverCanvas(ResizableCanvas canvas, double scaleX, double scaleY) {
@@ -298,10 +301,12 @@ public class CreasePattern {
         graphicsContext.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
         graphicsContext.setLineWidth(6);
 
-        drawCreasePattern(canvas, scaleX, scaleY, graphicsContext);
+        drawCreasePattern(canvas, scaleX, scaleY);
     }
 
-    private void drawCreasePattern(ResizableCanvas canvas, double scaleX, double scaleY, GraphicsContext graphicsContext) {
+    private void drawCreasePattern(ResizableCanvas canvas, double scaleX, double scaleY) {
+        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+
         for (Crease crease : creases) {
             Color currentColor = switch (crease.getType()) {
                 case EDGE -> Color.BLACK;
@@ -319,6 +324,23 @@ public class CreasePattern {
         }
 
         graphicsContext.translate(-canvas.getWidth() / 2, -canvas.getHeight() / 2);
+    }
+
+    public void drawOnGraphics2D(Graphics2D graphics2D) {
+        for (Crease crease : this.getCreases()) {
+            java.awt.Color color = switch (crease.getType()) {
+                case EDGE -> java.awt.Color.BLACK;
+                case VALLEY -> java.awt.Color.BLUE;
+                case MOUNTAIN -> java.awt.Color.RED;
+            };
+
+            graphics2D.setColor(color);
+
+            Point start = crease.getLine().getStart();
+            Point end = crease.getLine().getEnd();
+            graphics2D.draw(new Line2D.Double(start.getX() + 200, start.getY() + 200,
+                    end.getX() + 200, end.getY() + 200));
+        }
     }
 
     public CreasePattern getDifference(CreasePattern other) {
