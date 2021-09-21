@@ -41,11 +41,7 @@ public class ExtendedCrease {
     }
 
     public boolean isComplete() {
-        if (getExtendedReflectionPath().getStart().getType() == Vertex.Type.BORDER && getExtendedReflectionPath().getEnd().getType() == Vertex.Type.BORDER) {
-            return true;
-        }
-
-        return false;
+        return getExtendedReflectionPath().getStart().getType() == Vertex.Type.BORDER && getExtendedReflectionPath().getEnd().getType() == Vertex.Type.BORDER;
     }
 
     public Vertex getStartVertex() {

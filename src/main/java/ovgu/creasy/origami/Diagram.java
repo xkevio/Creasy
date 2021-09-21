@@ -15,11 +15,11 @@ public class Diagram {
      * The contents of this list should always form a Step sequence,
      * meaning that one Step's to field should be equal to the next Step's from field
      */
-    private List<DiagramStep> selectedSteps;
+    private final List<DiagramStep> selectedSteps;
     /**
      * all steps that have been discovered so far
      */
-    private Collection<DiagramStep> allSteps;
+    private final Collection<DiagramStep> allSteps;
 
     public Diagram() {
         this.selectedSteps = new ArrayList<>();
