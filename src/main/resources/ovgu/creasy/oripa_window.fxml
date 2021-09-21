@@ -15,8 +15,8 @@
 
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ovgu.creasy.origami.oripa.ui.EstimationResultFrame">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" percentWidth="30.0" />
-    <ColumnConstraints hgrow="SOMETIMES" percentWidth="70.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="240.0" />
+    <ColumnConstraints hgrow="SOMETIMES" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
