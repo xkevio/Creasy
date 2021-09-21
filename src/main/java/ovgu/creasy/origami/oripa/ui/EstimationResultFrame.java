@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.jfree.svg.SVGGraphics2D;
 import oripa.domain.fold.FoldedModel;
@@ -38,15 +38,15 @@ public class EstimationResultFrame {
     @FXML
     private CheckBox drawEdge;
     @FXML
-    private GridPane grid;
+    private VBox oripaCanvasHolder;
 
     public EstimationResultFrame() {
         this.screen = new FoldedModelScreen();
     }
 
     public void setModel(final FoldedModel foldedModel) {
-        grid.add(screen, 1, 0);
-        grid.getChildren().get(1).toBack();
+        oripaCanvasHolder.getChildren().add(screen);
+        oripaCanvasHolder.toBack();
 
         screen.setModel(foldedModel);
         screen.setLogger(oripaLog);
@@ -126,27 +126,29 @@ public class EstimationResultFrame {
 
         File file = exportSVG.showSaveDialog(screen.getScene().getWindow());
 
-        SVGGraphics2D svgGraphics2D = new SVGGraphics2D(1000, 1000);
-        svgGraphics2D.setColor(Color.BLUE);
-        svgGraphics2D.translate(500, 500);
+        if (file != null) {
+            SVGGraphics2D svgGraphics2D = new SVGGraphics2D(1000, 1000);
+            svgGraphics2D.setColor(Color.BLUE);
+            svgGraphics2D.translate(500, 500);
 
-        screen.getOrigamiModel().getEdges().forEach(oriEdge -> {
-            OriVertex start = oriEdge.getStartVertex();
-            OriVertex end = oriEdge.getEndVertex();
+            screen.getOrigamiModel().getEdges().forEach(oriEdge -> {
+                OriVertex start = oriEdge.getStartVertex();
+                OriVertex end = oriEdge.getEndVertex();
 
-            svgGraphics2D.draw(new Line2D.Double(start.getPosition().x, start.getPosition().y,
-                    end.getPosition().x, end.getPosition().y));
-        });
+                svgGraphics2D.draw(new Line2D.Double(start.getPosition().x, start.getPosition().y,
+                        end.getPosition().x, end.getPosition().y));
+            });
 
-        try {
-            FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write(svgGraphics2D.getSVGDocument());
-            fileWriter.close();
+            try {
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.write(svgGraphics2D.getSVGDocument());
+                fileWriter.close();
 
-            TextLogger.logText("Saved " + file.getName() + " successfully", oripaLog);
-        } catch (IOException e) {
-            e.printStackTrace();
-            TextLogger.logText("Error while saving " + file.getName(), oripaLog);
+                TextLogger.logText("Saved " + file.getName() + " successfully", oripaLog);
+            } catch (IOException e) {
+                e.printStackTrace();
+                TextLogger.logText("Error while saving " + file.getName(), oripaLog);
+            }
         }
     }
 }
