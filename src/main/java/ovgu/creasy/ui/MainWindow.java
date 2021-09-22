@@ -32,6 +32,7 @@ import ovgu.creasy.util.TextLogger;
 import java.awt.geom.AffineTransform;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static ovgu.creasy.ui.ResizableCanvas.CANVAS_HEIGHT;
@@ -52,6 +53,7 @@ public class MainWindow {
 
     private List<ResizableCanvas> historyCanvasList;
     private List<ResizableCanvas> stepsCanvasList;
+    private HashMap<ResizableCanvas, Separator> pairs;
 
     private boolean wasSaved = false;
 
@@ -76,11 +78,6 @@ public class MainWindow {
     @FXML
     private VBox steps;
 
-
-    /* This makes sure that the window scales correctly
-       by binding the canvas to the window size and redrawing if
-       necessary.
-     */
     @FXML
     public void initialize() {
         mainCanvas = new ResizableCanvas(2000, 2000);
@@ -315,6 +312,7 @@ public class MainWindow {
         System.out.println("size = " + ecp.possibleSteps().size());
 
         // should be called when the algorithm is executed, aka once the amount of steps is known
+        pairs = new HashMap<>();
         createCanvases(steps, stepsCanvasList, ecp.possibleSteps().size());
 
         drawSteps(ecp);
@@ -387,9 +385,13 @@ public class MainWindow {
                             MenuItem delete = new MenuItem("Delete");
 
                             delete.setOnAction(actionEvent -> {
+                                history.getChildren().remove(pairs.get(c));
                                 history.getChildren().remove(c);
+
                                 historyCanvasList.remove(c);
                                 historyLabel.setText("History (" + historyCanvasList.size() + " steps)");
+                                pairs.remove(c);
+
                                 TextLogger.logText("1 step in history successfully deleted", log);
                             });
                             contextMenu.getItems().add(delete);
@@ -485,8 +487,12 @@ public class MainWindow {
     private void createCanvases(Pane pane, List<ResizableCanvas> list, int amount) {
         for (int i = 0; i < amount; ++i) {
             ResizableCanvas canvas = new ResizableCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+            Separator separator = new Separator();
+
             pane.getChildren().add(canvas);
-            pane.getChildren().add(new Separator());
+            pane.getChildren().add(separator);
+            pairs.put(canvas, separator);
+
             list.add(canvas);
         }
     }
