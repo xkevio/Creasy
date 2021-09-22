@@ -329,7 +329,7 @@ public class MainWindow {
         setupMouseEvents(stepsCanvasList, historyCanvasList);
         mainCanvas.getScene().getWindow().setOnCloseRequest(windowEvent -> {
             if (!historyCanvasList.isEmpty() && !wasSaved) {
-                ClosingWindow.open(filePath, new PDFExporter(historyCanvasList));
+                ClosingWindow.open(historyCanvasList, filePath);
                 windowEvent.consume();
             }
         });

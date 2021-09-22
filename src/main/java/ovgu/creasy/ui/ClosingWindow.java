@@ -4,13 +4,19 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import ovgu.creasy.Main;
-import ovgu.creasy.util.AbstractExporter;
+import ovgu.creasy.util.PDFExporter;
+import ovgu.creasy.util.SVGExporter;
+
+import java.io.File;
+import java.util.List;
 
 public class ClosingWindow {
 
-    public static void open(String modelName, AbstractExporter exporter) {
+    public static void open(List<ResizableCanvas> history, String modelName) {
         Alert closing = new Alert(Alert.AlertType.WARNING);
 
         closing.setTitle(Main.APPLICATION_TITLE);
@@ -27,10 +33,27 @@ public class ClosingWindow {
 
         closing.getDialogPane().getStylesheets().add(Main.STYLESHEET);
 
+        Window window = closing.getDialogPane().getScene().getWindow();
+
         var result = closing.showAndWait();
         if (result.isPresent()) {
             switch (result.get().getButtonData()) {
-                // case YES -> exporter.export();
+                 case YES -> {
+                     FileChooser fileChooser = new FileChooser();
+                     fileChooser.setTitle("Save as...");
+                     fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PDF Document", "*.pdf"),
+                                                              new FileChooser.ExtensionFilter("Scalable Vector Graphics", "*.svg"));
+
+                     File file = fileChooser.showSaveDialog(window);
+                     if (file != null) {
+                         switch (fileChooser.getSelectedExtensionFilter().getDescription()) {
+                             case "PDF Document" -> new PDFExporter(history).export(file);
+                             case "Scalable Vector Graphics" -> new SVGExporter(history).export(file);
+                         }
+                     }
+
+                     Platform.exit();
+                 }
                 case NO -> Platform.exit();
                 default -> closing.close();
             }
