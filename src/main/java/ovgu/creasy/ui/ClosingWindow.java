@@ -50,9 +50,10 @@ public class ClosingWindow {
                              case "PDF Document" -> new PDFExporter(history).export(file);
                              case "Scalable Vector Graphics" -> new SVGExporter(history).export(file);
                          }
+                         Platform.exit();
+                     } else {
+                         closing.close();
                      }
-
-                     Platform.exit();
                  }
                 case NO -> Platform.exit();
                 default -> closing.close();
