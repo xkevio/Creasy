@@ -1,8 +1,12 @@
 package ovgu.creasy.ui;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.value.ObservableNumberValue;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.Effect;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Affine;
 import ovgu.creasy.origami.CreasePattern;
 
 public class ResizableCanvas extends Canvas {
@@ -72,6 +76,23 @@ public class ResizableCanvas extends Canvas {
                 cp.drawOnCanvas(this, this.getCpScaleX() - 0.1, this.getCpScaleY() - 0.1);
             }
         }
+    }
+
+    public void scaleGridUp() {
+        // TODO...
+        this.drawGrid();
+//        this.setScaleX(this.getScaleX() + 0.1);
+//        this.setScaleY(this.getScaleY() + 0.1);
+    }
+
+    public void scaleGridDown() {
+        // TODO...
+//        this.getGraphicsContext2D().getTransform().setMxx(this.getGraphicsContext2D().getTransform().getMxx() - 0.1);
+//        this.getGraphicsContext2D().getTransform().setMyy(this.getGraphicsContext2D().getTransform().getMyy() - 0.1);
+
+        this.drawGrid();
+//        this.setScaleX(this.getScaleX() - 0.1);
+//        this.setScaleY(this.getScaleY() - 0.1);
     }
 
     @Override

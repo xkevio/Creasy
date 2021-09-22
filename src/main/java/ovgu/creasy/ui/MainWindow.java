@@ -3,11 +3,14 @@ package ovgu.creasy.ui;
 import de.rototor.pdfbox.graphics2d.PdfBoxGraphics2D;
 import javafx.application.HostServices;
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
@@ -29,7 +32,9 @@ import ovgu.creasy.util.PDFExporter;
 import ovgu.creasy.util.SVGExporter;
 import ovgu.creasy.util.TextLogger;
 
+import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,6 +97,7 @@ public class MainWindow {
 
         gridCanvas.getGraphicsContext2D().setFill(Color.WHITE);
         gridCanvas.getGraphicsContext2D().fillRect(0, 0, 2000,2000);
+        gridCanvas.getGraphicsContext2D().setImageSmoothing(false);
         gridCanvas.drawGrid();
 
         canvasHolder.setContent(new Group(gridCanvas, mainCanvas));
@@ -100,8 +106,10 @@ public class MainWindow {
             if (mainCanvas.getCp() != null) {
                 if (scrollEvent.getDeltaY() < 0) {
                     mainCanvas.zoomOut();
+                    gridCanvas.scaleGridDown();
                 }  else {
                     mainCanvas.zoomIn();
+                    gridCanvas.scaleGridUp();
                 }
                 scrollEvent.consume();
             }
@@ -578,7 +586,16 @@ public class MainWindow {
                         e.printStackTrace();
                     }
                 }
-                case "PNG Image" -> System.out.println("PNG");
+                case "PNG Image" -> {
+                    WritableImage image = mainCanvas.snapshot(new SnapshotParameters(), null);
+                    BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+
+                    try {
+                        ImageIO.write(bufferedImage, "png", file);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
