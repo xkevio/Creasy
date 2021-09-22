@@ -224,11 +224,13 @@ public class MainWindow {
     @FXML
     public void onZoomInMenuItem() {
         mainCanvas.zoomIn();
+        grid.zoomIn();
     }
 
     @FXML
     public void onZoomOutMenuItem() {
         mainCanvas.zoomOut();
+        grid.zoomOut();
     }
 
     @FXML

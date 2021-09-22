@@ -44,7 +44,7 @@ public class ResizableCanvas extends Canvas {
         }
 
         public void zoomIn() {
-            System.out.println("zoom in - trying really hard to get the grid zoom to work");
+            // System.out.println("zoom in - trying really hard to get the grid zoom to work");
 
             gridCanvas.getGraphicsContext2D().fillRect(-10_000, -10_000, 20_000, 20_000);
 
@@ -62,7 +62,7 @@ public class ResizableCanvas extends Canvas {
         }
 
         public void zoomOut() {
-            System.out.println("zoom out - trying really hard to get the grid zoom to work");
+            // System.out.println("zoom out - trying really hard to get the grid zoom to work");
             if (gridCanvas.getGraphicsContext2D().getTransform().getMxx() >= 0.1) {
                 gridCanvas.getGraphicsContext2D().fillRect(-10_000, -10_000, 20_000, 20_000);
 
