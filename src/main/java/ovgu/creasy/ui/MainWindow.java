@@ -64,6 +64,7 @@ public class MainWindow {
 
     public ResizableCanvas mainCanvas;
     public ResizableCanvas gridCanvas;
+    public ResizableCanvas.Grid grid;
 
     @FXML
     private MenuItem foldedModelMenuItem;
@@ -98,7 +99,9 @@ public class MainWindow {
         gridCanvas.getGraphicsContext2D().setFill(Color.WHITE);
         gridCanvas.getGraphicsContext2D().fillRect(0, 0, 2000,2000);
         gridCanvas.getGraphicsContext2D().setImageSmoothing(false);
-        gridCanvas.drawGrid();
+
+        grid = new ResizableCanvas.Grid(gridCanvas,50);
+        grid.drawGrid();
 
         canvasHolder.setContent(new Group(gridCanvas, mainCanvas));
 
@@ -106,10 +109,10 @@ public class MainWindow {
             if (mainCanvas.getCp() != null) {
                 if (scrollEvent.getDeltaY() < 0) {
                     mainCanvas.zoomOut();
-                    gridCanvas.scaleGridDown();
+                    grid.zoomOut();
                 }  else {
                     mainCanvas.zoomIn();
-                    gridCanvas.scaleGridUp();
+                    grid.zoomIn();
                 }
                 scrollEvent.consume();
             }
@@ -230,20 +233,20 @@ public class MainWindow {
 
     @FXML
     public void onGridIncreaseAction() {
-        gridCanvas.drawGrid(gridCanvas.getCurrentCellSize() * 2);
-        TextLogger.logText("Increased Grid (x2), new grid cell size: " + gridCanvas.getCurrentCellSize(), log);
+        grid.drawGrid(grid.getCurrentCellSize() * 2);
+        TextLogger.logText("Increased Grid (x2), new grid cell size: " + grid.getCurrentCellSize(), log);
     }
 
     @FXML
     public void onGridDecreaseAction() {
-        gridCanvas.drawGrid(gridCanvas.getCurrentCellSize() / 2);
-        TextLogger.logText("Decreased Grid (x0.5), new grid cell size: " + gridCanvas.getCurrentCellSize(), log);
+        grid.drawGrid(grid.getCurrentCellSize() / 2);
+        TextLogger.logText("Decreased Grid (x0.5), new grid cell size: " + grid.getCurrentCellSize(), log);
     }
 
     @FXML
     public void onGridCustomAction() {
-        CustomGridSizeWindow.open(gridCanvas);
-        TextLogger.logText("New grid cell size: " + gridCanvas.getCurrentCellSize(), log);
+        CustomGridSizeWindow.open(grid);
+        TextLogger.logText("New grid cell size: " + grid.getCurrentCellSize(), log);
     }
     // -------------------------
 
@@ -411,7 +414,7 @@ public class MainWindow {
                     } else {
                         CreasePattern currentStep = c.getCp();
 
-                        currentStep.drawOnCanvas(mainCanvas, 1, 1);
+                        currentStep.drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
                         ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(currentStep);
 
                         if (c.getParent().equals(steps)) {
@@ -598,5 +601,16 @@ public class MainWindow {
                 }
             }
         }
+    }
+
+    @FXML
+    private void onShowPoints() {
+//        mainCanvas.getGraphicsContext2D().setFill(Color.GRAY);
+//        mainCanvas.getGraphicsContext2D().translate(mainCanvas.getWidth() / 2, mainCanvas.getHeight() / 2);
+//        mainCanvas.getCp().getPoints().forEach(point -> {
+//            mainCanvas.getGraphicsContext2D().fillRect(point.getX() * mainCanvas.getCpScaleX() - 5,
+//                    point.getY() * mainCanvas.getCpScaleY() - 5, 10, 10);
+//        });
+//        mainCanvas.getGraphicsContext2D().translate(-mainCanvas.getWidth() / 2, -mainCanvas.getHeight() / 2);
     }
 }

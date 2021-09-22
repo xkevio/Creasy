@@ -9,15 +9,15 @@ import ovgu.creasy.Main;
 
 public class CustomGridSizeWindow {
 
-    public static void open(ResizableCanvas canvas) {
+    public static void open(ResizableCanvas.Grid grid) {
         Alert customSlider = new Alert(Alert.AlertType.CONFIRMATION);
         customSlider.setTitle("Select a cell size");
         customSlider.setHeaderText("Change grid cell size to custom size");
         ((Stage) customSlider.getDialogPane().getScene().getWindow()).getIcons().add(Main.APPLICATION_ICON);
 
-        int oldSize = canvas.getCurrentCellSize();
+        int oldSize = grid.getCurrentCellSize();
 
-        Slider slider = new Slider(0, 200, canvas.getCurrentCellSize());
+        Slider slider = new Slider(0, 200, grid.getCurrentCellSize());
         slider.setShowTickLabels(true);
         slider.setShowTickMarks(true);
 
@@ -25,12 +25,12 @@ public class CustomGridSizeWindow {
         HBox labelAndTextField = new HBox();
 
         Label label = new Label("New size: ");
-        TextField currentValue = new TextField(String.valueOf(canvas.getCurrentCellSize()));
+        TextField currentValue = new TextField(String.valueOf(grid.getCurrentCellSize()));
         currentValue.setPrefColumnCount(5);
 
         slider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
             currentValue.setText(String.valueOf(newValue.intValue()));
-            canvas.drawGrid(newValue.intValue());
+            grid.drawGrid(newValue.intValue());
         });
 
         currentValue.setOnKeyTyped(keyEvent -> slider.setValue(Double.parseDouble(currentValue.getText())));
@@ -49,9 +49,9 @@ public class CustomGridSizeWindow {
         var result = customSlider.showAndWait();
 
         if (result.isPresent() && result.get() == apply) {
-            canvas.drawGrid(Integer.parseInt(currentValue.getText()));
+            grid.drawGrid(Integer.parseInt(currentValue.getText()));
         } else {
-            canvas.drawGrid(oldSize);
+            grid.drawGrid(oldSize);
         }
     }
 }

@@ -1,15 +1,89 @@
 package ovgu.creasy.ui;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.value.ObservableNumberValue;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.Effect;
 import javafx.scene.paint.Color;
-import javafx.scene.transform.Affine;
 import ovgu.creasy.origami.CreasePattern;
 
 public class ResizableCanvas extends Canvas {
+
+    public static class Grid {
+        private int currentCellSize;
+        private final ResizableCanvas gridCanvas;
+
+        public Grid(ResizableCanvas gridCanvas, int currentCellSize) {
+            this.gridCanvas = gridCanvas;
+            this.currentCellSize = currentCellSize;
+        }
+
+        public void drawGrid() {
+            this.drawGrid(currentCellSize);
+        }
+
+        public void drawGrid(int cellSize) {
+            if (cellSize <= 0) return;
+
+            this.currentCellSize = cellSize;
+
+            GraphicsContext graphicsContext = gridCanvas.getGraphicsContext2D();
+            graphicsContext.setFill(Color.WHITE);
+            graphicsContext.fillRect(-10_000, -10_000, 20_000, 20_000);
+
+            graphicsContext.setStroke(Color.GRAY);
+            graphicsContext.setLineWidth(0.5);
+
+            // draws vertical lines
+            for (int i = -10_000; i < 20_000; i += cellSize) {
+                graphicsContext.strokeLine(i, -10_000, i, 20_000);
+            }
+
+            // draws horizontal lines
+            for (int i = -10_000; i < 20_000; i += cellSize) {
+                graphicsContext.strokeLine(-10_000, i, 20_000, i);
+            }
+        }
+
+        public void zoomIn() {
+            System.out.println("zoom in - trying really hard to get the grid zoom to work");
+
+            gridCanvas.getGraphicsContext2D().fillRect(-10_000, -10_000, 20_000, 20_000);
+
+            gridCanvas.getGraphicsContext2D().translate(gridCanvas.getWidth() / 2, gridCanvas.getHeight() / 2);
+            gridCanvas.getGraphicsContext2D().setTransform(
+                    gridCanvas.getGraphicsContext2D().getTransform().getMxx() + 0.1,
+                    gridCanvas.getGraphicsContext2D().getTransform().getMyx(),
+                    gridCanvas.getGraphicsContext2D().getTransform().getMxy(),
+                    gridCanvas.getGraphicsContext2D().getTransform().getMyy() + 0.1,
+                    gridCanvas.getGraphicsContext2D().getTransform().getTx(),
+                    gridCanvas.getGraphicsContext2D().getTransform().getTy());
+            gridCanvas.getGraphicsContext2D().translate(-gridCanvas.getWidth() / 2, -gridCanvas.getHeight() / 2);
+
+            this.drawGrid();
+        }
+
+        public void zoomOut() {
+            System.out.println("zoom out - trying really hard to get the grid zoom to work");
+            if (gridCanvas.getGraphicsContext2D().getTransform().getMxx() >= 0.1) {
+                gridCanvas.getGraphicsContext2D().fillRect(-10_000, -10_000, 20_000, 20_000);
+
+                gridCanvas.getGraphicsContext2D().translate(gridCanvas.getWidth() / 2, gridCanvas.getHeight() / 2);
+                gridCanvas.getGraphicsContext2D().setTransform(
+                        gridCanvas.getGraphicsContext2D().getTransform().getMxx() - 0.1,
+                        gridCanvas.getGraphicsContext2D().getTransform().getMyx(),
+                        gridCanvas.getGraphicsContext2D().getTransform().getMxy(),
+                        gridCanvas.getGraphicsContext2D().getTransform().getMyy() - 0.1,
+                        gridCanvas.getGraphicsContext2D().getTransform().getTx(),
+                        gridCanvas.getGraphicsContext2D().getTransform().getTy());
+                gridCanvas.getGraphicsContext2D().translate(-gridCanvas.getWidth() / 2, -gridCanvas.getHeight() / 2);
+
+                this.drawGrid();
+            }
+        }
+
+        public int getCurrentCellSize() {
+            return currentCellSize;
+        }
+    }
 
     public static final int CANVAS_WIDTH = 200;
     public static final int CANVAS_HEIGHT = 200;
@@ -19,43 +93,18 @@ public class ResizableCanvas extends Canvas {
     private double cpScaleX;
     private double cpScaleY;
 
-    private int currentCellSize;
     private boolean isSelected = false;
 
     public ResizableCanvas(double width, double height) {
         super(width, height);
         this.cpScaleX = 1;
         this.cpScaleY = 1;
-        this.currentCellSize = 50;
     }
 
     public ResizableCanvas(ResizableCanvas clone) {
         this(clone.getWidth(), clone.getHeight());
         this.setCp(clone.getCp());
         this.isSelected = clone.isSelected();
-    }
-
-    public void drawGrid() {
-        drawGrid(currentCellSize);
-    }
-
-    public void drawGrid(int cellSize) {
-        if (cellSize <= 0) return;
-
-        this.currentCellSize = cellSize;
-        GraphicsContext graphicsContext = this.getGraphicsContext2D();
-        graphicsContext.fillRect(0, 0, getWidth(), getHeight());
-
-        graphicsContext.setStroke(Color.GRAY);
-        graphicsContext.setLineWidth(0.5);
-
-        for (int i = 0; i < getWidth(); i += cellSize) {
-            graphicsContext.strokeLine(i, 0, i, getHeight());
-        }
-
-        for (int i = 0; i < getHeight(); i += cellSize) {
-            graphicsContext.strokeLine(0, i, getWidth(), i);
-        }
     }
 
     public void markAsCurrentlySelected() {
@@ -76,23 +125,6 @@ public class ResizableCanvas extends Canvas {
                 cp.drawOnCanvas(this, this.getCpScaleX() - 0.1, this.getCpScaleY() - 0.1);
             }
         }
-    }
-
-    public void scaleGridUp() {
-        // TODO...
-        this.drawGrid();
-//        this.setScaleX(this.getScaleX() + 0.1);
-//        this.setScaleY(this.getScaleY() + 0.1);
-    }
-
-    public void scaleGridDown() {
-        // TODO...
-//        this.getGraphicsContext2D().getTransform().setMxx(this.getGraphicsContext2D().getTransform().getMxx() - 0.1);
-//        this.getGraphicsContext2D().getTransform().setMyy(this.getGraphicsContext2D().getTransform().getMyy() - 0.1);
-
-        this.drawGrid();
-//        this.setScaleX(this.getScaleX() - 0.1);
-//        this.setScaleY(this.getScaleY() - 0.1);
     }
 
     @Override
@@ -132,10 +164,6 @@ public class ResizableCanvas extends Canvas {
 
     public void setCpScaleY(double cpScaleY) {
         this.cpScaleY = cpScaleY;
-    }
-
-    public int getCurrentCellSize() {
-        return currentCellSize;
     }
 
     public void setSelected(boolean selected) {
