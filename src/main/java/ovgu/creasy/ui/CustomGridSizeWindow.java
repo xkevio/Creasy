@@ -25,17 +25,27 @@ public class CustomGridSizeWindow {
         HBox labelAndTextField = new HBox();
 
         Label label = new Label("New size: ");
-        TextField currentValue = new TextField(String.valueOf(grid.getCurrentCellSize()));
-        currentValue.setPrefColumnCount(5);
+        Spinner<Integer> cV = new Spinner<>(0, 200, grid.getCurrentCellSize());
+        cV.setEditable(true);
+        cV.getEditor().setPrefColumnCount(4);
 
-        slider.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-            currentValue.setText(String.valueOf(newValue.intValue()));
+        slider.valueProperty().addListener((o, oV, newValue) -> {
+            cV.getEditor().setText(String.valueOf(newValue.intValue()));
+            cV.commitValue();
             grid.drawGrid(newValue.intValue());
         });
 
-        currentValue.setOnKeyTyped(keyEvent -> slider.setValue(Double.parseDouble(currentValue.getText())));
+        cV.valueProperty().addListener((o, i, nV) -> {
+            slider.setValue(cV.getValue());
+            cV.commitValue();
+        });
 
-        labelAndTextField.getChildren().addAll(label, currentValue);
+        cV.getEditor().textProperty().addListener((o, i, nV) -> {
+            slider.setValue(Double.parseDouble(nV));
+            cV.commitValue();
+        });
+
+        labelAndTextField.getChildren().addAll(label, cV);
         labelAndTextField.setAlignment(Pos.CENTER);
         wrapper.getChildren().addAll(slider, labelAndTextField);
 
@@ -49,7 +59,7 @@ public class CustomGridSizeWindow {
         var result = customSlider.showAndWait();
 
         if (result.isPresent() && result.get() == apply) {
-            grid.drawGrid(Integer.parseInt(currentValue.getText()));
+            grid.drawGrid(cV.getValue());
         } else {
             grid.drawGrid(oldSize);
         }
