@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="src/main/resources/ovgu/creasy/creasy_logo8.png" width="150" />
+  <img src="src/main/resources/ovgu/creasy/creasy_logo_256.png" width="150" />
   <br>
   <h1 align="center">Creasy: Turn Crease Patterns into Instructions</h1>
 </p>
