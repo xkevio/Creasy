@@ -131,7 +131,7 @@ public class SimplificationPattern {
                 simplified.addCrease(crease);
             }
         }
-        simplified.removeLinearPoints();
+        simplified.removeAllLinearPoints();
         for (Integer vertexId : this.simplifiedOutgoingEdges.keySet()) {
             if (match.vertices.containsKey(vertexId)) {
                 Vertex v = match.vertices.get(vertexId);
@@ -172,7 +172,7 @@ public class SimplificationPattern {
                 }
             }
         }
-        simplified.removeLinearPoints();
+        simplified.removeAllLinearPoints();
         return simplified;
     }
 

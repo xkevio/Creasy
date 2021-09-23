@@ -131,7 +131,17 @@ public class CreasePattern {
         }
     }
 
-    public void removeLinearPoints() {
+    public void removeAllLinearPoints() {
+        int removedCreases = 0;
+        int newRemovedCreases;
+        do {
+            newRemovedCreases = removeLinearPoints();
+            removedCreases += newRemovedCreases;
+        } while (newRemovedCreases > 0);
+        System.out.println("simplified " + removedCreases);
+    }
+
+    public int removeLinearPoints() {
         Set<Crease> creasesToRemove = new HashSet<>();
         Set<Crease> creasesToAdd = new HashSet<>();
         for (Point point : getPoints()) {
@@ -142,29 +152,20 @@ public class CreasePattern {
                 if (line1.getType() != line2.getType()) {
                     continue;
                 }
-                HashSet<Point> points = new HashSet<>();
-                points.add(line1.getLine().getStart());
-                points.add(line1.getLine().getEnd());
-                points.add(line2.getLine().getStart());
-                points.add(line2.getLine().getEnd());
-                Object[] p = points.toArray();
-                Point p1 = (Point) p[0];
-                Point p2 = (Point) p[1];
-                Point p3 = (Point) p[2];
-                double area = 0.5*(p1.getX()*(p2.getY()-p3.getY())+p2.getX()*(p3.getY()-p1.getY())+p3.getX()*(p1.getY()-p2.getY()));
-                if (Math.abs(area) < 0.000001) {
+                Point start = line1.getLine().getOppositePoint(point);
+                Point end = line2.getLine().getOppositePoint(point);
+                Line l = new Line(start, end);
+                if (l.contains(point)) {
                     creasesToRemove.add(line1);
                     creasesToRemove.add(line2);
-                    points.remove(point);
-                    Object[] pp = points.toArray();
-                    Crease c = new Crease(new Line((Point)pp[0], (Point)pp[1]), line1.getType());
-                    creasesToAdd.add(c);
+                    creasesToAdd.add(new Crease(l, line1.getType()));
                 }
             }
         }
 
         creasesToRemove.forEach(this::removeCrease);
         creasesToAdd.forEach(this::addCrease);
+        return creasesToAdd.size();
     }
 
     public void addCrease(Crease crease) {
