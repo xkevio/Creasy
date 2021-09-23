@@ -825,3 +825,11 @@ TextField {
 .button:pressed {
     -fx-background-color: #d0d0d0;
 }
+
+.scroll-pane#oripa {
+    -fx-background-insets: 0;
+}
+
+.scroll-pane#oripa:focused {
+    -fx-background-insets: 0;
+}

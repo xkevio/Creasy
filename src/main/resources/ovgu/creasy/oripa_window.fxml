@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -15,79 +16,83 @@
 
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ovgu.creasy.origami.oripa.ui.EstimationResultFrame">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="240.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="270.0" />
     <ColumnConstraints hgrow="SOMETIMES" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <VBox alignment="TOP_CENTER" prefWidth="200.0" spacing="5.0">
-         <children>
-            <Label fx:id="indexLabel" text="Folded Model [1/5]" />
-            <ButtonBar buttonOrder="U+L_HE+FBIX_NCYOA_R" prefHeight="40.0">
-               <buttons>
-                  <Button mnemonicParsing="false" onAction="#onPrevAction" text="◀ Prev" />
-                  <Button mnemonicParsing="false" onAction="#onNextAction" text="Next ▶" />
-               </buttons>
-            </ButtonBar>
-            <Separator prefWidth="200.0" />
-            <HBox alignment="TOP_CENTER" prefHeight="90.0" prefWidth="200.0">
-               <children>
-                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
-                     <children>
-                        <CheckBox fx:id="flip" mnemonicParsing="false" onAction="#onFlipAction" text="Flip" />
-                        <CheckBox fx:id="useColor" mnemonicParsing="false" onAction="#onUseColorAction" selected="true" text="Use Color" />
-                        <CheckBox fx:id="fillFace" mnemonicParsing="false" onAction="#onFillFaceAction" selected="true" text="FillFace" />
-                     </children>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                     <padding>
-                        <Insets left="20.0" />
-                     </padding>
-                  </VBox>
-                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
-                     <children>
-                        <CheckBox fx:id="shade" mnemonicParsing="false" onAction="#onShadeAction" text="Shade" />
-                        <CheckBox fx:id="drawEdge" mnemonicParsing="false" onAction="#onDrawEdgeAction" selected="true" text="Draw Edge" />
-                     </children>
-                     <padding>
-                        <Insets left="5.0" />
-                     </padding>
-                  </VBox>
-               </children>
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-            </HBox>
-            <ButtonBar buttonOrder="U+L_HE+FBIX_NCYOA_R">
-               <buttons>
-                  <Button mnemonicParsing="false" onAction="#onExportOripaAction" text="Export" />
-               </buttons>
-               <VBox.margin>
-                  <Insets bottom="5.0" />
-               </VBox.margin>
-            </ButtonBar>
-            <Separator prefWidth="200.0" />
-            <VBox VBox.vgrow="ALWAYS">
-               <children>
-                  <TextArea fx:id="oripaLog" editable="false" text="&lt;----------------&gt;&#10;Left click: Drag&#10;Right click: Rotate&#10;Scroll: Zoom&#10;&lt;----------------&gt;&#10;" wrapText="true" VBox.vgrow="ALWAYS" />
-                  <Label text="Rendered with Oripa 1.45" textFill="#9f9f9f">
-                     <VBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </VBox.margin>
-                  </Label>
-               </children>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </VBox>
-         </children>
-         <GridPane.margin>
-            <Insets top="10.0" />
-         </GridPane.margin>
-      </VBox>
       <VBox fx:id="oripaCanvasHolder" alignment="CENTER" style="-fx-background-color: white;" GridPane.columnIndex="1" />
+      <ScrollPane id="oripa" fitToHeight="true" fitToWidth="true">
+         <content>
+            <VBox alignment="TOP_CENTER" spacing="5.0">
+               <children>
+                  <Label fx:id="indexLabel" text="Folded Model [1/5]" />
+                  <ButtonBar buttonOrder="U+L_HE+FBIX_NCYOA_R" prefHeight="40.0">
+                     <buttons>
+                        <Button mnemonicParsing="false" onAction="#onPrevAction" text="◀ Prev" />
+                        <Button mnemonicParsing="false" onAction="#onNextAction" text="Next ▶" />
+                     </buttons>
+                  </ButtonBar>
+                  <Separator prefWidth="200.0" />
+                  <HBox alignment="TOP_CENTER" prefHeight="90.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+                           <children>
+                              <CheckBox fx:id="flip" mnemonicParsing="false" onAction="#onFlipAction" text="Flip" />
+                              <CheckBox fx:id="useColor" mnemonicParsing="false" onAction="#onUseColorAction" selected="true" text="Use Color" />
+                              <CheckBox fx:id="fillFace" mnemonicParsing="false" onAction="#onFillFaceAction" selected="true" text="FillFace" />
+                           </children>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <padding>
+                              <Insets left="20.0" />
+                           </padding>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+                           <children>
+                              <CheckBox fx:id="shade" mnemonicParsing="false" onAction="#onShadeAction" text="Shade" />
+                              <CheckBox fx:id="drawEdge" mnemonicParsing="false" onAction="#onDrawEdgeAction" selected="true" text="Draw Edge" />
+                           </children>
+                           <padding>
+                              <Insets left="5.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <ButtonBar buttonOrder="U+L_HE+FBIX_NCYOA_R">
+                     <buttons>
+                        <Button mnemonicParsing="false" onAction="#onExportOripaAction" text="Export" />
+                     </buttons>
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin>
+                  </ButtonBar>
+                  <Separator prefWidth="200.0" />
+                  <VBox VBox.vgrow="ALWAYS">
+                     <children>
+                        <TextArea fx:id="oripaLog" editable="false" text="&lt;----------------&gt;&#10;Left click: Drag&#10;Right click: Rotate&#10;Scroll: Zoom&#10;&lt;----------------&gt;&#10;" wrapText="true" VBox.vgrow="ALWAYS" />
+                        <Label text="Rendered with Oripa 1.45" textFill="#9f9f9f">
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets top="10.0" />
+               </padding>
+            </VBox>
+         </content>
+      </ScrollPane>
    </children>
 </GridPane>
