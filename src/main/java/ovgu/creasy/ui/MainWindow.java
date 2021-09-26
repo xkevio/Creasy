@@ -13,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -45,12 +46,14 @@ import static ovgu.creasy.ui.ResizableCanvas.CANVAS_WIDTH;
 
 public class MainWindow {
 
-    @FXML
-    private Label historyLabel;
     private ResizableCanvas activeHistory;
 
     @FXML
     private ScrollPane canvasHolder;
+    @FXML
+    private VBox window;
+    @FXML
+    private Label historyLabel;
 
     private HostServices hostServices;
     private OrigamiModel model;
@@ -83,6 +86,11 @@ public class MainWindow {
     private VBox history;
     @FXML
     private VBox steps;
+
+    @FXML
+    private ColumnConstraints left;
+    @FXML
+    private ColumnConstraints right;
 
     @FXML
     public void initialize() {
@@ -118,6 +126,50 @@ public class MainWindow {
             }
         });
 
+        /*
+        resizes the left and right sidebars when the window is maximized
+        by adding the appropriate listeners when the Scene and Stage are initialized
+         */
+        window.sceneProperty().addListener((observableScene, oldScene, newScene) -> {
+            if (oldScene == null && newScene != null) {
+                newScene.windowProperty().addListener((observableWindow, oldWindow, newWindow) -> {
+                    if (oldWindow == null && newWindow != null) {
+                        ((Stage) newWindow).maximizedProperty().addListener((o, oldBoolean, maximized) -> {
+                            if (maximized) {
+                                left.setPrefWidth(300);
+                                right.setPrefWidth(300);
+                            } else {
+                                left.setPrefWidth(220);
+                                right.setPrefWidth(220);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        /*
+        resizes the left and right sidebars when the window width is manually being changed
+        by dragging it out or in
+         */
+        window.widthProperty().addListener((o, oldValue, newValue) -> {
+            if (newValue.intValue() > oldValue.intValue()) {
+                if (left.getPrefWidth() < 300) {
+                    left.setPrefWidth(left.getPrefWidth() + 1);
+                }
+                if (right.getPrefWidth() < 300) {
+                    right.setPrefWidth(right.getPrefWidth() + 1);
+                }
+            } else {
+                if (left.getPrefWidth() > 220) {
+                    left.setPrefWidth(left.getPrefWidth() - 2);
+                }
+                if (right.getPrefWidth() > 220) {
+                    right.setPrefWidth(right.getPrefWidth() - 2);
+                }
+            }
+        });
+
         historyCanvasList = new ArrayList<>();
         stepsCanvasList = new ArrayList<>();
 
@@ -126,7 +178,7 @@ public class MainWindow {
 
     /**
      * Opens a file explorer dialogue which lets the user select
-     * .cp files and upon loading them, calls setupGUI() -- drawing the
+     * .cp files and upon loading them, calls setupUI() -- drawing the
      * pattern to the screen.
      */
     @FXML

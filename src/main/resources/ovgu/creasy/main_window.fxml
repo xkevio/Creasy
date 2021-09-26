@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="720.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ovgu.creasy.ui.MainWindow">
+<VBox fx:id="window" prefHeight="720.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ovgu.creasy.ui.MainWindow">
    <children>
       <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="25.0" minWidth="640.0">
          <menus>
@@ -58,10 +58,10 @@
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <Menu mnemonicParsing="false" text="Change grid size">
                     <items>
-                      <MenuItem fx:id="onGridIncrease" accelerator="COMMA" mnemonicParsing="false" onAction="#onGridIncreaseAction" text="Increase (x2)" />
-                        <MenuItem fx:id="onGridDecrease" accelerator="PERIOD" mnemonicParsing="false" onAction="#onGridDecreaseAction" text="Decrease (x0.5)" />
+                      <MenuItem accelerator="COMMA" mnemonicParsing="false" onAction="#onGridIncreaseAction" text="Increase (x2)" />
+                        <MenuItem accelerator="PERIOD" mnemonicParsing="false" onAction="#onGridDecreaseAction" text="Decrease (x0.5)" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="onCustomGridSize" mnemonicParsing="false" onAction="#onGridCustomAction" text="Custom" />
+                        <MenuItem mnemonicParsing="false" onAction="#onGridCustomAction" text="Custom" />
                     </items>
                   </Menu>
                </items>
@@ -81,17 +81,17 @@
             </Menu>
          </menus>
       </MenuBar>
-      <GridPane fx:id="mainGrid" prefHeight="700.0" prefWidth="860.0" VBox.vgrow="ALWAYS">
+      <GridPane prefHeight="700.0" prefWidth="860.0" VBox.vgrow="ALWAYS">
          <columnConstraints>
-            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="220.0" />
-            <ColumnConstraints />
-            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="220.0" />
+            <ColumnConstraints fx:id="left" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="220.0" />
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints fx:id="right" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="220.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
          </rowConstraints>
          <children>
-            <GridPane fx:id="canvasGrid" GridPane.columnIndex="1">
+            <GridPane GridPane.columnIndex="1">
               <columnConstraints>
                 <ColumnConstraints hgrow="ALWAYS" />
               </columnConstraints>
@@ -154,7 +154,7 @@
                     <content>
                       <AnchorPane>
                            <children>
-                              <VBox alignment="TOP_CENTER" prefHeight="34.0" prefWidth="198.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <VBox alignment="TOP_CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <Label text="Possible steps" textFill="#9f9f9f">
                                        <font>
