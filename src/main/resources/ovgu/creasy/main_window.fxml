@@ -27,7 +27,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="window" prefHeight="720.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ovgu.creasy.ui.MainWindow">
+<VBox fx:id="window" prefHeight="720.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ovgu.creasy.ui.MainWindow">
    <children>
       <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="25.0" minWidth="640.0">
          <menus>
@@ -128,7 +128,7 @@
                                  </padding>
                               </Label>
                               <Separator prefWidth="200.0" />
-                              <TextArea fx:id="log" editable="false" VBox.vgrow="ALWAYS">
+                              <TextArea fx:id="log" editable="false" wrapText="true" VBox.vgrow="ALWAYS">
                                  <font>
                                     <Font name="Inconsolata Regular" size="14.0" />
                                  </font>
