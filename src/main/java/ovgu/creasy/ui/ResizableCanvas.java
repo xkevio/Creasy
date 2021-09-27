@@ -3,6 +3,7 @@ package ovgu.creasy.ui;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Affine;
 import ovgu.creasy.origami.CreasePattern;
 
 public class ResizableCanvas extends Canvas {
@@ -78,6 +79,11 @@ public class ResizableCanvas extends Canvas {
 
                 this.drawGrid();
             }
+        }
+
+        public void reset() {
+            gridCanvas.getGraphicsContext2D().setTransform(new Affine());
+            this.drawGrid();
         }
 
         public int getCurrentCellSize() {

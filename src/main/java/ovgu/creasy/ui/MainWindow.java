@@ -538,6 +538,8 @@ public class MainWindow {
         cp = null;
         wasSaved = false;
 
+        grid.reset();
+
         TextLogger.logText("-----------------", log);
     }
 
