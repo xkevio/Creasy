@@ -91,8 +91,8 @@ public class ResizableCanvas extends Canvas {
         }
     }
 
-    public static final int CANVAS_WIDTH = 200;
-    public static final int CANVAS_HEIGHT = 200;
+    public static final int CANVAS_WIDTH = 180;
+    public static final int CANVAS_HEIGHT = 180;
 
     private CreasePattern cp;
 

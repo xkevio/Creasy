@@ -145,8 +145,8 @@ public class MainWindow {
                                 left.setPrefWidth(300);
                                 right.setPrefWidth(300);
                             } else {
-                                left.setPrefWidth(220);
-                                right.setPrefWidth(220);
+                                left.setPrefWidth(200);
+                                right.setPrefWidth(200);
                             }
                         });
                     }
@@ -167,10 +167,10 @@ public class MainWindow {
                     right.setPrefWidth(right.getPrefWidth() + 1);
                 }
             } else {
-                if (left.getPrefWidth() > 220) {
+                if (left.getPrefWidth() > 200) {
                     left.setPrefWidth(left.getPrefWidth() - 2);
                 }
-                if (right.getPrefWidth() > 220) {
+                if (right.getPrefWidth() > 200) {
                     right.setPrefWidth(right.getPrefWidth() - 2);
                 }
             }
@@ -412,7 +412,7 @@ public class MainWindow {
         for (int i = 0; i < ecp.possibleSteps().size(); i++) {
             DiagramStep step = ecp.possibleSteps().get(i);
             step.to.toCreasePattern().drawOnCanvas(stepsCanvasList.get(i),
-                    0.45, 0.45);
+                    0.4, 0.4);
         }
     }
 
@@ -420,7 +420,7 @@ public class MainWindow {
         createCanvases(history, historyCanvasList, 1);
         historyCanvasList.forEach(c -> {
             if (c.getCp() == null) {
-                cp.drawOnCanvas(c, 0.45, 0.45);
+                cp.drawOnCanvas(c, 0.4, 0.4);
             }
         });
         historyLabel.setText("History (" + historyCanvasList.size() + " steps)");
@@ -445,7 +445,7 @@ public class MainWindow {
                 c.setOnMouseExited(mouseEvent -> {
                     if (!c.equals(activeHistory)) {
                         graphicsContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                        c.getCp().drawOnCanvas(c, 0.45, 0.45);
+                        c.getCp().drawOnCanvas(c, 0.4, 0.4);
                     }
 
                     c.setCursor(Cursor.DEFAULT);
@@ -486,7 +486,7 @@ public class MainWindow {
                                     .forEach(node -> {
                                         if (activeHistory != null) {
                                             activeHistory.getGraphicsContext2D().clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                                            activeHistory.getCp().drawOnCanvas(activeHistory, 0.45, 0.45);
+                                            activeHistory.getCp().drawOnCanvas(activeHistory, 0.4, 0.4);
                                             activeHistory.setSelected(false);
                                         }
 
@@ -499,7 +499,7 @@ public class MainWindow {
                         if (c.getParent().equals(history)) {
                             if (activeHistory != null) {
                                 activeHistory.getGraphicsContext2D().clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                                activeHistory.getCp().drawOnCanvas(activeHistory, 0.45, 0.45);
+                                activeHistory.getCp().drawOnCanvas(activeHistory, 0.4, 0.4);
                                 activeHistory.setSelected(false);
                             }
 
@@ -587,7 +587,7 @@ public class MainWindow {
 
         for (int i = 0, reverseListSize = reverseList.size(); i < reverseListSize; i++) {
             ResizableCanvas canvas = reverseList.get(i);
-            canvas.getCp().drawOnCanvas(historyCanvasList.get(i), 0.45, 0.45);
+            canvas.getCp().drawOnCanvas(historyCanvasList.get(i), 0.4, 0.4);
 
             if (canvas.isSelected()) {
                 System.out.println("is selected");
