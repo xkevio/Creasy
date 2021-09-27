@@ -1,10 +1,11 @@
-package ovgu.creasy.util;
+package ovgu.creasy.util.exporter.history;
 
 import javafx.scene.Parent;
 import javafx.stage.FileChooser;
 import org.jfree.svg.SVGGraphics2D;
 import ovgu.creasy.origami.CreasePattern;
 import ovgu.creasy.ui.ResizableCanvas;
+import ovgu.creasy.util.exporter.base.AbstractHistoryExporter;
 
 import java.awt.*;
 import java.io.File;
@@ -13,9 +14,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class SVGExporter extends AbstractExporter {
+public class SVGHistoryExporter extends AbstractHistoryExporter {
 
-    public SVGExporter(List<ResizableCanvas> history) {
+    public SVGHistoryExporter(List<ResizableCanvas> history) {
         this.history = history;
     }
 

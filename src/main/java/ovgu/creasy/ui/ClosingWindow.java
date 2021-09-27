@@ -8,8 +8,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import ovgu.creasy.Main;
-import ovgu.creasy.util.PDFExporter;
-import ovgu.creasy.util.SVGExporter;
+import ovgu.creasy.util.exporter.history.PDFHistoryExporter;
+import ovgu.creasy.util.exporter.history.SVGHistoryExporter;
 
 import java.io.File;
 import java.util.List;
@@ -47,8 +47,8 @@ public class ClosingWindow {
                      File file = fileChooser.showSaveDialog(window);
                      if (file != null) {
                          switch (fileChooser.getSelectedExtensionFilter().getDescription()) {
-                             case "PDF Document" -> new PDFExporter(history).export(file);
-                             case "Scalable Vector Graphics" -> new SVGExporter(history).export(file);
+                             case "PDF Document" -> new PDFHistoryExporter(history).export(file);
+                             case "Scalable Vector Graphics" -> new SVGHistoryExporter(history).export(file);
                          }
                          Platform.exit();
                      } else {

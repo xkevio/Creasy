@@ -1,4 +1,4 @@
-package ovgu.creasy.util;
+package ovgu.creasy.util.exporter.history;
 
 import de.rototor.pdfbox.graphics2d.PdfBoxGraphics2D;
 import javafx.scene.Parent;
@@ -12,6 +12,7 @@ import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.util.Matrix;
 import ovgu.creasy.origami.CreasePattern;
 import ovgu.creasy.ui.ResizableCanvas;
+import ovgu.creasy.util.exporter.base.AbstractHistoryExporter;
 
 import java.awt.*;
 import java.io.File;
@@ -19,9 +20,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class PDFExporter extends AbstractExporter {
+public class PDFHistoryExporter extends AbstractHistoryExporter {
 
-    public PDFExporter(List<ResizableCanvas> history) {
+    public PDFHistoryExporter(List<ResizableCanvas> history) {
         this.history = history;
     }
 
