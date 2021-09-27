@@ -211,9 +211,16 @@
                                  </VBox.margin>
                               </HBox>
                               <Separator prefWidth="200.0" />
-                              <HBox fx:id="boxes" alignment="CENTER" disable="true" VBox.vgrow="ALWAYS">
+                              <GridPane fx:id="boxes" disable="true" VBox.vgrow="ALWAYS">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
                                  <children>
-                                    <VBox alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="10.0" HBox.hgrow="ALWAYS">
+                                    <VBox alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="10.0">
                                        <children>
                                           <CheckBox mnemonicParsing="false" text="Show points" />
                                           <CheckBox mnemonicParsing="false" text="Snap to points" />
@@ -222,11 +229,8 @@
                                        <padding>
                                           <Insets left="10.0" />
                                        </padding>
-                                       <HBox.margin>
-                                          <Insets />
-                                       </HBox.margin>
                                     </VBox>
-                                    <VBox alignment="CENTER_LEFT" spacing="10.0" HBox.hgrow="ALWAYS">
+                                    <VBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="1">
                                        <children>
                                           <RadioButton mnemonicParsing="false" selected="true" text="Mountain">
                                              <toggleGroup>
@@ -238,7 +242,7 @@
                                        </children>
                                     </VBox>
                                  </children>
-                              </HBox>
+                              </GridPane>
                            </children>
                         </VBox>
                      </children>

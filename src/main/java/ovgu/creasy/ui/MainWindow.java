@@ -13,10 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -91,7 +88,7 @@ public class MainWindow {
     @FXML
     private HBox creaseEditor;
     @FXML
-    private HBox boxes;
+    private GridPane boxes;
 
     @FXML
     private ColumnConstraints left;
