@@ -119,11 +119,9 @@ public class MainWindow {
         canvasHolder.addEventFilter(ScrollEvent.ANY, scrollEvent -> {
             if (mainCanvas.getCp() != null) {
                 if (scrollEvent.getDeltaY() < 0) {
-                    mainCanvas.zoomOut();
-                    grid.zoomOut();
+                    this.onZoomOutMenuItem();
                 }  else {
-                    mainCanvas.zoomIn();
-                    grid.zoomIn();
+                    this.onZoomInMenuItem();
                 }
                 scrollEvent.consume();
             }
@@ -187,7 +185,7 @@ public class MainWindow {
     @FXML
     public void onMenuImportAction() {
         FileChooser openFileChooser = new FileChooser();
-        openFileChooser.setTitle("Open .cp File");
+        openFileChooser.setTitle("Open .cp file");
         openFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Crease Patterns", "*.cp"));
 
         File file = openFileChooser.showOpenDialog(mainCanvas.getScene().getWindow());
@@ -201,7 +199,6 @@ public class MainWindow {
             } catch (FileNotFoundException e) {
                 TextLogger.logText("File not found or invalid!", log);
             }
-            TextLogger.logText("Crease Pattern successfully loaded!", log);
         } else {
             System.err.println("No file selected or path is invalid!");
             TextLogger.logText("No file selected or path is invalid!", log);
@@ -318,28 +315,25 @@ public class MainWindow {
     @FXML
     public void onLoadExampleBird() {
         resetGUI();
+        TextLogger.logText("Import: example/bird.cp", log);
         InputStream is = Main.class.getResourceAsStream("example/bird.cp");
         setupUI(is, "example/bird.cp");
-        TextLogger.logText("Import: example/bird.cp", log);
-        TextLogger.logText("Crease Pattern successfully loaded!", log);
     }
 
     @FXML
     public void onLoadExamplePenguin() {
         resetGUI();
+        TextLogger.logText("Import: example/penguin_hideo_komatsu.cp", log);
         InputStream is = Main.class.getResourceAsStream("example/penguin_hideo_komatsu.cp");
         setupUI(is, "example/penguin_hideo_komatsu.cp");
-        TextLogger.logText("Import: example/penguin_hideo_komatsu.cp", log);
-        TextLogger.logText("Crease Pattern successfully loaded!", log);
     }
 
     @FXML
     public void onLoadExampleCrane() {
         resetGUI();
+        TextLogger.logText("Import: example/crane.cp", log);
         InputStream is = Main.class.getResourceAsStream("example/crane.cp");
         setupUI(is, "example/crane.cp");
-        TextLogger.logText("Import: example/crane.cp", log);
-        TextLogger.logText("Crease Pattern successfully loaded!", log);
     }
     // -------------------------
 
@@ -371,7 +365,10 @@ public class MainWindow {
         ((Stage) mainCanvas.getScene().getWindow()).setTitle(filePath + "* - " + Main.APPLICATION_TITLE);
 
         cp = CreasePattern.createFromFile(is);
-        if (cp != null) cp.drawOnCanvas(mainCanvas, 1, 1);
+        if (cp != null) {
+            cp.drawOnCanvas(mainCanvas, 1, 1);
+            TextLogger.logText("Crease Pattern successfully loaded!", log);
+        }
 
         model = new OrigamiModel(cp);
 
