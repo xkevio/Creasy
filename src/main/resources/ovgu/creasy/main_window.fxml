@@ -152,7 +152,7 @@
                                  </padding>
                               </Label>
                               <Separator prefWidth="200.0" />
-                              <HBox alignment="CENTER" disable="true" spacing="10.0" VBox.vgrow="ALWAYS">
+                              <HBox fx:id="creaseEditor" alignment="CENTER" disable="true" spacing="10.0" VBox.vgrow="ALWAYS">
                                  <children>
                                     <ToggleButton contentDisplay="CENTER" mnemonicParsing="false">
                                        <toggleGroup>
@@ -211,7 +211,7 @@
                                  </VBox.margin>
                               </HBox>
                               <Separator prefWidth="200.0" />
-                              <HBox alignment="CENTER" disable="true" VBox.vgrow="ALWAYS">
+                              <HBox fx:id="boxes" alignment="CENTER" disable="true" VBox.vgrow="ALWAYS">
                                  <children>
                                     <VBox alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="10.0" HBox.hgrow="ALWAYS">
                                        <children>

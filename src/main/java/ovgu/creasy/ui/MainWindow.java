@@ -14,6 +14,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -86,6 +87,11 @@ public class MainWindow {
     private VBox history;
     @FXML
     private VBox steps;
+
+    @FXML
+    private HBox creaseEditor;
+    @FXML
+    private HBox boxes;
 
     @FXML
     private ColumnConstraints left;
@@ -397,6 +403,9 @@ public class MainWindow {
         zoomOutMenuItem.setDisable(false);
         exportMenu.setDisable(false);
         saveMenuItem.setDisable(false);
+
+        creaseEditor.setDisable(false);
+        boxes.setDisable(false);
     }
 
     private void drawSteps(ExtendedCreasePattern ecp) {
@@ -531,6 +540,9 @@ public class MainWindow {
         zoomOutMenuItem.setDisable(true);
         exportMenu.setDisable(true);
         saveMenuItem.setDisable(true);
+
+        creaseEditor.setDisable(true);
+        boxes.setDisable(true);
 
         stepsCanvasList.clear();
         historyCanvasList.clear();
