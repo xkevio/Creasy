@@ -161,7 +161,7 @@
                                        <graphic>
                                           <ImageView preserveRatio="true">
                                              <image>
-                                                <Image url="@add.png" />
+                                                <Image url="@icons/add.png" />
                                              </image>
                                           </ImageView>
                                        </graphic>
@@ -173,7 +173,7 @@
                                        <graphic>
                                           <ImageView>
                                              <image>
-                                                <Image url="@remove.png" />
+                                                <Image url="@icons/remove.png" />
                                              </image>
                                           </ImageView>
                                        </graphic>
@@ -185,7 +185,7 @@
                                        <graphic>
                                           <ImageView>
                                              <image>
-                                                <Image url="@change.png" />
+                                                <Image url="@icons/change.png" />
                                              </image>
                                           </ImageView>
                                        </graphic>
@@ -197,7 +197,7 @@
                                        <graphic>
                                           <ImageView preserveRatio="true">
                                              <image>
-                                                <Image url="@reload.png" />
+                                                <Image url="@icons/reload.png" />
                                              </image>
                                           </ImageView>
                                        </graphic>
