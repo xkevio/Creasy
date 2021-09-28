@@ -6,6 +6,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import ovgu.creasy.origami.CreasePattern;
 
+/**
+ * A canvas specifically tailored for rendering crease patterns.
+ * Should not be used for other purposes.
+ */
 public class ResizableCanvas extends Canvas {
 
     public static class Grid {
@@ -100,6 +104,7 @@ public class ResizableCanvas extends Canvas {
     private double cpScaleY;
 
     private boolean isSelected = false;
+    private boolean showPoints = false;
 
     public ResizableCanvas(double width, double height) {
         super(width, height);
@@ -178,5 +183,13 @@ public class ResizableCanvas extends Canvas {
 
     public boolean isSelected() {
         return isSelected;
+    }
+
+    public void setShowPoints(boolean showPoints) {
+        this.showPoints = showPoints;
+    }
+
+    public boolean isShowPoints() {
+        return showPoints;
     }
 }

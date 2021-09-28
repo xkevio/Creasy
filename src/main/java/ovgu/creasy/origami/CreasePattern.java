@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 import ovgu.creasy.geom.Line;
 import ovgu.creasy.geom.Point;
 import ovgu.creasy.ui.ResizableCanvas;
+import ovgu.creasy.util.CreasePatternEditor;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
@@ -289,6 +290,10 @@ public class CreasePattern {
         graphicsContext.setLineWidth(2);
 
         drawCreasePattern(canvas, scaleX, scaleY);
+
+        if (canvas.isShowPoints()) {
+            CreasePatternEditor.showPoints(canvas);
+        }
     }
 
     public void drawOverCanvas(ResizableCanvas canvas, double scaleX, double scaleY) {
