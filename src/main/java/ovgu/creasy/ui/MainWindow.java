@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import ovgu.creasy.Main;
 import ovgu.creasy.origami.*;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
+import ovgu.creasy.util.CreasePatternEditor;
 import ovgu.creasy.util.TextLogger;
 import ovgu.creasy.util.exporter.cp.PDFCreasePatternExporter;
 import ovgu.creasy.util.exporter.cp.PNGCreasePatternExporter;
@@ -56,6 +57,8 @@ public class MainWindow {
     public ResizableCanvas gridCanvas;
     public ResizableCanvas.Grid grid;
 
+    @FXML
+    private CheckBox showPointsCheck;
     @FXML
     private MenuItem foldedModelMenuItem;
     @FXML
@@ -266,12 +269,16 @@ public class MainWindow {
     public void onZoomInMenuItem() {
         mainCanvas.zoomIn();
         grid.zoomIn();
+
+        this.checkAndThenShowPoints();
     }
 
     @FXML
     public void onZoomOutMenuItem() {
         mainCanvas.zoomOut();
         grid.zoomOut();
+
+        this.checkAndThenShowPoints();
     }
 
     @FXML
@@ -433,6 +440,7 @@ public class MainWindow {
 
                     c.setCursor(Cursor.DEFAULT);
                     mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
+                    this.checkAndThenShowPoints();
                 });
 
                 c.setOnMouseClicked(mouseEvent -> {
@@ -461,6 +469,8 @@ public class MainWindow {
                         CreasePattern currentStep = c.getCp();
 
                         currentStep.drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
+                        this.checkAndThenShowPoints();
+
                         ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(currentStep);
 
                         if (c.getParent().equals(steps)) {
@@ -526,6 +536,7 @@ public class MainWindow {
 
         creaseEditor.setDisable(true);
         boxes.setDisable(true);
+        showPointsCheck.setSelected(false);
 
         stepsCanvasList.clear();
         historyCanvasList.clear();
@@ -557,6 +568,15 @@ public class MainWindow {
 
             list.add(canvas);
         }
+    }
+
+    private boolean checkAndThenShowPoints() {
+        if (showPointsCheck.isSelected()) {
+            CreasePatternEditor.showPoints(mainCanvas);
+        } else {
+            mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
+        }
+        return showPointsCheck.isSelected();
     }
 
     @FXML
@@ -609,13 +629,11 @@ public class MainWindow {
     }
 
     @FXML
-    private void onShowPoints() {
-//        mainCanvas.getGraphicsContext2D().setFill(Color.GRAY);
-//        mainCanvas.getGraphicsContext2D().translate(mainCanvas.getWidth() / 2, mainCanvas.getHeight() / 2);
-//        mainCanvas.getCp().getPoints().forEach(point -> {
-//            mainCanvas.getGraphicsContext2D().fillRect(point.getX() * mainCanvas.getCpScaleX() - 5,
-//                    point.getY() * mainCanvas.getCpScaleY() - 5, 10, 10);
-//        });
-//        mainCanvas.getGraphicsContext2D().translate(-mainCanvas.getWidth() / 2, -mainCanvas.getHeight() / 2);
+    public void onShowPoints() {
+        if (checkAndThenShowPoints()) {
+            TextLogger.logText("Rendering all points in the crease pattern", log);
+        } else {
+            TextLogger.logText("Disabling render of points in crease pattern", log);
+        }
     }
 }

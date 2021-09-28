@@ -222,7 +222,7 @@
                                  <children>
                                     <VBox alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="10.0">
                                        <children>
-                                          <CheckBox mnemonicParsing="false" text="Show points" />
+                                          <CheckBox mnemonicParsing="false" text="Show points" fx:id="showPointsCheck" onAction="#onShowPoints" />
                                           <CheckBox mnemonicParsing="false" text="Snap to points" />
                                           <CheckBox mnemonicParsing="false" text="Snap to grid" />
                                        </children>
