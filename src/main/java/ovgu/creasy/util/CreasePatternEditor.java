@@ -44,4 +44,21 @@ public class CreasePatternEditor {
         CreasePattern highlightedLine = new CreasePattern(Set.of(crease), new HashSet<>());
         highlightedLine.drawOverCanvas(canvas, canvas.getCpScaleX(), canvas.getCpScaleY());
     }
+
+    /**
+     * Changes the type of the given crease to the given enum type and redraws the
+     * changed crease pattern on the given canvas, calls setType() method.
+     * @param canvas the canvas the crease is drawn on
+     * @param crease the crease whose type shall be changed
+     * @param type the new crease type
+     */
+    public static void changeCreaseType(ResizableCanvas canvas, Crease crease, Crease.Type type) {
+        crease.setType(type);
+        canvas.getCp().drawOnCanvas(canvas);
+    }
+
+    public static void removeCrease(ResizableCanvas canvas, Crease crease) {
+        canvas.getCp().removeCrease(crease);
+        canvas.getCp().drawOnCanvas(canvas);
+    }
 }

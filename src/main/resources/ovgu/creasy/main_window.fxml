@@ -169,9 +169,9 @@
                                           <Tooltip text="Add crease" />
                                        </tooltip>
                                     </ToggleButton>
-                                    <ToggleButton id="change" mnemonicParsing="false" toggleGroup="$edit">
+                                    <ToggleButton id="remove" mnemonicParsing="false" toggleGroup="$edit">
                                        <graphic>
-                                          <ImageView id="remove">
+                                          <ImageView>
                                              <image>
                                                 <Image url="@icons/remove.png" />
                                              </image>
@@ -193,7 +193,7 @@
                                           <Tooltip text="Change crease type" />
                                        </tooltip>
                                     </ToggleButton>
-                                    <Button alignment="CENTER" mnemonicParsing="false">
+                                    <Button alignment="CENTER" mnemonicParsing="false" onAction="#onReloadCP">
                                        <graphic>
                                           <ImageView preserveRatio="true">
                                              <image>

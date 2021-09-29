@@ -38,7 +38,11 @@ public class MainWindow {
 
     @FXML
     private ToggleGroup edit;
+    @FXML
+    public ToggleGroup line;
+
     private ResizableCanvas activeHistory;
+    private Crease highlightedCrease;
 
     @FXML
     private ScrollPane canvasHolder;
@@ -188,13 +192,43 @@ public class MainWindow {
 
                         if (scaledLine.contains(mousePos, 0.1)) {
                             CreasePatternEditor.highlightCrease(mainCanvas, crease);
+                            highlightedCrease = crease;
                             break;
                         } else {
                             if (crease.isHighlighted()) {
                                 main.drawOnCanvas(mainCanvas);
                                 crease.setHighlighted(false);
+                                highlightedCrease = null;
                                 break;
                             }
+                        }
+                    }
+                }
+            }
+        });
+
+        mainCanvas.setOnMouseClicked(mouseEvent -> {
+            if (mainCanvas.getCp() != null) {
+                switch (editSetting) {
+                    case ADD -> System.out.println("adding");
+                    case CHANGE -> {
+                        System.out.println("changing");
+                        if (highlightedCrease != null) {
+                            Crease.Type change = switch (((RadioButton) line.getSelectedToggle()).getText()) {
+                                case "Mountain" -> Crease.Type.MOUNTAIN;
+                                case "Valley" -> Crease.Type.VALLEY;
+                                case "Edge" -> Crease.Type.EDGE;
+                                default -> null;
+                            };
+                            CreasePatternEditor.changeCreaseType(mainCanvas, highlightedCrease, change);
+                            TextLogger.logText("Changed crease type to " + change, log);
+                        }
+                    }
+                    case REMOVE -> {
+                        System.out.println("removing");
+                        if (highlightedCrease != null) {
+                            CreasePatternEditor.removeCrease(mainCanvas, highlightedCrease);
+                            TextLogger.logText("Removed crease of type " + highlightedCrease.getType(), log);
                         }
                     }
                 }
@@ -541,7 +575,6 @@ public class MainWindow {
 
                             activeHistory = c;
                             activeHistory.setSelected(true);
-                            // activeHistory.markAsCurrentlySelected();
                         }
 
                         steps.getChildren().clear();
@@ -673,5 +706,33 @@ public class MainWindow {
             mainCanvas.setShowPoints(false);
         }
         mainCanvas.getCp().drawOnCanvas(mainCanvas);
+    }
+
+    // very similar to setupUI, find better way
+    @FXML
+    public void onReloadCP() {
+        historyLabel.setText("History (0 steps)");
+
+        steps.getChildren().clear();
+        history.getChildren().clear();
+
+        stepsCanvasList.clear();
+        historyCanvasList.clear();
+
+        TextLogger.logText("-----------------", log);
+        TextLogger.logText("Reloading simplification algorithm with edited crease pattern...", log);
+
+        cp = mainCanvas.getCp();
+        model = new OrigamiModel(cp);
+
+        ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
+        TextLogger.logText(ecp.possibleSteps().size() + " possible step(s) were calculated", log);
+
+        pairs = new HashMap<>();
+        createCanvases(steps, stepsCanvasList, ecp.possibleSteps().size());
+
+        drawSteps(ecp);
+        drawHistory(cp, history);
+        setupMouseEvents(stepsCanvasList, historyCanvasList);
     }
 }
