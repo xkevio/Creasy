@@ -58,7 +58,11 @@ public class Line {
     }
 
     public boolean contains(Point p) {
-        return Math.abs(start.distance(p) + end.distance(p) - start.distance(end)) < 0.00001;
+        return contains(p, 0.00001);
+    }
+
+    public boolean contains(Point p, double eps) {
+        return Math.abs(start.distance(p) + end.distance(p) - start.distance(end)) < eps;
     }
 
     public Point getDir() {

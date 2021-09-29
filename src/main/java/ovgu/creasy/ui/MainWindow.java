@@ -14,8 +14,11 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ovgu.creasy.Main;
+import ovgu.creasy.geom.Line;
+import ovgu.creasy.geom.Point;
 import ovgu.creasy.origami.*;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
+import ovgu.creasy.util.CreasePatternEditor;
 import ovgu.creasy.util.TextLogger;
 import ovgu.creasy.util.exporter.cp.PDFCreasePatternExporter;
 import ovgu.creasy.util.exporter.cp.PNGCreasePatternExporter;
@@ -33,6 +36,8 @@ import static ovgu.creasy.ui.ResizableCanvas.CANVAS_WIDTH;
 
 public class MainWindow {
 
+    @FXML
+    private ToggleGroup edit;
     private ResizableCanvas activeHistory;
 
     @FXML
@@ -85,6 +90,8 @@ public class MainWindow {
     private ColumnConstraints left;
     @FXML
     private ColumnConstraints right;
+
+    private CreasePatternEditor.EditSetting editSetting = CreasePatternEditor.EditSetting.NONE;
 
     @FXML
     public void initialize() {
@@ -159,6 +166,50 @@ public class MainWindow {
                 if (right.getPrefWidth() > 200) {
                     right.setPrefWidth(right.getPrefWidth() - 2);
                 }
+            }
+        });
+
+        mainCanvas.setOnMouseMoved(mouseEvent -> {
+            if (mainCanvas.getCp() != null) {
+                CreasePattern main = mainCanvas.getCp();
+                Point scale = new Point(mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
+
+                Point mousePos = Point.fromPoint2D(mainCanvas.sceneToLocal(
+                        mouseEvent.getSceneX() - mainCanvas.getWidth() / 2,
+                        mouseEvent.getSceneY() - mainCanvas.getHeight() / 2)
+                );
+
+                if (editSetting == CreasePatternEditor.EditSetting.REMOVE || editSetting == CreasePatternEditor.EditSetting.CHANGE) {
+                    for (Crease crease : main.getCreases()) {
+                        Point start = crease.getLine().getStart().multiply(scale);
+                        Point end = crease.getLine().getEnd().multiply(scale);
+
+                        Line scaledLine = new Line(start, end);
+
+                        if (scaledLine.contains(mousePos, 0.1)) {
+                            CreasePatternEditor.highlightCrease(mainCanvas, crease);
+                            break;
+                        } else {
+                            if (crease.isHighlighted()) {
+                                main.drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
+                                crease.setHighlighted(false);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        edit.selectedToggleProperty().addListener((observableValue, oldToggle, newToggle) -> {
+            if (newToggle != null) {
+                switch (((ToggleButton) newToggle).getId()) {
+                    case "add" -> editSetting = CreasePatternEditor.EditSetting.ADD;
+                    case "remove" -> editSetting = CreasePatternEditor.EditSetting.REMOVE;
+                    case "change" -> editSetting = CreasePatternEditor.EditSetting.CHANGE;
+                }
+            } else {
+                editSetting = CreasePatternEditor.EditSetting.NONE;
             }
         });
 

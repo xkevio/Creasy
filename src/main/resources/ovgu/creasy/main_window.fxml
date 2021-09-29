@@ -154,7 +154,7 @@
                               <Separator prefWidth="200.0" />
                               <HBox fx:id="creaseEditor" alignment="CENTER" disable="true" spacing="10.0" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <ToggleButton contentDisplay="CENTER" mnemonicParsing="false">
+                                    <ToggleButton id="add" contentDisplay="CENTER" mnemonicParsing="false">
                                        <toggleGroup>
                                           <ToggleGroup fx:id="edit" />
                                        </toggleGroup>
@@ -169,9 +169,9 @@
                                           <Tooltip text="Add crease" />
                                        </tooltip>
                                     </ToggleButton>
-                                    <ToggleButton mnemonicParsing="false" toggleGroup="$edit">
+                                    <ToggleButton id="change" mnemonicParsing="false" toggleGroup="$edit">
                                        <graphic>
-                                          <ImageView>
+                                          <ImageView id="remove">
                                              <image>
                                                 <Image url="@icons/remove.png" />
                                              </image>
@@ -181,7 +181,7 @@
                                           <Tooltip text="Remove crease" />
                                        </tooltip>
                                     </ToggleButton>
-                                    <ToggleButton mnemonicParsing="false" toggleGroup="$edit">
+                                    <ToggleButton id="change" mnemonicParsing="false" toggleGroup="$edit">
                                        <graphic>
                                           <ImageView>
                                              <image>
@@ -222,7 +222,7 @@
                                  <children>
                                     <VBox alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="10.0">
                                        <children>
-                                          <CheckBox mnemonicParsing="false" text="Show points" fx:id="showPointsCheck" onAction="#onShowPoints" />
+                                          <CheckBox fx:id="showPointsCheck" mnemonicParsing="false" onAction="#onShowPoints" text="Show points" />
                                           <CheckBox mnemonicParsing="false" text="Snap to points" />
                                           <CheckBox mnemonicParsing="false" text="Snap to grid" />
                                        </children>

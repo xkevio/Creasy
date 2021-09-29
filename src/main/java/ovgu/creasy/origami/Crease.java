@@ -11,6 +11,8 @@ public class Crease {
     private Line line;
     private Type type;
 
+    private boolean highlighted;
+
     public enum Type {
         /**
          * Mountain fold, usually shown in red
@@ -39,6 +41,7 @@ public class Crease {
     public Crease(Line line, Type type) {
         this.line = line;
         this.type = type;
+        this.highlighted = false;
     }
 
     public Line getLine() {
@@ -51,6 +54,14 @@ public class Crease {
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    public boolean isHighlighted() {
+        return highlighted;
+    }
+
+    public void setHighlighted(boolean highlighted) {
+        this.highlighted = highlighted;
     }
 
     @Override

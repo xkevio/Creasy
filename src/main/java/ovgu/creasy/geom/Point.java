@@ -1,5 +1,7 @@
 package ovgu.creasy.geom;
 
+import javafx.geometry.Point2D;
+
 import java.util.Objects;
 
 /**
@@ -12,6 +14,10 @@ public class Point {
     public Point(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    public static Point fromPoint2D(Point2D point2D) {
+        return new Point(point2D.getX(), point2D.getY());
     }
 
     public double getX() {
