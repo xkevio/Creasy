@@ -8,6 +8,10 @@ import ovgu.creasy.ui.ResizableCanvas;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Some editor functions for crease patterns on a canvas
+ * to streamline the function calls and reduce repetition
+ */
 public class CreasePatternEditor {
 
     public enum EditSetting {
@@ -57,6 +61,11 @@ public class CreasePatternEditor {
         canvas.getCp().drawOnCanvas(canvas);
     }
 
+    /**
+     * Removes the given crease and redraws the canvas
+     * @param canvas the canvas to remove the crease on
+     * @param crease the crease to remove
+     */
     public static void removeCrease(ResizableCanvas canvas, Crease crease) {
         canvas.getCp().removeCrease(crease);
         canvas.getCp().drawOnCanvas(canvas);

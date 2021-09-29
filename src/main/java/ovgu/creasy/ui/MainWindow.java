@@ -259,7 +259,7 @@ public class MainWindow {
      * pattern to the screen.
      */
     @FXML
-    public void onMenuImportAction() {
+    private void onMenuImportAction() {
         FileChooser openFileChooser = new FileChooser();
         openFileChooser.setTitle("Open .cp file");
         openFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Crease Patterns", "*.cp"));
@@ -286,7 +286,7 @@ public class MainWindow {
      * the history to either pdf or svg
      */
     @FXML
-    public void onMenuExportPDFAction() {
+    private void onMenuExportPDFAction() {
         PDFHistoryExporter pdfHistoryExporter = new PDFHistoryExporter(historyCanvasList);
         var file = pdfHistoryExporter.open(mainCanvas.getScene().getRoot());
 
@@ -304,7 +304,7 @@ public class MainWindow {
     }
 
     @FXML
-    public void onMenuExportSVGAction() {
+    private void onMenuExportSVGAction() {
         SVGHistoryExporter svgHistoryExporter = new SVGHistoryExporter(historyCanvasList);
         var file = svgHistoryExporter.open(mainCanvas.getScene().getRoot());
 
@@ -328,7 +328,7 @@ public class MainWindow {
      * Opens an Alert in case of an error while folding the model.
      */
     @FXML
-    public void onShowFoldedModelAction() throws IOException {
+    private void onShowFoldedModelAction() throws IOException {
         if (model == null) {
             Alert error = new Alert(Alert.AlertType.ERROR,
                     "There is no model to fold, perhaps it wasn't loaded correctly", ButtonType.OK);
@@ -350,38 +350,38 @@ public class MainWindow {
     // -------------------------
     // Handling different kinds of zoom
     @FXML
-    public void onZoomInMenuItem() {
+    private void onZoomInMenuItem() {
         mainCanvas.zoomIn();
         grid.zoomIn();
     }
 
     @FXML
-    public void onZoomOutMenuItem() {
+    private void onZoomOutMenuItem() {
         mainCanvas.zoomOut();
         grid.zoomOut();
     }
 
     @FXML
-    public void onGridIncreaseAction() {
+    private void onGridIncreaseAction() {
         grid.drawGrid(grid.getCurrentCellSize() * 2);
         TextLogger.logText("Increased Grid (x2), new grid cell size: " + grid.getCurrentCellSize(), log);
     }
 
     @FXML
-    public void onGridDecreaseAction() {
+    private void onGridDecreaseAction() {
         grid.drawGrid(grid.getCurrentCellSize() / 2);
         TextLogger.logText("Decreased Grid (x0.5), new grid cell size: " + grid.getCurrentCellSize(), log);
     }
 
     @FXML
-    public void onGridCustomAction() {
+    private void onGridCustomAction() {
         CustomGridSizeWindow.open(grid);
         TextLogger.logText("New grid cell size: " + grid.getCurrentCellSize(), log);
     }
     // -------------------------
 
     @FXML
-    public void onMenuResetAction() {
+    private void onMenuResetAction() {
         resetGUI();
         TextLogger.logText("Reset: UI cleared!", log);
     }
@@ -389,7 +389,7 @@ public class MainWindow {
     // -------------------------
     // Loading example files
     @FXML
-    public void onLoadExampleBird() {
+    private void onLoadExampleBird() {
         resetGUI();
         TextLogger.logText("Import: example/bird.cp", log);
         InputStream is = Main.class.getResourceAsStream("example/bird.cp");
@@ -397,7 +397,7 @@ public class MainWindow {
     }
 
     @FXML
-    public void onLoadExamplePenguin() {
+    private void onLoadExamplePenguin() {
         resetGUI();
         TextLogger.logText("Import: example/penguin_hideo_komatsu.cp", log);
         InputStream is = Main.class.getResourceAsStream("example/penguin_hideo_komatsu.cp");
@@ -405,7 +405,7 @@ public class MainWindow {
     }
 
     @FXML
-    public void onLoadExampleCrane() {
+    private void onLoadExampleCrane() {
         resetGUI();
         TextLogger.logText("Import: example/crane.cp", log);
         InputStream is = Main.class.getResourceAsStream("example/crane.cp");
@@ -418,7 +418,7 @@ public class MainWindow {
      * and its developers
      */
     @FXML
-    public void onHelpAbout() {
+    private void onHelpAbout() {
         AboutWindow.open(this.hostServices);
     }
 
@@ -427,7 +427,7 @@ public class MainWindow {
      * are used for and explaining the different types of folds
      */
     @FXML
-    public void onHelpCP() {
+    private void onHelpCP() {
         CreasePatternHelpWindow.open();
     }
 
@@ -589,6 +589,91 @@ public class MainWindow {
         }
     }
 
+    @FXML
+    private void reverseHistory() {
+        List<ResizableCanvas> reverseList = new ArrayList<>();
+        for (int i = historyCanvasList.size() - 1; i >= 0; i--) {
+            reverseList.add(new ResizableCanvas(historyCanvasList.get(i)));
+        }
+
+        if (activeHistory != null) activeHistory.setSelected(false);
+
+        for (int i = 0, reverseListSize = reverseList.size(); i < reverseListSize; i++) {
+            ResizableCanvas canvas = reverseList.get(i);
+            canvas.getCp().drawOnCanvas(historyCanvasList.get(i), 0.4, 0.4);
+
+            if (canvas.isSelected()) {
+                System.out.println("is selected");
+                activeHistory = historyCanvasList.get(i);
+                activeHistory.markAsCurrentlySelected();
+            }
+        }
+    }
+
+    @FXML
+    private void onExit() {
+        Platform.exit();
+    }
+
+    @FXML
+    private void onSaveMainCP() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save crease pattern as...");
+
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PDF Document", "*.pdf"),
+                                                 new FileChooser.ExtensionFilter("Scalable Vector Graphics", "*.svg"),
+                                                 new FileChooser.ExtensionFilter("PNG Image", "*.png"));
+
+        File file = fileChooser.showSaveDialog(mainCanvas.getScene().getWindow());
+        if (file != null) {
+            switch (fileChooser.getSelectedExtensionFilter().getDescription()) {
+                case "PDF Document" -> new PDFCreasePatternExporter(cp).export(file);
+                case "Scalable Vector Graphics" -> new SVGCreasePatternExporter(cp).export(file);
+                case "PNG Image" -> new PNGCreasePatternExporter(mainCanvas).export(file);
+            }
+        }
+    }
+
+    @FXML
+    private void onShowPoints() {
+        if (showPointsCheck.isSelected()) {
+            TextLogger.logText("Rendering all points in the crease pattern", log);
+            mainCanvas.setShowPoints(true);
+        } else {
+            TextLogger.logText("Disabling render of points in crease pattern", log);
+            mainCanvas.setShowPoints(false);
+        }
+        mainCanvas.getCp().drawOnCanvas(mainCanvas);
+    }
+
+    // very similar to setupUI, find better way
+    @FXML
+    private void onReloadCP() {
+        historyLabel.setText("History (0 steps)");
+
+        steps.getChildren().clear();
+        history.getChildren().clear();
+
+        stepsCanvasList.clear();
+        historyCanvasList.clear();
+
+        TextLogger.logText("-----------------", log);
+        TextLogger.logText("Reloading simplification algorithm with edited crease pattern...", log);
+
+        cp = mainCanvas.getCp();
+        model = new OrigamiModel(cp);
+
+        ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
+        TextLogger.logText(ecp.possibleSteps().size() + " possible step(s) were calculated", log);
+
+        pairs = new HashMap<>();
+        createCanvases(steps, stepsCanvasList, ecp.possibleSteps().size());
+
+        drawSteps(ecp);
+        drawHistory(cp, history);
+        setupMouseEvents(stepsCanvasList, historyCanvasList);
+    }
+
     /**
      * Clears all the canvases and disables menu options that would only work
      * with a loaded file.
@@ -647,92 +732,7 @@ public class MainWindow {
         }
     }
 
-    @FXML
-    private void reverseHistory() {
-        List<ResizableCanvas> reverseList = new ArrayList<>();
-        for (int i = historyCanvasList.size() - 1; i >= 0; i--) {
-            reverseList.add(new ResizableCanvas(historyCanvasList.get(i)));
-        }
-
-        if (activeHistory != null) activeHistory.setSelected(false);
-
-        for (int i = 0, reverseListSize = reverseList.size(); i < reverseListSize; i++) {
-            ResizableCanvas canvas = reverseList.get(i);
-            canvas.getCp().drawOnCanvas(historyCanvasList.get(i), 0.4, 0.4);
-
-            if (canvas.isSelected()) {
-                System.out.println("is selected");
-                activeHistory = historyCanvasList.get(i);
-                activeHistory.markAsCurrentlySelected();
-            }
-        }
-    }
-
     public void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
-    }
-
-    @FXML
-    private void onExit() {
-        Platform.exit();
-    }
-
-    @FXML
-    public void onSaveMainCP() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save crease pattern as...");
-
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PDF Document", "*.pdf"),
-                                                 new FileChooser.ExtensionFilter("Scalable Vector Graphics", "*.svg"),
-                                                 new FileChooser.ExtensionFilter("PNG Image", "*.png"));
-
-        File file = fileChooser.showSaveDialog(mainCanvas.getScene().getWindow());
-        if (file != null) {
-            switch (fileChooser.getSelectedExtensionFilter().getDescription()) {
-                case "PDF Document" -> new PDFCreasePatternExporter(cp).export(file);
-                case "Scalable Vector Graphics" -> new SVGCreasePatternExporter(cp).export(file);
-                case "PNG Image" -> new PNGCreasePatternExporter(mainCanvas).export(file);
-            }
-        }
-    }
-
-    @FXML
-    public void onShowPoints() {
-        if (showPointsCheck.isSelected()) {
-            TextLogger.logText("Rendering all points in the crease pattern", log);
-            mainCanvas.setShowPoints(true);
-        } else {
-            TextLogger.logText("Disabling render of points in crease pattern", log);
-            mainCanvas.setShowPoints(false);
-        }
-        mainCanvas.getCp().drawOnCanvas(mainCanvas);
-    }
-
-    // very similar to setupUI, find better way
-    @FXML
-    public void onReloadCP() {
-        historyLabel.setText("History (0 steps)");
-
-        steps.getChildren().clear();
-        history.getChildren().clear();
-
-        stepsCanvasList.clear();
-        historyCanvasList.clear();
-
-        TextLogger.logText("-----------------", log);
-        TextLogger.logText("Reloading simplification algorithm with edited crease pattern...", log);
-
-        cp = mainCanvas.getCp();
-        model = new OrigamiModel(cp);
-
-        ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
-        TextLogger.logText(ecp.possibleSteps().size() + " possible step(s) were calculated", log);
-
-        pairs = new HashMap<>();
-        createCanvases(steps, stepsCanvasList, ecp.possibleSteps().size());
-
-        drawSteps(ecp);
-        drawHistory(cp, history);
-        setupMouseEvents(stepsCanvasList, historyCanvasList);
     }
 }
