@@ -191,7 +191,7 @@ public class MainWindow {
                             break;
                         } else {
                             if (crease.isHighlighted()) {
-                                main.drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
+                                main.drawOnCanvas(mainCanvas);
                                 crease.setHighlighted(false);
                                 break;
                             }
@@ -485,7 +485,7 @@ public class MainWindow {
                     }
 
                     c.setCursor(Cursor.DEFAULT);
-                    mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
+                    mainCanvas.getCp().drawOnCanvas(mainCanvas);
                 });
 
                 c.setOnMouseClicked(mouseEvent -> {
@@ -513,7 +513,7 @@ public class MainWindow {
                     } else {
                         CreasePattern currentStep = c.getCp();
 
-                        currentStep.drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
+                        currentStep.drawOnCanvas(mainCanvas);
                         ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(currentStep);
 
                         if (c.getParent().equals(steps)) {
@@ -672,6 +672,6 @@ public class MainWindow {
             TextLogger.logText("Disabling render of points in crease pattern", log);
             mainCanvas.setShowPoints(false);
         }
-        mainCanvas.getCp().drawOnCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
+        mainCanvas.getCp().drawOnCanvas(mainCanvas);
     }
 }

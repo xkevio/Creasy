@@ -273,7 +273,7 @@ public class CreasePattern {
      * iterating over all Creases and choosing the colors based
      * on the type of Line
      *
-     * @param canvas the Canvas to draw the Crease Pattern on
+     * @param canvas the canvas to draw the Crease Pattern on
      * @param scaleX scales the GraphicsContext in the x amount (default = 1)
      * @param scaleY scales the GraphicsContext in the y amount (default = 1)
      */
@@ -286,14 +286,21 @@ public class CreasePattern {
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        graphicsContext.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
         graphicsContext.setLineWidth(2);
-
         drawCreasePattern(canvas, scaleX, scaleY);
 
         if (canvas.isShowPoints()) {
             CreasePatternEditor.showPoints(canvas);
         }
+    }
+
+    /**
+     * Overload for drawOnCanvas(canvas, scaleX, scaleY).
+     * Uses the current CpScales of the canvas.
+     * @param canvas the Canvas to draw the Crease Pattern on
+     */
+    public void drawOnCanvas(ResizableCanvas canvas) {
+        drawOnCanvas(canvas, canvas.getCpScaleX(), canvas.getCpScaleY());
     }
 
     public void drawOverCanvas(ResizableCanvas canvas, double scaleX, double scaleY) {
@@ -302,14 +309,14 @@ public class CreasePattern {
 
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
-        graphicsContext.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
         graphicsContext.setLineWidth(6);
-
         drawCreasePattern(canvas, scaleX, scaleY);
     }
 
     private void drawCreasePattern(ResizableCanvas canvas, double scaleX, double scaleY) {
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+
+        graphicsContext.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
 
         for (Crease crease : creases) {
             Color currentColor = switch (crease.getType()) {
