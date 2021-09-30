@@ -372,11 +372,10 @@ public class CreasePattern {
         Set<Crease> intersection = new HashSet<>(this.creases);
         intersection.removeAll(other.creases);
 
-        intersection.forEach(crease -> {
-            if (crease.getType() != Crease.Type.EDGE) {
-                diff.addCrease(crease);
-            }
-        });
+        intersection.stream()
+                .filter(crease -> crease.getType() != Crease.Type.EDGE)
+                .forEach(diff::addCrease);
+
         return diff;
     }
 
