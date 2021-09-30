@@ -106,8 +106,9 @@ public class ExtendedCreasePattern {
                 newcps.add(pattern.simplify(this, match));
             }
         }
+        ExtendedCreasePatternFactory e = new ExtendedCreasePatternFactory();
         newcps.stream().distinct().forEach(cp -> {
-            ExtendedCreasePattern next = new ExtendedCreasePattern(null, new HashSet<>(), null, cp); //new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
+            ExtendedCreasePattern next = new ExtendedCreasePattern(new HashSet<>(), new HashSet<>(), new HashMap<>(), cp); //new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
             steps.add(new DiagramStep(this, next));
         });
         return steps;

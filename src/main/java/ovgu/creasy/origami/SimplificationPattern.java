@@ -123,7 +123,12 @@ public class SimplificationPattern {
         Set<Crease> omittedLines = new HashSet<>();
         for (Edge edge : pattern) {
             if (match.edges.containsKey(edge)) {
-                omittedLines.addAll(match.edges.get(edge).getExtendedReflectionPath().getCreases());
+                ExtendedCrease e = match.edges.get(edge);
+                omittedLines.addAll(e.getExtendedReflectionPath().getCreases());
+                omittedLines.add(new Crease(e.asLine(), e.getType()));
+                omittedLines.add(new Crease(new Line(e.getEndVertex().getPoint(), e.getStartVertex().getPoint()), e.getType()));
+            } else {
+                System.out.println(edge);
             }
         }
         for (Crease crease : ecp.toCreasePattern().getCreases()  ) {
@@ -140,40 +145,47 @@ public class SimplificationPattern {
                 if (match.inverted) {
                     type = type.opposite();
                 }
-                Point start = v.getPoint();
-                double angle = simplified.calculateNewAngle(start);
-                Point end = new Point(start.getX()+Math.cos(angle)*600, start.getY()+Math.sin(angle)*600);
-                Line newLine = new Line(start, end);
-                Point nearestIntersection = end;
-                Crease intersectionCrease = null;
-                for (Crease crease : simplified.getCreases()) {
-                    if (crease.getLine().getStart().equals(start) || crease.getLine().getEnd().equals(start)) {
-                        continue;
-                    }
-                    Optional<Point> intersection = newLine.intersection(crease.getLine());
-                    if (intersection.isPresent() && intersection.get().distance(start) < start.distance(nearestIntersection)) {
-                        nearestIntersection = intersection.get();
-                        intersectionCrease = crease;
-                    }
-                }
-                Crease c = new Crease(new Line(start, nearestIntersection), type);
-                simplified.addCrease(c);
-
-                if (intersectionCrease != null) {
-                    Set<Point> points = new HashSet<>();
-                    points.add(intersectionCrease.getLine().getStart());
-                    points.add(intersectionCrease.getLine().getEnd());
-                    points.add(nearestIntersection);
-                    if (points.size() == 3) {
-                        simplified.removeCrease(intersectionCrease);
-                        simplified.addCrease(new Crease(new Line(intersectionCrease.getLine().getStart(), nearestIntersection), intersectionCrease.getType()));
-                        simplified.addCrease(new Crease(new Line(intersectionCrease.getLine().getEnd(), nearestIntersection), intersectionCrease.getType()));
-                    }
-                }
+                findNewLine(simplified, v.getPoint(), type);
             }
         }
         simplified.removeAllLinearPoints();
         return simplified;
+    }
+
+    private void findNewLine(CreasePattern cp, Point start, Crease.Type creaseType) {
+        double angle = cp.calculateNewAngle(start);
+        Point end = new Point(start.getX()+Math.cos(angle)*600, start.getY()+Math.sin(angle)*600);
+        Line newLine = new Line(start, end);
+        Point nearestIntersection = end;
+        Crease intersectionCrease = null;
+        for (Crease crease : cp.getCreases()) {
+            if (crease.getLine().getStart().equals(start) || crease.getLine().getEnd().equals(start)) {
+                continue;
+            }
+            Optional<Point> intersection = newLine.intersection(crease.getLine());
+            if (intersection.isPresent() && intersection.get().distance(start) < start.distance(nearestIntersection)) {
+                nearestIntersection = intersection.get();
+                intersectionCrease = crease;
+            }
+        }
+        nearestIntersection = cp.getNearPoint(nearestIntersection);
+        Crease c = new Crease(new Line(start, nearestIntersection), creaseType);
+        cp.addCrease(c);
+
+        if (intersectionCrease != null) {
+            Set<Point> points = new HashSet<>();
+            points.add(intersectionCrease.getLine().getStart());
+            points.add(intersectionCrease.getLine().getEnd());
+            points.add(nearestIntersection);
+            if (points.size() == 3) {
+                cp.removeCrease(intersectionCrease);
+                cp.addCrease(new Crease(new Line(intersectionCrease.getLine().getStart(), nearestIntersection), intersectionCrease.getType()));
+                cp.addCrease(new Crease(new Line(intersectionCrease.getLine().getEnd(), nearestIntersection), intersectionCrease.getType()));
+            }
+            if (cp.getAdjacentCreases(nearestIntersection).stream().noneMatch(crease -> crease.getType() == Crease.Type.EDGE)) {
+                findNewLine(cp, nearestIntersection, creaseType.opposite());
+            }
+        }
     }
 
     public List<Match> matches(ExtendedCreasePattern ecp) {

@@ -117,9 +117,13 @@ public class CreasePattern {
     }
 
     public void removeCrease(Crease crease) {
-        removeAdjacentCrease(crease.getLine().getStart(), crease);
-        removeAdjacentCrease(crease.getLine().getEnd(), crease);
-        creases.remove(crease);
+        if (creases.remove(crease)) {
+            removeAdjacentCrease(crease.getLine().getStart(), crease);
+            removeAdjacentCrease(crease.getLine().getEnd(), crease);
+        }else {
+            System.out.println("did not find ");
+            System.out.println(crease);
+        }
     }
 
     private void removeAdjacentCrease(Point p, Crease crease) {
@@ -148,22 +152,24 @@ public class CreasePattern {
         for (Point point : getPoints()) {
             var adj = getAdjacentCreases(point);
             if (adj.size() == 2) {
-                var line1 = adj.get(0);
-                var line2 = adj.get(1);
-                if (line1.getType() != line2.getType()) {
+                var crease1 = adj.get(0);
+                var crease2 = adj.get(1);
+                if (crease1.getType() != crease2.getType()) {
                     continue;
                 }
-                Point start = line1.getLine().getOppositePoint(point);
-                Point end = line2.getLine().getOppositePoint(point);
+                Point start = crease1.getLine().getOppositePoint(point);
+                Point end = crease2.getLine().getOppositePoint(point);
                 Line l = new Line(start, end);
                 if (l.contains(point)) {
-                    creasesToRemove.add(line1);
-                    creasesToRemove.add(line2);
-                    creasesToAdd.add(new Crease(l, line1.getType()));
+                    creasesToRemove.add(crease1);
+                    creasesToRemove.add(crease2);
+                    creasesToRemove.add(new Crease(new Line(crease1.getLine().getEnd(), crease1.getLine().getStart()), crease1.getType()));
+                    creasesToRemove.add(new Crease(new Line(crease2.getLine().getEnd(), crease2.getLine().getStart()), crease2.getType()));
+                    creasesToAdd.add(new Crease(l, crease1.getType()));
                 }
             }
         }
-
+        System.out.println("Removing linear points");
         creasesToRemove.forEach(this::removeCrease);
         creasesToAdd.forEach(this::addCrease);
         return creasesToAdd.size();
@@ -313,6 +319,10 @@ public class CreasePattern {
         drawCreasePattern(canvas, scaleX, scaleY);
     }
 
+    public Point getNearPoint(Point p) {
+        return this.points.stream().filter(point -> p.distance(point) < 0.0000001).findFirst().orElse(p);
+    }
+
     private void drawCreasePattern(ResizableCanvas canvas, double scaleX, double scaleY) {
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
@@ -324,8 +334,8 @@ public class CreasePattern {
                 case VALLEY -> Color.BLUE;
                 case MOUNTAIN -> Color.RED;
             };
-
-            graphicsContext.setStroke(currentColor);
+            graphicsContext.setStroke(new Color(currentColor.getRed(), currentColor.getGreen(), currentColor.getBlue(), 0.5));
+            //graphicsContext.setStroke(currentColor);
 
             Point start = crease.getLine().getStart();
             Point end = crease.getLine().getEnd();
