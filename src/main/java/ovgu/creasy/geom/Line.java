@@ -10,6 +10,11 @@ public class Line {
     private Point start;
     private Point end;
 
+    public Line() {
+        this.start = new Point(0, 0);
+        this.end = new Point(0, 0);
+    }
+
     public Line(Point start, Point end) {
         this.start = start;
         this.end = end;

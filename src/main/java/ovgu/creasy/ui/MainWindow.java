@@ -60,6 +60,8 @@ public class MainWindow {
     private HashMap<ResizableCanvas, Separator> pairs;
 
     private boolean wasSaved = false;
+    private boolean adding = false;
+    private Line addedCreaseLine;
 
     public ResizableCanvas mainCanvas;
     public ResizableCanvas gridCanvas;
@@ -183,6 +185,13 @@ public class MainWindow {
                         mouseEvent.getSceneY() - mainCanvas.getHeight() / 2)
                 );
 
+//                if (editSetting == CreasePatternEditor.EditSetting.ADD) {
+//                    mainCanvas.getGraphicsContext2D().translate(mainCanvas.getWidth() / 2, mainCanvas.getHeight() / 2);
+//                    mainCanvas.getGraphicsContext2D().setFill(Color.ORANGE);
+//                    mainCanvas.getGraphicsContext2D().fillRect(mousePos.getX() - 10, mousePos.getY() - 10, 10, 10);
+//                    mainCanvas.getGraphicsContext2D().translate(-mainCanvas.getWidth() / 2, -mainCanvas.getHeight() / 2);
+//                }
+
                 if (editSetting == CreasePatternEditor.EditSetting.REMOVE || editSetting == CreasePatternEditor.EditSetting.CHANGE) {
                     for (Crease crease : main.getCreases()) {
                         Point start = crease.getLine().getStart().multiply(scale);
@@ -210,22 +219,39 @@ public class MainWindow {
         mainCanvas.setOnMouseClicked(mouseEvent -> {
             if (mainCanvas.getCp() != null) {
                 switch (editSetting) {
-                    case ADD -> System.out.println("adding");
+                    case ADD -> {
+                        System.out.println("adding");
+
+                        Point mousePos = Point.fromPoint2D(mainCanvas.sceneToLocal(
+                                mouseEvent.getSceneX() - mainCanvas.getWidth() / 2,
+                                mouseEvent.getSceneY() - mainCanvas.getHeight() / 2)
+                        );
+
+                        Point scale = new Point(mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
+
+                        if (!adding) {
+                            addedCreaseLine = new Line();
+                            addedCreaseLine.setStart(mousePos.multiply(scale));
+                            adding = true;
+                        } else {
+                            addedCreaseLine.setEnd(mousePos.multiply(scale));
+
+                            Crease newCrease = new Crease(addedCreaseLine,
+                                    Crease.Type.fromString(((RadioButton) line.getSelectedToggle()).getText()));
+                            mainCanvas.getCp().addCrease(newCrease);
+                            mainCanvas.getCp().drawOnCanvas(mainCanvas);
+
+                            adding = false;
+                        }
+                    }
                     case CHANGE -> {
-                        System.out.println("changing");
                         if (highlightedCrease != null) {
-                            Crease.Type change = switch (((RadioButton) line.getSelectedToggle()).getText()) {
-                                case "Mountain" -> Crease.Type.MOUNTAIN;
-                                case "Valley" -> Crease.Type.VALLEY;
-                                case "Edge" -> Crease.Type.EDGE;
-                                default -> null;
-                            };
+                            Crease.Type change = Crease.Type.fromString(((RadioButton) line.getSelectedToggle()).getText());
                             CreasePatternEditor.changeCreaseType(mainCanvas, highlightedCrease, change);
                             TextLogger.logText("Changed crease type to " + change, log);
                         }
                     }
                     case REMOVE -> {
-                        System.out.println("removing");
                         if (highlightedCrease != null) {
                             CreasePatternEditor.removeCrease(mainCanvas, highlightedCrease);
                             TextLogger.logText("Removed crease of type " + highlightedCrease.getType(), log);
@@ -238,12 +264,28 @@ public class MainWindow {
         edit.selectedToggleProperty().addListener((observableValue, oldToggle, newToggle) -> {
             if (newToggle != null) {
                 switch (((ToggleButton) newToggle).getId()) {
-                    case "add" -> editSetting = CreasePatternEditor.EditSetting.ADD;
-                    case "remove" -> editSetting = CreasePatternEditor.EditSetting.REMOVE;
-                    case "change" -> editSetting = CreasePatternEditor.EditSetting.CHANGE;
+                    case "add" -> {
+                        editSetting = CreasePatternEditor.EditSetting.ADD;
+                        mainCanvas.setCursor(Cursor.CROSSHAIR);
+
+                        TextLogger.logText("Activate: Add crease tool", log);
+                    }
+                    case "remove" -> {
+                        editSetting = CreasePatternEditor.EditSetting.REMOVE;
+                        mainCanvas.setCursor(Cursor.DEFAULT);
+
+                        TextLogger.logText("Activate: Remove crease tool", log);
+                    }
+                    case "change" -> {
+                        editSetting = CreasePatternEditor.EditSetting.CHANGE;
+                        mainCanvas.setCursor(Cursor.DEFAULT);
+
+                        TextLogger.logText("Activate: Change crease type tool", log);
+                    }
                 }
             } else {
                 editSetting = CreasePatternEditor.EditSetting.NONE;
+                mainCanvas.setCursor(Cursor.DEFAULT);
             }
         });
 

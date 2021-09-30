@@ -2,6 +2,7 @@ package ovgu.creasy.origami;
 
 import ovgu.creasy.geom.Line;
 
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -33,6 +34,15 @@ public class Crease {
             return switch (this) {
                 case VALLEY -> MOUNTAIN;
                 case MOUNTAIN -> VALLEY;
+                default -> null;
+            };
+        }
+
+        public static Type fromString(String type) {
+            return switch (type.toLowerCase()) {
+                case "mountain" -> MOUNTAIN;
+                case "edge" -> EDGE;
+                case "valley" -> VALLEY;
                 default -> null;
             };
         }

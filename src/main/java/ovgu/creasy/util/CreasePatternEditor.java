@@ -51,13 +51,19 @@ public class CreasePatternEditor {
 
     /**
      * Changes the type of the given crease to the given enum type and redraws the
-     * changed crease pattern on the given canvas, calls setType() method.
+     * changed crease pattern on the given canvas.
+     * Removes old crease, changes type with setType() and re-adds it
+     * as just changing the crease type would invalidate the hash.
      * @param canvas the canvas the crease is drawn on
      * @param crease the crease whose type shall be changed
      * @param type the new crease type
      */
     public static void changeCreaseType(ResizableCanvas canvas, Crease crease, Crease.Type type) {
+        canvas.getCp().removeCrease(crease);
+
         crease.setType(type);
+        canvas.getCp().addCrease(crease);
+
         canvas.getCp().drawOnCanvas(canvas);
     }
 
@@ -69,5 +75,9 @@ public class CreasePatternEditor {
     public static void removeCrease(ResizableCanvas canvas, Crease crease) {
         canvas.getCp().removeCrease(crease);
         canvas.getCp().drawOnCanvas(canvas);
+    }
+
+    public static void addCrease(ResizableCanvas canvas, Crease crease) {
+
     }
 }

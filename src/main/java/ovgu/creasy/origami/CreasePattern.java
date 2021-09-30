@@ -334,8 +334,7 @@ public class CreasePattern {
                 case VALLEY -> Color.BLUE;
                 case MOUNTAIN -> Color.RED;
             };
-            graphicsContext.setStroke(new Color(currentColor.getRed(), currentColor.getGreen(), currentColor.getBlue(), 0.5));
-            //graphicsContext.setStroke(currentColor);
+            graphicsContext.setStroke(currentColor);
 
             Point start = crease.getLine().getStart();
             Point end = crease.getLine().getEnd();
@@ -374,9 +373,9 @@ public class CreasePattern {
         intersection.removeAll(other.creases);
 
         intersection.forEach(crease -> {
-            //if (crease.getType() != Crease.Type.EDGE) {
+            if (crease.getType() != Crease.Type.EDGE) {
                 diff.addCrease(crease);
-            //}
+            }
         });
         return diff;
     }
