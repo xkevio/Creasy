@@ -700,7 +700,7 @@ public class MainWindow {
         historyCanvasList.clear();
 
         TextLogger.logText("-----------------", log);
-        TextLogger.logText("Reloading simplification algorithm with edited crease pattern...", log);
+        TextLogger.logText("Reloading simplification algorithm with modified crease pattern...", log);
 
         cp = mainCanvas.getCp();
         model = new OrigamiModel(cp);

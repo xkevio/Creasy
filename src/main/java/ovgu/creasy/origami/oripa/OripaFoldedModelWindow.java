@@ -1,5 +1,9 @@
 package ovgu.creasy.origami.oripa;
 
+import javafx.embed.swing.SwingNode;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import oripa.domain.cptool.LineAdder;
 import oripa.domain.creasepattern.CreasePatternFactory;
 import oripa.domain.creasepattern.CreasePatternInterface;
@@ -69,14 +73,13 @@ public class OripaFoldedModelWindow {
 
     public void showError() {
         JFrame f = new FoldabilityCheckFrameFactory(new ChildFrameManager()).createFrame(null, model, cp, true);
-        f.setVisible(true);
 
-//        Alert error = new Alert(Alert.AlertType.ERROR);
-//        error.setTitle("Foldability error");
-//        error.setHeaderText(null);
-//        error.setContentText("""
-//                            An error has occurred while trying to fold your crease pattern!
-//                            Will show more info in the future.
-//                            """);
+        Stage stage = new Stage();
+
+        SwingNode node = new SwingNode();
+        node.setContent(f.getRootPane());
+
+        stage.setScene(new Scene(new StackPane(node), 800, 800));
+        stage.show();
     }
 }
