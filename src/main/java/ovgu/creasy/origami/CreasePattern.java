@@ -120,7 +120,7 @@ public class CreasePattern {
         if (creases.remove(crease)) {
             removeAdjacentCrease(crease.getLine().getStart(), crease);
             removeAdjacentCrease(crease.getLine().getEnd(), crease);
-        }else {
+        } else {
             System.out.println("did not find ");
             System.out.println(crease);
         }
@@ -177,7 +177,7 @@ public class CreasePattern {
 
     public void addCrease(Crease crease) {
         addOrMergePoints(crease);
-        if (crease.getLine().getStart().distance(crease.getLine().getEnd())<0.00001) {
+        if (crease.getLine().getStart().distance(crease.getLine().getEnd()) < 0.00001) {
             return;
         }
         Line revLine = new Line(crease.getLine().getEnd(), crease.getLine().getStart());
@@ -190,7 +190,6 @@ public class CreasePattern {
         }
         this.creases.add(crease);
         addToAdjacentCreases(crease);
-
     }
 
     public List<Crease> getAdjacentCreases(Point p) {
@@ -295,9 +294,7 @@ public class CreasePattern {
         graphicsContext.setLineWidth(2);
         drawCreasePattern(canvas, scaleX, scaleY);
 
-        if (canvas.isShowPoints()) {
-            CreasePatternEditor.showPoints(canvas);
-        }
+        CreasePatternEditor.showPoints(canvas);
     }
 
     /**

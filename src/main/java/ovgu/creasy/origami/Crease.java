@@ -9,9 +9,10 @@ import java.util.Objects;
  * A single crease in a Crease Pattern
  */
 public class Crease {
-    private Line line;
+    private final Line line;
     private Type type;
 
+    // not a great solution as it violates the single-responsibility principle (SRP)
     private boolean highlighted;
 
     public enum Type {

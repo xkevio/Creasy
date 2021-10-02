@@ -193,7 +193,7 @@
                                           <Tooltip text="Change crease type" />
                                        </tooltip>
                                     </ToggleButton>
-                                    <Button alignment="CENTER" mnemonicParsing="false" onAction="#onReloadCP">
+                                    <Button fx:id="reloadButton" alignment="CENTER" mnemonicParsing="false" onAction="#onReloadCP">
                                        <graphic>
                                           <ImageView preserveRatio="true">
                                              <image>
@@ -223,8 +223,11 @@
                                     <VBox alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="10.0">
                                        <children>
                                           <CheckBox fx:id="showPointsCheck" mnemonicParsing="false" onAction="#onShowPoints" text="Show points" />
-                                          <CheckBox mnemonicParsing="false" text="Snap to points" />
-                                          <CheckBox mnemonicParsing="false" text="Snap to grid" />
+                                          <CheckBox mnemonicParsing="false" text="Snap to grid" fx:id="snapToGrid"/>
+                                          <CheckBox mnemonicParsing="false" onAction="#onLiveReload" text="Live reload">
+                                             <tooltip>
+                                                <Tooltip text="Whether the crease pattern should be reloaded after a change or after clicking on the reload button" />
+                                             </tooltip></CheckBox>
                                        </children>
                                        <padding>
                                           <Insets left="10.0" />

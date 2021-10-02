@@ -50,6 +50,8 @@ public class MainWindow {
     private VBox window;
     @FXML
     private Label historyLabel;
+    @FXML
+    private Button reloadButton;
 
     private HostServices hostServices;
     private OrigamiModel model;
@@ -69,6 +71,8 @@ public class MainWindow {
 
     @FXML
     private CheckBox showPointsCheck;
+    @FXML
+    private CheckBox snapToGrid;
     @FXML
     private MenuItem foldedModelMenuItem;
     @FXML
@@ -185,30 +189,40 @@ public class MainWindow {
                         mouseEvent.getSceneY() - mainCanvas.getHeight() / 2)
                 );
 
-//                if (editSetting == CreasePatternEditor.EditSetting.ADD) {
-//                    mainCanvas.getGraphicsContext2D().translate(mainCanvas.getWidth() / 2, mainCanvas.getHeight() / 2);
-//                    mainCanvas.getGraphicsContext2D().setFill(Color.ORANGE);
-//                    mainCanvas.getGraphicsContext2D().fillRect(mousePos.getX() - 10, mousePos.getY() - 10, 10, 10);
-//                    mainCanvas.getGraphicsContext2D().translate(-mainCanvas.getWidth() / 2, -mainCanvas.getHeight() / 2);
-//                }
-
-                if (editSetting == CreasePatternEditor.EditSetting.REMOVE || editSetting == CreasePatternEditor.EditSetting.CHANGE) {
-                    for (Crease crease : main.getCreases()) {
-                        Point start = crease.getLine().getStart().multiply(scale);
-                        Point end = crease.getLine().getEnd().multiply(scale);
-
-                        Line scaledLine = new Line(start, end);
-
-                        if (scaledLine.contains(mousePos, 0.1)) {
-                            CreasePatternEditor.highlightCrease(mainCanvas, crease);
-                            highlightedCrease = crease;
-                            break;
-                        } else {
-                            if (crease.isHighlighted()) {
+                switch (editSetting) {
+                    case ADD -> {
+                        for (Point point : main.getPoints()) {
+                            if (point.multiply(scale).distance(mousePos) < 5) {
+                                point.setHighlighted(true);
                                 main.drawOnCanvas(mainCanvas);
-                                crease.setHighlighted(false);
-                                highlightedCrease = null;
                                 break;
+                            } else {
+                                if (point.isHighlighted()) {
+                                    point.setHighlighted(false);
+                                    main.drawOnCanvas(mainCanvas);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    case CHANGE, REMOVE -> {
+                        for (Crease crease : main.getCreases()) {
+                            Point start = crease.getLine().getStart().multiply(scale);
+                            Point end = crease.getLine().getEnd().multiply(scale);
+
+                            Line scaledLine = new Line(start, end);
+
+                            if (scaledLine.contains(mousePos, 0.1)) {
+                                CreasePatternEditor.highlightCrease(mainCanvas, crease);
+                                highlightedCrease = crease;
+                                break;
+                            } else {
+                                if (crease.isHighlighted()) {
+                                    main.drawOnCanvas(mainCanvas);
+                                    crease.setHighlighted(false);
+                                    highlightedCrease = null;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -218,10 +232,9 @@ public class MainWindow {
 
         mainCanvas.setOnMouseClicked(mouseEvent -> {
             if (mainCanvas.getCp() != null) {
+                CreasePattern main = mainCanvas.getCp();
                 switch (editSetting) {
                     case ADD -> {
-                        System.out.println("adding");
-
                         Point mousePos = Point.fromPoint2D(mainCanvas.sceneToLocal(
                                 mouseEvent.getSceneX() - mainCanvas.getWidth() / 2,
                                 mouseEvent.getSceneY() - mainCanvas.getHeight() / 2)
@@ -230,30 +243,85 @@ public class MainWindow {
                         Point scale = new Point(mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
 
                         if (!adding) {
-                            addedCreaseLine = new Line();
-                            addedCreaseLine.setStart(mousePos.multiply(scale));
-                            adding = true;
+                            CreasePatternEditor.returnPointNearMouse(main, mousePos, scale)
+                                    .ifPresentOrElse(point -> {
+                                        addedCreaseLine = new Line();
+                                        addedCreaseLine.setStart(point);
+                                        adding = true;
+                                    }, () -> {
+                                        if (snapToGrid.isSelected()) {
+                                            if (CreasePatternEditor.isMousePosOnGrid(mousePos, scale, grid.getCurrentCellSize())) {
+                                                Point gridPoint = CreasePatternEditor.alignOnGrid(mousePos, scale, grid.getCurrentCellSize());
+
+                                                addedCreaseLine = new Line();
+                                                addedCreaseLine.setStart(gridPoint);
+                                                adding = true;
+                                            } else {
+                                                mouseEvent.consume();
+                                            }
+                                        } else {
+                                            mouseEvent.consume();
+                                        }
+                                    });
+
                         } else {
-                            addedCreaseLine.setEnd(mousePos.multiply(scale));
+                            Crease.Type type = Crease.Type.fromString(((RadioButton) line.getSelectedToggle()).getText());
+                            CreasePatternEditor.returnPointNearMouse(main, mousePos, scale)
+                                    .ifPresentOrElse(point -> {
+                                        addedCreaseLine.setEnd(point);
+                                        CreasePatternEditor.addCrease(main, addedCreaseLine, type);
 
-                            Crease newCrease = new Crease(addedCreaseLine,
-                                    Crease.Type.fromString(((RadioButton) line.getSelectedToggle()).getText()));
-                            mainCanvas.getCp().addCrease(newCrease);
-                            mainCanvas.getCp().drawOnCanvas(mainCanvas);
+                                        main.drawOnCanvas(mainCanvas);
+                                        adding = false;
 
-                            adding = false;
+                                        if (reloadButton.isDisabled()) {
+                                            this.onReloadCP();
+                                        }
+                                        TextLogger.logText("Added crease of type " + type, log);
+                            }, () -> {
+                                        if (snapToGrid.isSelected()) {
+                                            if (CreasePatternEditor.isMousePosOnGrid(mousePos, scale, grid.getCurrentCellSize())) {
+                                                Point gridPoint = CreasePatternEditor.alignOnGrid(mousePos, scale, grid.getCurrentCellSize());
+                                                addedCreaseLine.setEnd(gridPoint);
+
+                                                CreasePatternEditor.addCrease(main, addedCreaseLine, type);
+
+                                                main.drawOnCanvas(mainCanvas);
+                                                adding = false;
+
+                                                if (reloadButton.isDisabled()) {
+                                                    this.onReloadCP();
+                                                }
+                                                TextLogger.logText("Added crease of type " + type, log);
+                                            } else {
+                                                mouseEvent.consume();
+                                            }
+                                        } else {
+                                            mouseEvent.consume();
+                                        }
+                                    });
                         }
                     }
                     case CHANGE -> {
                         if (highlightedCrease != null) {
                             Crease.Type change = Crease.Type.fromString(((RadioButton) line.getSelectedToggle()).getText());
                             CreasePatternEditor.changeCreaseType(mainCanvas, highlightedCrease, change);
+
+                            if (reloadButton.isDisabled()) {
+                                this.onReloadCP();
+                            }
+
                             TextLogger.logText("Changed crease type to " + change, log);
                         }
                     }
                     case REMOVE -> {
                         if (highlightedCrease != null) {
                             CreasePatternEditor.removeCrease(mainCanvas, highlightedCrease);
+
+                            if (reloadButton.isDisabled()) {
+                                this.onReloadCP();
+                            }
+
                             TextLogger.logText("Removed crease of type " + highlightedCrease.getType(), log);
                         }
                     }
@@ -266,26 +334,19 @@ public class MainWindow {
                 switch (((ToggleButton) newToggle).getId()) {
                     case "add" -> {
                         editSetting = CreasePatternEditor.EditSetting.ADD;
-                        mainCanvas.setCursor(Cursor.CROSSHAIR);
-
                         TextLogger.logText("Activate: Add crease tool", log);
                     }
                     case "remove" -> {
                         editSetting = CreasePatternEditor.EditSetting.REMOVE;
-                        mainCanvas.setCursor(Cursor.DEFAULT);
-
                         TextLogger.logText("Activate: Remove crease tool", log);
                     }
                     case "change" -> {
                         editSetting = CreasePatternEditor.EditSetting.CHANGE;
-                        mainCanvas.setCursor(Cursor.DEFAULT);
-
                         TextLogger.logText("Activate: Change crease type tool", log);
                     }
                 }
             } else {
                 editSetting = CreasePatternEditor.EditSetting.NONE;
-                mainCanvas.setCursor(Cursor.DEFAULT);
             }
         });
 
@@ -406,13 +467,13 @@ public class MainWindow {
     @FXML
     private void onGridIncreaseAction() {
         grid.drawGrid(grid.getCurrentCellSize() * 2);
-        TextLogger.logText("Increased Grid (x2), new grid cell size: " + grid.getCurrentCellSize(), log);
+        TextLogger.logText("Increased grid size (x2), new grid cell size: " + grid.getCurrentCellSize(), log);
     }
 
     @FXML
     private void onGridDecreaseAction() {
         grid.drawGrid(grid.getCurrentCellSize() / 2);
-        TextLogger.logText("Decreased Grid (x0.5), new grid cell size: " + grid.getCurrentCellSize(), log);
+        TextLogger.logText("Decreased grid size (x0.5), new grid cell size: " + grid.getCurrentCellSize(), log);
     }
 
     @FXML
@@ -776,5 +837,10 @@ public class MainWindow {
 
     public void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
+    }
+
+    @FXML
+    private void onLiveReload() {
+        reloadButton.setDisable(!reloadButton.isDisabled());
     }
 }

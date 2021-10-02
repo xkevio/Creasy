@@ -1,7 +1,6 @@
 package ovgu.creasy.geom;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 2d Line segment
@@ -10,14 +9,16 @@ public class Line {
     private Point start;
     private Point end;
 
+    private final List<Point> intersections;
+
     public Line() {
-        this.start = new Point(0, 0);
-        this.end = new Point(0, 0);
+        this(new Point(0, 0), new Point(0, 0));
     }
 
     public Line(Point start, Point end) {
         this.start = start;
         this.end = end;
+        intersections = new ArrayList<>();
     }
 
     /**
@@ -97,6 +98,40 @@ public class Line {
             }
         }
         return Optional.empty();
+    }
+
+    public void addSplicePoints(Point splice) {
+        intersections.add(splice);
+    }
+
+    public int getIntersectionSize() {
+        return intersections.size();
+    }
+
+    // only call once per Line
+    public List<Line> splicedLines() {
+        if (intersections.size() < 1) {
+            return List.of(this);
+        } else {
+            List<Line> lines = new ArrayList<>();
+            Line copy = new Line(new Point(getStart()), new Point(getEnd()));
+
+
+            // i might be a genius
+            intersections.sort(Comparator.comparingDouble(p -> copy.getStart().distance(p)));
+
+            intersections.forEach(point -> {
+                Line line = new Line();
+                line.setStart(copy.getStart());
+                line.setEnd(point);
+
+                lines.add(line);
+                copy.setStart(point);
+            });
+            lines.add(copy);
+            intersections.clear();
+            return lines;
+        }
     }
 
     @Override

@@ -11,9 +11,19 @@ public class Point {
     private double x;
     private double y;
 
+    // not a great solution as it violates the single-responsibility principle (SRP)
+    private boolean highlighted;
+
     public Point(double x, double y) {
         this.x = x;
         this.y = y;
+        this.highlighted = false;
+    }
+
+    public Point(Point other) {
+        this.x = other.x;
+        this.y = other.y;
+        this.highlighted = other.isHighlighted();
     }
 
     public static Point fromPoint2D(Point2D point2D) {
@@ -36,12 +46,24 @@ public class Point {
         this.y = y;
     }
 
+    public boolean isHighlighted() {
+        return highlighted;
+    }
+
+    public void setHighlighted(boolean highlighted) {
+        this.highlighted = highlighted;
+    }
+
     public Point add(Point other) {
         return new Point(this.x + other.getX(), this.y + other.getY());
     }
 
     public Point multiply(Point other) {
         return new Point(this.x * other.getX(), this.y * other.getY());
+    }
+
+    public Point divide(Point other) {
+        return new Point(this.x / other.getX(), this.y / other.getY());
     }
 
     public double distance(Point other) {

@@ -1,12 +1,13 @@
 package ovgu.creasy.util;
 
 import javafx.scene.paint.Color;
+import ovgu.creasy.geom.Line;
+import ovgu.creasy.geom.Point;
 import ovgu.creasy.origami.Crease;
 import ovgu.creasy.origami.CreasePattern;
 import ovgu.creasy.ui.ResizableCanvas;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Some editor functions for crease patterns on a canvas
@@ -27,12 +28,27 @@ public class CreasePatternEditor {
      * @param canvas the canvas which contains the crease pattern the points are based on
      */
     public static void showPoints(ResizableCanvas canvas) {
-        canvas.getGraphicsContext2D().setFill(Color.GRAY);
         canvas.getGraphicsContext2D().translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
-        canvas.getCp().getPoints().forEach(point -> {
-            canvas.getGraphicsContext2D().fillRect(point.getX() * canvas.getCpScaleX() - 5,
-                    point.getY() * canvas.getCpScaleY() - 5, 10, 10);
-        });
+
+        if (canvas.isShowPoints()) {
+            canvas.getCp().getPoints().forEach(point -> {
+                canvas.getGraphicsContext2D().setFill(point.isHighlighted() ? Color.LIGHTGREEN : Color.GRAY);
+                canvas.getGraphicsContext2D().fillRect(point.getX() * canvas.getCpScaleX() - 5,
+                        point.getY() * canvas.getCpScaleY() - 5, 10, 10);
+            });
+        } else {
+            Optional<Point> toHighlight = canvas.getCp().getPoints()
+                    .stream()
+                    .filter(Point::isHighlighted)
+                    .findAny();
+
+            toHighlight.ifPresent(point -> {
+                canvas.getGraphicsContext2D().setFill(Color.LIGHTGREEN);
+                canvas.getGraphicsContext2D().fillRect(point.getX() * canvas.getCpScaleX() - 5,
+                        point.getY() * canvas.getCpScaleY() - 5, 10, 10);
+            });
+        }
+
         canvas.getGraphicsContext2D().translate(-canvas.getWidth() / 2, -canvas.getHeight() / 2);
     }
 
@@ -77,7 +93,91 @@ public class CreasePatternEditor {
         canvas.getCp().drawOnCanvas(canvas);
     }
 
-    public static void addCrease(ResizableCanvas canvas, Crease crease) {
+    /**
+     * Checks if there is a crease pattern point near the mouse position and returns
+     * an Optional with the point if there is one.
+     * @param creasePattern the crease pattern whose set of points will be checked
+     * @param mousePos the position of the mouse
+     * @param scale the canvas scale
+     * @return an Optional that is empty if there is no point near or contains the point
+     */
+    public static Optional<Point> returnPointNearMouse(CreasePattern creasePattern, Point mousePos, Point scale) {
+        return creasePattern.getPoints()
+                .stream()
+                .filter(point -> point.multiply(scale).distance(mousePos) < 5)
+                .findAny();
+    }
 
+    /**
+     * Checks if the mouse pointer is on an intersection point of the grid.
+     * @param mousePos the position of the mouse
+     * @param scale the canvas scale
+     * @param currentCellSize the current size of the grid cells
+     * @return if the mouse position is on such an intersection
+     */
+    public static boolean isMousePosOnGrid(Point mousePos, Point scale, int currentCellSize) {
+        return ((mousePos.divide(scale).getX() % currentCellSize <= 5 || mousePos.divide(scale).getX() % currentCellSize >= currentCellSize - 5) &&
+                (mousePos.divide(scale).getY() % currentCellSize <= 5 || mousePos.divide(scale).getY() % currentCellSize >= currentCellSize - 5));
+    }
+
+    /**
+     * Returns the closest grid intersection point from the mouse position.
+     * @param mousePos the position of the mouse
+     * @param scale the canvas scale
+     * @param currentCellSize the current size of the grid cells
+     * @return the new aligned point on an intersection point in local coordinates
+     */
+    public static Point alignOnGrid(Point mousePos, Point scale, int currentCellSize) {
+        Point gridPoint = mousePos.divide(scale);
+        double diffX = gridPoint.getX() % currentCellSize;
+        double diffY = gridPoint.getY() % currentCellSize;
+
+        if (diffX <= 5) {
+            gridPoint.setX(gridPoint.getX() - diffX);
+        }
+        if (diffX >= currentCellSize - 5) {
+            gridPoint.setX(gridPoint.getX() + (currentCellSize - diffX));
+        }
+        if (diffY <= 5) {
+            gridPoint.setY(gridPoint.getY() - diffY);
+        }
+        if (diffY >= currentCellSize - 5) {
+            gridPoint.setY(gridPoint.getY() + (currentCellSize - diffY));
+        }
+        return gridPoint;
+    }
+
+    public static void addCrease(CreasePattern creasePattern, Line addLine, Crease.Type type) {
+        HashMap<Crease, List<Line>> lineStore = new HashMap<>();
+
+        creasePattern.getCreases().forEach(crease -> {
+            if (!(crease.getLine().contains(addLine.getStart(), 0.1) ||
+                    crease.getLine().contains(addLine.getEnd(), 0.1))) {
+                addLine.intersection(crease.getLine())
+                        .ifPresent(intersection -> {
+                            addLine.addSplicePoints(intersection);
+                            crease.getLine().addSplicePoints(intersection);
+                        });
+            }
+
+            if (crease.getLine().getIntersectionSize() > 0) {
+                lineStore.put(crease, crease.getLine().splicedLines());
+            }
+        });
+
+        List<Line> lines = addLine.splicedLines();
+        lines.forEach(newLines -> {
+            System.out.println(newLines);
+            Crease newCrease = new Crease(newLines, type);
+            creasePattern.addCrease(newCrease);
+        });
+
+        lineStore.forEach((crease, newLines) -> {
+            creasePattern.removeCrease(crease);
+            newLines.forEach(newLine -> {
+                Crease newCrease = new Crease(newLine, crease.getType());
+                creasePattern.addCrease(newCrease);
+            });
+        });
     }
 }
