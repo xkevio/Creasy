@@ -33,7 +33,7 @@ This allows you to put together the generated folding sequences as you like and 
 ## Installation
 **JDK 16 or above** is needed to run or compile Creasy.
 
-You can either download a pre-built binary (`.jar`) from the release page or compile manually.
+You can either download a pre-built binary (`.jar`) from the [releases page](https://github.com/xkevio/Creasy/releases) or compile manually.
 If you choose to compile Creasy yourself, you will also need `maven`.
 
 - Clone the repository with `git clone git@github.com:xkevio/Creasy.git`
