@@ -1,6 +1,12 @@
 package ovgu.creasy.origami;
 
+import oripa.domain.creasepattern.CreasePatternInterface;
+import oripa.domain.fold.Folder;
+import oripa.domain.fold.foldability.FoldabilityChecker;
+import oripa.domain.fold.halfedge.OrigamiModel;
+import oripa.domain.fold.halfedge.OrigamiModelFactory;
 import ovgu.creasy.geom.Vertex;
+import ovgu.creasy.origami.oripa.OripaTypeConverter;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -107,12 +113,19 @@ public class ExtendedCreasePattern {
             }
         }
         ExtendedCreasePatternFactory e = new ExtendedCreasePatternFactory();
+        Folder f = OripaTypeConverter.createFolder();
+
+        FoldabilityChecker foldabilityChecker = new FoldabilityChecker();
         newcps.stream().distinct().forEach(cp -> {
             CreasePattern cp2 = new CreasePattern();
             cp.getCreases().forEach(cp2::addCrease);
             cp2.removeAllLinearPoints();
-            ExtendedCreasePattern next = new ExtendedCreasePattern(new HashSet<>(), new HashSet<>(), new HashMap<>(), cp2); //new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
-            steps.add(new DiagramStep(this, next));
+            CreasePatternInterface cpOripa = OripaTypeConverter.convertToOripaCp(cp2);
+            OrigamiModel model = new OrigamiModelFactory().createOrigamiModel(cpOripa, cpOripa.getPaperSize());
+            if (foldabilityChecker.testLocalFlatFoldability(model)) {
+                ExtendedCreasePattern next = new ExtendedCreasePattern(new HashSet<>(), new HashSet<>(), new HashMap<>(), cp2); //new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
+                steps.add(new DiagramStep(this, next));
+            }
         });
         return steps;
     }

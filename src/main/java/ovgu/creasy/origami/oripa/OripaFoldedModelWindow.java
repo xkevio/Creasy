@@ -4,18 +4,12 @@ import javafx.embed.swing.SwingNode;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import oripa.domain.cptool.LineAdder;
-import oripa.domain.creasepattern.CreasePatternFactory;
 import oripa.domain.creasepattern.CreasePatternInterface;
 import oripa.domain.fold.FoldedModel;
 import oripa.domain.fold.Folder;
 import oripa.domain.fold.foldability.FoldabilityChecker;
 import oripa.domain.fold.halfedge.OrigamiModel;
 import oripa.domain.fold.halfedge.OrigamiModelFactory;
-import oripa.domain.fold.subface.FacesToCreasePatternConverter;
-import oripa.domain.fold.subface.ParentFacesCollector;
-import oripa.domain.fold.subface.SplitFacesToSubFacesConverter;
-import oripa.domain.fold.subface.SubFacesFactory;
 import oripa.util.gui.ChildFrameManager;
 import oripa.view.foldability.FoldabilityCheckFrameFactory;
 import ovgu.creasy.origami.CreasePattern;
@@ -35,14 +29,7 @@ public class OripaFoldedModelWindow {
 
     public OripaFoldedModelWindow(CreasePattern cp) {
         this.cp = OripaTypeConverter.convertToOripaCp(cp);
-        folder = new Folder(
-                new SubFacesFactory(
-                        new FacesToCreasePatternConverter(
-                                new CreasePatternFactory(),
-                                new LineAdder()),
-                        new OrigamiModelFactory(),
-                        new SplitFacesToSubFacesConverter(),
-                        new ParentFacesCollector()));
+        folder = OripaTypeConverter.createFolder();
         foldabilityChecker = new FoldabilityChecker();
     }
 
