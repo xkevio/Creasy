@@ -14,7 +14,8 @@ This algorithm is based on the works of
 and their paper "**Generating Folding Sequences from Crease Patterns of Flat-Foldable Origami**".
 
 <img src="images/app.png" width="75%" height="75%"/>
-(Creasy after importing a crease pattern, gui elements are explained below)
+
+*(Creasy after importing a crease pattern, gui elements are explained below)*
 
 ## Description
 Creasy tries to make the deciphering of crease patterns simple and understandable in its GUI. Once you open Creasy, you are welcomed by a few elements that might confuse you at first.
