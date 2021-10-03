@@ -166,6 +166,7 @@ public class CreasePattern {
                     creasesToRemove.add(new Crease(new Line(crease1.getLine().getEnd(), crease1.getLine().getStart()), crease1.getType()));
                     creasesToRemove.add(new Crease(new Line(crease2.getLine().getEnd(), crease2.getLine().getStart()), crease2.getType()));
                     creasesToAdd.add(new Crease(l, crease1.getType()));
+                    break;
                 }
             }
         }
