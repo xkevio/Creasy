@@ -764,6 +764,7 @@ public class MainWindow {
         TextLogger.logText("Reloading simplification algorithm with modified crease pattern...", log);
 
         cp = mainCanvas.getCp();
+        cp.removeAllLinearPoints();
         model = new OrigamiModel(cp);
 
         ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
