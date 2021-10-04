@@ -4,7 +4,8 @@ import javafx.scene.Parent;
 import javafx.stage.FileChooser;
 import org.jfree.svg.SVGGraphics2D;
 import ovgu.creasy.origami.basic.CreasePattern;
-import ovgu.creasy.ui.ResizableCanvas;
+import ovgu.creasy.ui.elements.CreasePatternCanvas;
+import ovgu.creasy.ui.elements.ResizableCanvas;
 import ovgu.creasy.util.exporter.base.AbstractHistoryExporter;
 
 import java.awt.*;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 public class SVGHistoryExporter extends AbstractHistoryExporter {
 
-    public SVGHistoryExporter(List<ResizableCanvas> history) {
+    public SVGHistoryExporter(List<CreasePatternCanvas> history) {
         this.history = history;
     }
 
@@ -35,9 +36,9 @@ public class SVGHistoryExporter extends AbstractHistoryExporter {
     public boolean export(File file) {
         SVGGraphics2D svgGraphics2D = new SVGGraphics2D(this.history.size() * 450, 400);
 
-        List<ResizableCanvas> resizableCanvas = this.history;
+        List<CreasePatternCanvas> resizableCanvas = this.history;
         for (int i = 0, resizableCanvasSize = resizableCanvas.size(); i < resizableCanvasSize; i++) {
-            ResizableCanvas canvas = resizableCanvas.get((resizableCanvasSize - 1) - i);
+            CreasePatternCanvas canvas = resizableCanvas.get((resizableCanvasSize - 1) - i);
             canvas.getCp().drawOnGraphics2D(svgGraphics2D);
 
             if (i > 0) {

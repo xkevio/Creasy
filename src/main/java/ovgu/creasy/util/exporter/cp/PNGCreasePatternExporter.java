@@ -3,7 +3,7 @@ package ovgu.creasy.util.exporter.cp;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
-import ovgu.creasy.ui.ResizableCanvas;
+import ovgu.creasy.ui.elements.ResizableCanvas;
 import ovgu.creasy.util.exporter.base.AbstractCreasePatternExporter;
 
 import javax.imageio.ImageIO;

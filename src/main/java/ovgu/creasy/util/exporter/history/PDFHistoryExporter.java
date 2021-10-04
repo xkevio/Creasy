@@ -11,7 +11,8 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.util.Matrix;
 import ovgu.creasy.origami.basic.CreasePattern;
-import ovgu.creasy.ui.ResizableCanvas;
+import ovgu.creasy.ui.elements.CreasePatternCanvas;
+import ovgu.creasy.ui.elements.ResizableCanvas;
 import ovgu.creasy.util.exporter.base.AbstractHistoryExporter;
 
 import java.awt.*;
@@ -22,7 +23,7 @@ import java.util.Optional;
 
 public class PDFHistoryExporter extends AbstractHistoryExporter {
 
-    public PDFHistoryExporter(List<ResizableCanvas> history) {
+    public PDFHistoryExporter(List<CreasePatternCanvas> history) {
         this.history = history;
     }
 
@@ -41,9 +42,9 @@ public class PDFHistoryExporter extends AbstractHistoryExporter {
     public boolean export(File file) {
         PDDocument document = new PDDocument();
 
-        List<ResizableCanvas> resizableCanvas = this.history;
+        List<CreasePatternCanvas> resizableCanvas = this.history;
         for (int i = 0; i < this.history.size(); i++) {
-            ResizableCanvas canvas = resizableCanvas.get((resizableCanvas.size() - 1) - i);
+            CreasePatternCanvas canvas = resizableCanvas.get((resizableCanvas.size() - 1) - i);
             PDPage page = new PDPage(PDRectangle.A4);
             try {
                 PdfBoxGraphics2D pdfBoxGraphics2D = new PdfBoxGraphics2D(document, 400, 400);

@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import ovgu.creasy.ui.MainWindow;
+import ovgu.creasy.ui.windows.MainWindow;
 
 import java.util.Objects;
 

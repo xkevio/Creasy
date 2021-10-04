@@ -4,7 +4,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import ovgu.creasy.geom.Line;
 import ovgu.creasy.geom.Point;
-import ovgu.creasy.ui.ResizableCanvas;
+import ovgu.creasy.ui.elements.CreasePatternCanvas;
+import ovgu.creasy.ui.elements.ResizableCanvas;
 import ovgu.creasy.util.CreasePatternEditor;
 
 import java.awt.*;
@@ -283,7 +284,7 @@ public class CreasePattern {
      * @param scaleX scales the GraphicsContext in the x amount (default = 1)
      * @param scaleY scales the GraphicsContext in the y amount (default = 1)
      */
-    public void drawOnCanvas(ResizableCanvas canvas, double scaleX, double scaleY) {
+    public void drawOnCanvas(CreasePatternCanvas canvas, double scaleX, double scaleY) {
         canvas.setCpScaleX(scaleX);
         canvas.setCpScaleY(scaleY);
 
@@ -303,11 +304,11 @@ public class CreasePattern {
      * Uses the current CpScales of the canvas.
      * @param canvas the Canvas to draw the Crease Pattern on
      */
-    public void drawOnCanvas(ResizableCanvas canvas) {
+    public void drawOnCanvas(CreasePatternCanvas canvas) {
         drawOnCanvas(canvas, canvas.getCpScaleX(), canvas.getCpScaleY());
     }
 
-    public void drawOverCanvas(ResizableCanvas canvas, double scaleX, double scaleY) {
+    public void drawOverCanvas(CreasePatternCanvas canvas, double scaleX, double scaleY) {
         canvas.setCpScaleX(scaleX);
         canvas.setCpScaleY(scaleY);
 

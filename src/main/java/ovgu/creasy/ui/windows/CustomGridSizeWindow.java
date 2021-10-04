@@ -1,4 +1,4 @@
-package ovgu.creasy.ui;
+package ovgu.creasy.ui.windows;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -6,6 +6,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ovgu.creasy.Main;
+import ovgu.creasy.ui.elements.ResizableCanvas;
 
 public class CustomGridSizeWindow {
 

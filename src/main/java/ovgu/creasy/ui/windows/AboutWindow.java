@@ -1,4 +1,4 @@
-package ovgu.creasy.ui;
+package ovgu.creasy.ui.windows;
 
 import javafx.application.HostServices;
 import javafx.geometry.Pos;

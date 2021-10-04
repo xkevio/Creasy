@@ -1,4 +1,4 @@
-package ovgu.creasy.ui;
+package ovgu.creasy.ui.windows;
 
 import javafx.application.HostServices;
 import javafx.application.Platform;
@@ -23,6 +23,8 @@ import ovgu.creasy.origami.basic.CreasePattern;
 import ovgu.creasy.origami.basic.DiagramStep;
 import ovgu.creasy.origami.basic.OrigamiModel;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
+import ovgu.creasy.ui.elements.CreasePatternCanvas;
+import ovgu.creasy.ui.elements.ResizableCanvas;
 import ovgu.creasy.util.CreasePatternEditor;
 import ovgu.creasy.util.TextLogger;
 import ovgu.creasy.util.exporter.cp.PDFCreasePatternExporter;
@@ -34,8 +36,8 @@ import ovgu.creasy.util.exporter.history.SVGHistoryExporter;
 import java.io.*;
 import java.util.*;
 
-import static ovgu.creasy.ui.ResizableCanvas.CANVAS_HEIGHT;
-import static ovgu.creasy.ui.ResizableCanvas.CANVAS_WIDTH;
+import static ovgu.creasy.ui.elements.ResizableCanvas.CANVAS_HEIGHT;
+import static ovgu.creasy.ui.elements.ResizableCanvas.CANVAS_WIDTH;
 
 public class MainWindow {
 
@@ -44,8 +46,9 @@ public class MainWindow {
     @FXML
     public ToggleGroup line;
 
-    private ResizableCanvas activeHistory;
+    private CreasePatternCanvas activeHistory;
     private Crease highlightedCrease;
+    private String filePath;
 
     @FXML
     private ScrollPane canvasHolder;
@@ -60,15 +63,15 @@ public class MainWindow {
     private OrigamiModel model;
     private CreasePattern cp;
 
-    private List<ResizableCanvas> historyCanvasList;
-    private List<ResizableCanvas> stepsCanvasList;
-    private HashMap<ResizableCanvas, Separator> pairs;
+    private List<CreasePatternCanvas> historyCanvasList;
+    private List<CreasePatternCanvas> stepsCanvasList;
+    private HashMap<CreasePatternCanvas, Separator> pairs;
 
     private boolean wasSaved = false;
     private boolean adding = false;
     private Line addedCreaseLine;
 
-    public ResizableCanvas mainCanvas;
+    public CreasePatternCanvas mainCanvas;
     public ResizableCanvas gridCanvas;
     public ResizableCanvas.Grid grid;
 
@@ -105,11 +108,11 @@ public class MainWindow {
     private ColumnConstraints right;
 
     private CreasePatternEditor.EditSetting editSetting = CreasePatternEditor.EditSetting.NONE;
-    private boolean randomizeEcpPaths = true;// TODO: make UI element for this
+    private boolean randomizeEcpPaths = true; // TODO: make UI element for this
 
     @FXML
     public void initialize() {
-        mainCanvas = new ResizableCanvas(2000, 2000);
+        mainCanvas = new CreasePatternCanvas(2000, 2000);
         mainCanvas.setId("main");
         mainCanvas.setManaged(false);
 
@@ -141,12 +144,19 @@ public class MainWindow {
 
         /*
         resizes the left and right sidebars when the window is maximized
-        by adding the appropriate listeners when the Scene and Stage are initialized
+        by adding the appropriate listeners when the Scene and Stage are initialized,
+        also adds the closing window event
          */
         window.sceneProperty().addListener((observableScene, oldScene, newScene) -> {
             if (oldScene == null && newScene != null) {
                 newScene.windowProperty().addListener((observableWindow, oldWindow, newWindow) -> {
                     if (oldWindow == null && newWindow != null) {
+                        newWindow.setOnCloseRequest(windowEvent -> {
+                            if (!historyCanvasList.isEmpty() && !wasSaved) {
+                                ClosingWindow.open(historyCanvasList, filePath);
+                                windowEvent.consume();
+                            }
+                        });
                         ((Stage) newWindow).maximizedProperty().addListener((o, oldBoolean, maximized) -> {
                             if (maximized) {
                                 left.setPrefWidth(300);
@@ -372,7 +382,7 @@ public class MainWindow {
         openFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Crease Patterns", "*.cp"));
 
         File file = openFileChooser.showOpenDialog(mainCanvas.getScene().getWindow());
-        var filePath = file == null ? "" : file.getPath();
+        this.filePath = file == null ? "" : file.getPath();
 
         if (file != null && file.exists()) {
             resetGUI();
@@ -383,7 +393,6 @@ public class MainWindow {
                 TextLogger.logText("File not found or invalid!", log);
             }
         } else {
-            System.err.println("No file selected or path is invalid!");
             TextLogger.logText("No file selected or path is invalid!", log);
         }
     }
@@ -448,8 +457,7 @@ public class MainWindow {
                 foldedModelWindow.show();
             } else {
                 foldedModelWindow.showError();
-                System.err.println("Crease Pattern is invalid");
-                TextLogger.logText("Crease Pattern is invalid", log);
+                TextLogger.logText("Crease Pattern is invalid, see window for more information", log);
             }
         }
     }
@@ -538,6 +546,8 @@ public class MainWindow {
         CreasePatternHelpWindow.open();
     }
 
+
+    // TODO probably shouldn't be in this class
     private List<ExtendedCreasePattern> createEcps(CreasePattern cp, boolean randomized) {
         List<ExtendedCreasePattern> ecps;
         if (randomized) {
@@ -562,6 +572,7 @@ public class MainWindow {
      * @param filePath what is displayed in the title bar of the window
      */
     private void setupUI(InputStream is, String filePath) {
+        this.filePath = filePath;
         ((Stage) mainCanvas.getScene().getWindow()).setTitle(filePath + "* - " + Main.APPLICATION_TITLE);
 
         cp = CreasePattern.createFromFile(is);
@@ -571,25 +582,18 @@ public class MainWindow {
         }
 
         model = new OrigamiModel(cp);
-        var ecps = createEcps(cp, randomizeEcpPaths);
-        List<DiagramStep> possibleSteps = getSteps(ecps);
+
+        List<ExtendedCreasePattern> eCps = createEcps(cp, randomizeEcpPaths);
+        List<DiagramStep> possibleSteps = getSteps(eCps);
+
         TextLogger.logText(possibleSteps.size() + " possible step(s) were calculated", log);
-        System.out.println("size = " + possibleSteps.size());
 
         // should be called when the algorithm is executed, aka once the amount of steps is known
         pairs = new HashMap<>();
-        createCanvases(steps, stepsCanvasList, possibleSteps.size());
+        createCPCanvases(stepsCanvasList, steps, possibleSteps.size());
 
         drawSteps(possibleSteps);
-        drawHistory(cp, history);
-
-        setupMouseEvents(stepsCanvasList, historyCanvasList);
-        mainCanvas.getScene().getWindow().setOnCloseRequest(windowEvent -> {
-            if (!historyCanvasList.isEmpty() && !wasSaved) {
-                ClosingWindow.open(historyCanvasList, filePath);
-                windowEvent.consume();
-            }
-        });
+        drawHistory(cp, history, historyLabel);
 
         // after reading the file, if the file is valid:
         foldedModelMenuItem.setDisable(false);
@@ -610,8 +614,8 @@ public class MainWindow {
         }
     }
 
-    private void drawHistory(CreasePattern cp, Pane history) {
-        createCanvases(history, historyCanvasList, 1);
+    private void drawHistory(CreasePattern cp, VBox history, Label historyLabel) {
+        createCPCanvases(historyCanvasList, history, 1);
         historyCanvasList.forEach(c -> {
             if (c.getCp() == null) {
                 cp.drawOnCanvas(c, 0.4, 0.4);
@@ -620,110 +624,128 @@ public class MainWindow {
         historyLabel.setText("History (" + historyCanvasList.size() + " steps)");
     }
 
-    @SafeVarargs
-    private void setupMouseEvents(List<ResizableCanvas>... lists) {
-        for (var list : lists) {
-            list.forEach(c -> {
-                GraphicsContext graphicsContext = c.getGraphicsContext2D();
-                c.setOnMouseEntered(mouseEvent -> {
-                    if (!c.equals(activeHistory)) {
-                        graphicsContext.setFill(Color.color(0.2, 0.2, 0.2, 0.2));
-                        graphicsContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                    }
-                    c.setCursor(Cursor.HAND);
+    /**
+     * Creates new canvases in the sidebar when necessary to show
+     * the steps needed
+     *
+     * @param list the list to add the Canvases to
+     * @param sidebar the VBox in which to add the Canvases to
+     * @param amount the amount of Canvases needed
+     */
+    private void createCPCanvases(List<CreasePatternCanvas> list, VBox sidebar, int amount) {
+        for (int i = 0; i < amount; ++i) {
+            CreasePatternCanvas canvas = new CreasePatternCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+            Separator separator = new Separator();
 
-                    CreasePattern diff = mainCanvas.getCp().getDifference(c.getCp());
-                    diff.drawOverCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
-                });
+            setupMouseEvents(canvas);
 
-                c.setOnMouseExited(mouseEvent -> {
-                    if (!c.equals(activeHistory)) {
-                        graphicsContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                        c.getCp().drawOnCanvas(c, 0.4, 0.4);
-                    }
+            sidebar.getChildren().add(canvas);
+            sidebar.getChildren().add(separator);
+            pairs.put(canvas, separator);
 
-                    c.setCursor(Cursor.DEFAULT);
-                    mainCanvas.getCp().drawOnCanvas(mainCanvas);
-                });
-
-                c.setOnMouseClicked(mouseEvent -> {
-                    if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                        if (c.getParent().equals(history)) {
-                            ContextMenu contextMenu = new ContextMenu();
-                            MenuItem delete = new MenuItem("Delete");
-
-                            delete.setOnAction(actionEvent -> {
-                                history.getChildren().remove(pairs.get(c));
-                                history.getChildren().remove(c);
-
-                                historyCanvasList.remove(c);
-                                historyLabel.setText("History (" + historyCanvasList.size() + " steps)");
-                                pairs.remove(c);
-
-                                TextLogger.logText("1 step in history successfully deleted", log);
-                            });
-                            contextMenu.getItems().add(delete);
-
-                            c.setOnContextMenuRequested(contextMenuEvent -> {
-                                contextMenu.show(c, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY());
-                            });
-                        }
-                    } else {
-                        CreasePattern currentStep = c.getCp();
-
-                        currentStep.drawOnCanvas(mainCanvas);
-                        var ecps = createEcps(currentStep, randomizeEcpPaths);
-
-                        var possibleSteps = getSteps(ecps);
-                        if (c.getParent().equals(steps)) {
-                            drawHistory(currentStep, history);
-                            historyCanvasList.stream().filter(node -> node.getCp().equals(currentStep))
-                                    .forEach(node -> {
-                                        if (activeHistory != null) {
-                                            activeHistory.getGraphicsContext2D().clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                                            activeHistory.getCp().drawOnCanvas(activeHistory, 0.4, 0.4);
-                                            activeHistory.setSelected(false);
-                                        }
-
-                                        activeHistory = node;
-                                        activeHistory.markAsCurrentlySelected();
-                                    }
-                            );
-                            TextLogger.logText("Pick this step and add to history... " + possibleSteps.size() + " new option(s) were calculated", log);
-                        }
-                        if (c.getParent().equals(history)) {
-                            if (activeHistory != null) {
-                                activeHistory.getGraphicsContext2D().clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-                                activeHistory.getCp().drawOnCanvas(activeHistory, 0.4, 0.4);
-                                activeHistory.setSelected(false);
-                            }
-
-                            activeHistory = c;
-                            activeHistory.setSelected(true);
-                        }
-
-                        steps.getChildren().clear();
-                        stepsCanvasList.clear();
-                        createCanvases(steps, stepsCanvasList, possibleSteps.size());
-                        setupMouseEvents(stepsCanvasList, historyCanvasList);
-                        drawSteps(possibleSteps);
-                    }
-                });
-            });
+            list.add(canvas);
         }
+    }
+
+    private void setupMouseEvents(CreasePatternCanvas c) {
+        GraphicsContext graphicsContext = c.getGraphicsContext2D();
+        c.setOnMouseEntered(mouseEvent -> {
+            if (!c.equals(activeHistory)) {
+                graphicsContext.setFill(Color.color(0.2, 0.2, 0.2, 0.2));
+                graphicsContext.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+            }
+            c.setCursor(Cursor.HAND);
+
+            CreasePattern diff = mainCanvas.getCp().getDifference(c.getCp());
+            diff.drawOverCanvas(mainCanvas, mainCanvas.getCpScaleX(), mainCanvas.getCpScaleY());
+        });
+
+        c.setOnMouseExited(mouseEvent -> {
+            if (!c.equals(activeHistory)) {
+                graphicsContext.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                c.getCp().drawOnCanvas(c, 0.4, 0.4);
+            }
+
+            c.setCursor(Cursor.DEFAULT);
+            mainCanvas.getCp().drawOnCanvas(mainCanvas);
+        });
+
+        c.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                if (c.getParent().equals(history)) {
+                    ContextMenu contextMenu = new ContextMenu();
+                    MenuItem delete = new MenuItem("Delete");
+
+                    delete.setOnAction(actionEvent -> {
+                        history.getChildren().remove(pairs.get(c));
+                        history.getChildren().remove(c);
+
+                        historyCanvasList.remove(c);
+                        historyLabel.setText("History (" + historyCanvasList.size() + " steps)");
+                        pairs.remove(c);
+
+                        TextLogger.logText("1 step in history successfully deleted", log);
+                    });
+                    contextMenu.getItems().add(delete);
+
+                    c.setOnContextMenuRequested(contextMenuEvent -> {
+                        contextMenu.show(c, contextMenuEvent.getScreenX(), contextMenuEvent.getScreenY());
+                    });
+                }
+            } else {
+                CreasePattern currentStep = c.getCp();
+
+                currentStep.drawOnCanvas(mainCanvas);
+                List<ExtendedCreasePattern> eCps = createEcps(currentStep, randomizeEcpPaths);
+                List<DiagramStep> possibleSteps = getSteps(eCps);
+
+                if (c.getParent().equals(steps)) {
+                    drawHistory(currentStep, history, historyLabel);
+                    historyCanvasList.stream().filter(node -> node.getCp().equals(currentStep))
+                            .forEach(node -> {
+                                if (activeHistory != null) {
+                                    activeHistory.getGraphicsContext2D().clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                                    activeHistory.getCp().drawOnCanvas(activeHistory, 0.4, 0.4);
+                                    activeHistory.setSelected(false);
+                                }
+
+                                activeHistory = node;
+                                activeHistory.markAsCurrentlySelected();
+                            }
+                    );
+                    TextLogger.logText("Pick this step and add to history... " + possibleSteps.size() + " new option(s) were calculated", log);
+                }
+                if (c.getParent().equals(history)) {
+                    if (activeHistory != null) {
+                        activeHistory.getGraphicsContext2D().clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                        activeHistory.getCp().drawOnCanvas(activeHistory, 0.4, 0.4);
+                        activeHistory.setSelected(false);
+                    }
+
+                    activeHistory = c;
+                    activeHistory.setSelected(true);
+                }
+
+                steps.getChildren().clear();
+                stepsCanvasList.clear();
+
+                createCPCanvases(stepsCanvasList, steps, possibleSteps.size());
+                drawSteps(possibleSteps);
+            }
+        });
     }
 
     @FXML
     private void reverseHistory() {
-        List<ResizableCanvas> reverseList = new ArrayList<>();
+        List<CreasePatternCanvas> reverseList = new ArrayList<>();
         for (int i = historyCanvasList.size() - 1; i >= 0; i--) {
-            reverseList.add(new ResizableCanvas(historyCanvasList.get(i)));
+            reverseList.add(new CreasePatternCanvas(historyCanvasList.get(i)));
         }
 
         if (activeHistory != null) activeHistory.setSelected(false);
 
         for (int i = 0, reverseListSize = reverseList.size(); i < reverseListSize; i++) {
-            ResizableCanvas canvas = reverseList.get(i);
+            CreasePatternCanvas canvas = reverseList.get(i);
             canvas.getCp().drawOnCanvas(historyCanvasList.get(i), 0.4, 0.4);
 
             if (canvas.isSelected()) {
@@ -793,11 +815,10 @@ public class MainWindow {
         TextLogger.logText(possibleSteps.size() + " possible step(s) were calculated", log);
 
         pairs = new HashMap<>();
-        createCanvases(steps, stepsCanvasList, possibleSteps.size());
+        createCPCanvases(stepsCanvasList, steps, possibleSteps.size());
 
         drawSteps(possibleSteps);
-        drawHistory(cp, history);
-        setupMouseEvents(stepsCanvasList, historyCanvasList);
+        drawHistory(cp, history, historyLabel);
     }
 
     /**
@@ -837,26 +858,6 @@ public class MainWindow {
         TextLogger.logText("-----------------", log);
     }
 
-    /**
-     * Creates new canvases in the sidebar when necessary to show
-     * the steps needed
-     *
-     * @param pane the VBox or HBox in which to add the Canvases to
-     * @param list the list to add the Canvases to
-     * @param amount the amount of Canvases needed
-     */
-    private void createCanvases(Pane pane, List<ResizableCanvas> list, int amount) {
-        for (int i = 0; i < amount; ++i) {
-            ResizableCanvas canvas = new ResizableCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
-            Separator separator = new Separator();
-
-            pane.getChildren().add(canvas);
-            pane.getChildren().add(separator);
-            pairs.put(canvas, separator);
-
-            list.add(canvas);
-        }
-    }
 
     public void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;

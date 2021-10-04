@@ -1,4 +1,4 @@
-package ovgu.creasy.ui;
+package ovgu.creasy.ui.windows;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -8,6 +8,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import ovgu.creasy.Main;
+import ovgu.creasy.ui.elements.CreasePatternCanvas;
 import ovgu.creasy.util.exporter.history.PDFHistoryExporter;
 import ovgu.creasy.util.exporter.history.SVGHistoryExporter;
 
@@ -16,7 +17,7 @@ import java.util.List;
 
 public class ClosingWindow {
 
-    public static void open(List<ResizableCanvas> history, String modelName) {
+    public static void open(List<CreasePatternCanvas> history, String modelName) {
         Alert closing = new Alert(Alert.AlertType.WARNING);
 
         closing.setTitle(Main.APPLICATION_TITLE);

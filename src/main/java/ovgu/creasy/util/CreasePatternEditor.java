@@ -5,7 +5,7 @@ import ovgu.creasy.geom.Line;
 import ovgu.creasy.geom.Point;
 import ovgu.creasy.origami.basic.Crease;
 import ovgu.creasy.origami.basic.CreasePattern;
-import ovgu.creasy.ui.ResizableCanvas;
+import ovgu.creasy.ui.elements.CreasePatternCanvas;
 
 import java.util.*;
 
@@ -27,7 +27,7 @@ public class CreasePatternEditor {
      * Iterates through all the points and draws a rectangle per point.
      * @param canvas the canvas which contains the crease pattern the points are based on
      */
-    public static void showPoints(ResizableCanvas canvas) {
+    public static void showPoints(CreasePatternCanvas canvas) {
         canvas.getGraphicsContext2D().translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
 
         if (canvas.isShowPoints()) {
@@ -59,7 +59,7 @@ public class CreasePatternEditor {
      * @param canvas the canvas to highlight the crease on
      * @param crease the crease to highlight, gets drawn thicker
      */
-    public static void highlightCrease(ResizableCanvas canvas, Crease crease) {
+    public static void highlightCrease(CreasePatternCanvas canvas, Crease crease) {
         crease.setHighlighted(true);
         CreasePattern highlightedLine = new CreasePattern(Set.of(crease), new HashSet<>());
         highlightedLine.drawOverCanvas(canvas, canvas.getCpScaleX(), canvas.getCpScaleY());
@@ -74,7 +74,7 @@ public class CreasePatternEditor {
      * @param crease the crease whose type shall be changed
      * @param type the new crease type
      */
-    public static void changeCreaseType(ResizableCanvas canvas, Crease crease, Crease.Type type) {
+    public static void changeCreaseType(CreasePatternCanvas canvas, Crease crease, Crease.Type type) {
         canvas.getCp().removeCrease(crease);
 
         crease.setType(type);
@@ -88,7 +88,7 @@ public class CreasePatternEditor {
      * @param canvas the canvas to remove the crease on
      * @param crease the crease to remove
      */
-    public static void removeCrease(ResizableCanvas canvas, Crease crease) {
+    public static void removeCrease(CreasePatternCanvas canvas, Crease crease) {
         canvas.getCp().removeCrease(crease);
         canvas.getCp().drawOnCanvas(canvas);
     }
