@@ -21,8 +21,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ExtendedCreasePatternFactory {
+    Random r = new Random();
+
+    public List<ExtendedCreasePattern> createRandomizedEcps(CreasePattern cp, int amount) {
+        List<ExtendedCreasePattern> ecps = new ArrayList<>();
+        for (int i = 0; i < amount; i++) {
+            ecps.add(createExtendedCreasePattern(cp, true));
+        }
+        return ecps;
+    }
 
     public ExtendedCreasePattern createExtendedCreasePattern(CreasePattern cp) {
+        return createExtendedCreasePattern(cp, false);
+    }
+
+    public ExtendedCreasePattern createExtendedCreasePattern(CreasePattern cp, boolean randomized) {
         ReflectionGraphFactory reflGraphFactory = new ReflectionGraphFactory(cp);
         Point defaultPoint = new Point(0, 0);
 
@@ -48,12 +61,17 @@ public class ExtendedCreasePatternFactory {
 
         for (ReflectionGraph reflectionGraph : reflectionGraphs) {
             // set of local maximum reflection paths in reflectionGraph
-            Collection<ReflectionPath> A = reflectionGraph.getLocalMaxima();
+            List<ReflectionPath> A = reflectionGraph.getLocalMaxima();
             if (A.isEmpty()) {
                 continue;
             }
             // global maximum in A
-            ReflectionPath refPath = getGlobalMaximum(A);
+            ReflectionPath refPath;
+            if (randomized) {
+                refPath = chooseRandom(A);
+            } else {
+                refPath = getGlobalMaximum(A);
+            }
             // terminal vertices of refPath
             Vertex vertex1 = vertexMap.get(refPath.getStartingPoint());
             Vertex vertex2 = vertexMap.get(refPath.getEndPoint());
@@ -102,6 +120,12 @@ public class ExtendedCreasePatternFactory {
             }
         }
         return new ExtendedCreasePattern(vertices, processedExtendedCreases, adjacencyLists, cp);
+    }
+
+    private ReflectionPath chooseRandom(List<ReflectionPath> a) {
+        int i = r.nextInt(a.size());
+        System.out.println("chose nr " + i);
+        return a.get(i);
     }
 
     private void insertCreaseIntoAdjacencyList(Map<Vertex, List<ExtendedCrease>> adjacencyLists, ExtendedCrease c) {

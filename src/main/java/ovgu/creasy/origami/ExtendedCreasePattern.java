@@ -1,7 +1,6 @@
 package ovgu.creasy.origami;
 
 import oripa.domain.creasepattern.CreasePatternInterface;
-import oripa.domain.fold.Folder;
 import oripa.domain.fold.foldability.FoldabilityChecker;
 import oripa.domain.fold.halfedge.OrigamiModel;
 import oripa.domain.fold.halfedge.OrigamiModelFactory;
@@ -112,8 +111,6 @@ public class ExtendedCreasePattern {
                 newcps.add(pattern.simplify(this, match));
             }
         }
-        ExtendedCreasePatternFactory e = new ExtendedCreasePatternFactory();
-        Folder f = OripaTypeConverter.createFolder();
 
         FoldabilityChecker foldabilityChecker = new FoldabilityChecker();
         newcps.stream().distinct().forEach(cp -> {

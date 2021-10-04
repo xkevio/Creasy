@@ -27,9 +27,7 @@ import ovgu.creasy.util.exporter.history.PDFHistoryExporter;
 import ovgu.creasy.util.exporter.history.SVGHistoryExporter;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static ovgu.creasy.ui.ResizableCanvas.CANVAS_HEIGHT;
 import static ovgu.creasy.ui.ResizableCanvas.CANVAS_WIDTH;
@@ -102,6 +100,7 @@ public class MainWindow {
     private ColumnConstraints right;
 
     private CreasePatternEditor.EditSetting editSetting = CreasePatternEditor.EditSetting.NONE;
+    private boolean randomizeEcpPaths = true;// TODO: make UI element for this
 
     @FXML
     public void initialize() {
@@ -534,6 +533,23 @@ public class MainWindow {
         CreasePatternHelpWindow.open();
     }
 
+    private List<ExtendedCreasePattern> createEcps(CreasePattern cp, boolean randomized) {
+        List<ExtendedCreasePattern> ecps;
+        if (randomized) {
+            ecps = new ExtendedCreasePatternFactory().createRandomizedEcps(cp, 10);
+        } else {
+            ecps = new ArrayList<>();
+            ecps.add(new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp));
+        }
+        return ecps;
+    }
+
+    private List<DiagramStep> getSteps(List<ExtendedCreasePattern> ecps) {
+        Set<DiagramStep> possibleSteps = new HashSet<>();
+        ecps.forEach(cp -> possibleSteps.addAll(cp.possibleSteps()));
+        return possibleSteps.stream().toList();
+    }
+
     /**
      * Loads a Crease Pattern, displays it on the canvases and
      * initializes variables
@@ -550,16 +566,16 @@ public class MainWindow {
         }
 
         model = new OrigamiModel(cp);
-
-        ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
-        TextLogger.logText(ecp.possibleSteps().size() + " possible step(s) were calculated", log);
-        System.out.println("size = " + ecp.possibleSteps().size());
+        var ecps = createEcps(cp, randomizeEcpPaths);
+        List<DiagramStep> possibleSteps = getSteps(ecps);
+        TextLogger.logText(possibleSteps + " possible step(s) were calculated", log);
+        System.out.println("size = " + possibleSteps.size());
 
         // should be called when the algorithm is executed, aka once the amount of steps is known
         pairs = new HashMap<>();
-        createCanvases(steps, stepsCanvasList, ecp.possibleSteps().size());
+        createCanvases(steps, stepsCanvasList, possibleSteps.size());
 
-        drawSteps(ecp);
+        drawSteps(possibleSteps);
         drawHistory(cp, history);
 
         setupMouseEvents(stepsCanvasList, historyCanvasList);
@@ -581,9 +597,9 @@ public class MainWindow {
         boxes.setDisable(false);
     }
 
-    private void drawSteps(ExtendedCreasePattern ecp) {
-        for (int i = 0; i < ecp.possibleSteps().size(); i++) {
-            DiagramStep step = ecp.possibleSteps().get(i);
+    private void drawSteps(List<DiagramStep> steps) {
+        for (int i = 0; i < steps.size(); i++) {
+            DiagramStep step = steps.get(i);
             step.to.toCreasePattern().drawOnCanvas(stepsCanvasList.get(i),
                     0.4, 0.4);
         }
@@ -651,8 +667,9 @@ public class MainWindow {
                         CreasePattern currentStep = c.getCp();
 
                         currentStep.drawOnCanvas(mainCanvas);
-                        ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(currentStep);
+                        var ecps = createEcps(currentStep, randomizeEcpPaths);
 
+                        var possibleSteps = getSteps(ecps);
                         if (c.getParent().equals(steps)) {
                             drawHistory(currentStep, history);
                             historyCanvasList.stream().filter(node -> node.getCp().equals(currentStep))
@@ -667,7 +684,7 @@ public class MainWindow {
                                         activeHistory.markAsCurrentlySelected();
                                     }
                             );
-                            TextLogger.logText("Pick this step and add to history... " + ecp.possibleSteps().size() + " new option(s) were calculated", log);
+                            TextLogger.logText("Pick this step and add to history... " + possibleSteps.size() + " new option(s) were calculated", log);
                         }
                         if (c.getParent().equals(history)) {
                             if (activeHistory != null) {
@@ -682,10 +699,9 @@ public class MainWindow {
 
                         steps.getChildren().clear();
                         stepsCanvasList.clear();
-
-                        createCanvases(steps, stepsCanvasList, ecp.possibleSteps().size());
+                        createCanvases(steps, stepsCanvasList, possibleSteps.size());
                         setupMouseEvents(stepsCanvasList, historyCanvasList);
-                        drawSteps(ecp);
+                        drawSteps(possibleSteps);
                     }
                 });
             });
@@ -767,13 +783,14 @@ public class MainWindow {
         cp.removeAllLinearPoints();
         model = new OrigamiModel(cp);
 
-        ExtendedCreasePattern ecp = new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
-        TextLogger.logText(ecp.possibleSteps().size() + " possible step(s) were calculated", log);
+        var ecps = createEcps(cp, randomizeEcpPaths);
+        var possibleSteps = getSteps(ecps);
+        TextLogger.logText(possibleSteps.size() + " possible step(s) were calculated", log);
 
         pairs = new HashMap<>();
-        createCanvases(steps, stepsCanvasList, ecp.possibleSteps().size());
+        createCanvases(steps, stepsCanvasList, possibleSteps.size());
 
-        drawSteps(ecp);
+        drawSteps(possibleSteps);
         drawHistory(cp, history);
         setupMouseEvents(stepsCanvasList, historyCanvasList);
     }

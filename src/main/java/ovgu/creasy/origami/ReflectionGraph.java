@@ -73,7 +73,7 @@ public class ReflectionGraph {
     /**
      * @return A Collection of all locally maximal Reflection paths in the reflectionGraph (see page 29 for explanation of local maxima)
      */
-    public Collection<ReflectionPath> getLocalMaxima() {
+    public List<ReflectionPath> getLocalMaxima() {
         Set<Point> leafNodes = getLeafNodes();
         Set<ReflectionPath> reflectionPaths = new HashSet<>();
         for (Point leafNode : leafNodes) {
@@ -108,6 +108,6 @@ public class ReflectionGraph {
             reflectionPaths.addAll(pathBuilders.stream().map(ReflectionPathBuilder::build).collect(Collectors.toList()));
         }
 
-        return reflectionPaths;
+        return reflectionPaths.stream().toList();
     }
 }
