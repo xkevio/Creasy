@@ -11,8 +11,8 @@ import oripa.domain.fold.subface.SplitFacesToSubFacesConverter;
 import oripa.domain.fold.subface.SubFacesFactory;
 import oripa.value.OriLine;
 import ovgu.creasy.geom.Point;
-import ovgu.creasy.origami.Crease;
-import ovgu.creasy.origami.CreasePattern;
+import ovgu.creasy.origami.basic.Crease;
+import ovgu.creasy.origami.basic.CreasePattern;
 
 import javax.vecmath.Vector2d;
 import java.util.stream.Collectors;

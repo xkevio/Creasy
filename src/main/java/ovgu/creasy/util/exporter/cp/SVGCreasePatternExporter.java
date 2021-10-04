@@ -1,7 +1,7 @@
 package ovgu.creasy.util.exporter.cp;
 
 import org.jfree.svg.SVGGraphics2D;
-import ovgu.creasy.origami.CreasePattern;
+import ovgu.creasy.origami.basic.CreasePattern;
 import ovgu.creasy.util.exporter.base.AbstractCreasePatternExporter;
 
 import java.io.File;

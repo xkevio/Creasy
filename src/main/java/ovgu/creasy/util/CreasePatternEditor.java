@@ -3,8 +3,8 @@ package ovgu.creasy.util;
 import javafx.scene.paint.Color;
 import ovgu.creasy.geom.Line;
 import ovgu.creasy.geom.Point;
-import ovgu.creasy.origami.Crease;
-import ovgu.creasy.origami.CreasePattern;
+import ovgu.creasy.origami.basic.Crease;
+import ovgu.creasy.origami.basic.CreasePattern;
 import ovgu.creasy.ui.ResizableCanvas;
 
 import java.util.*;

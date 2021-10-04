@@ -1,4 +1,4 @@
-package ovgu.creasy.origami;
+package ovgu.creasy.origami.basic;
 
 import java.util.Objects;
 
@@ -8,7 +8,7 @@ import java.util.Objects;
  * Step sequence graph
  */
 public class DiagramStep {
-    public DiagramStep(ExtendedCreasePattern from, ExtendedCreasePattern to) {
+    public DiagramStep(CreasePattern from, CreasePattern to) {
         this.from = from;
         this.to = to;
     }
@@ -18,21 +18,21 @@ public class DiagramStep {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DiagramStep that = (DiagramStep) o;
-        return Objects.equals(from.toCreasePattern(), that.from.toCreasePattern())
-                && Objects.equals(to.toCreasePattern(), that.to.toCreasePattern());
+        return Objects.equals(from, that.from)
+                && Objects.equals(to, that.to);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(from.toCreasePattern(), to.toCreasePattern());
+        return Objects.hash(from, to);
     }
 
     /**
      * The cp before the simplification step is applied (usually more complex than to)
      */
-    public ExtendedCreasePattern from;
+    public CreasePattern from;
     /**
      * the cp after the simplification step is applied (usually less complex than from)
      */
-    public ExtendedCreasePattern to;
+    public CreasePattern to;
 }

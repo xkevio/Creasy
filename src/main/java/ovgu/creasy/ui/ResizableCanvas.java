@@ -4,7 +4,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
-import ovgu.creasy.origami.CreasePattern;
+import ovgu.creasy.origami.basic.CreasePattern;
 
 /**
  * A canvas specifically tailored for rendering crease patterns.

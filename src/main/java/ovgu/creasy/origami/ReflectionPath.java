@@ -1,6 +1,7 @@
 package ovgu.creasy.origami;
 
 import ovgu.creasy.geom.Point;
+import ovgu.creasy.origami.basic.Crease;
 
 import java.util.*;
 

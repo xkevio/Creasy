@@ -1,5 +1,7 @@
 package ovgu.creasy.origami;
 
+import ovgu.creasy.origami.basic.Crease;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package ovgu.creasy.origami;
+package ovgu.creasy.origami.basic;
 
 import java.util.ArrayList;
 import java.util.Collection;

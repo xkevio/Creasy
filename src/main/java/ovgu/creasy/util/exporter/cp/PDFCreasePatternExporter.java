@@ -7,7 +7,7 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.util.Matrix;
-import ovgu.creasy.origami.CreasePattern;
+import ovgu.creasy.origami.basic.CreasePattern;
 import ovgu.creasy.util.exporter.base.AbstractCreasePatternExporter;
 
 import java.awt.geom.AffineTransform;

@@ -3,7 +3,7 @@ package ovgu.creasy.util.exporter.history;
 import javafx.scene.Parent;
 import javafx.stage.FileChooser;
 import org.jfree.svg.SVGGraphics2D;
-import ovgu.creasy.origami.CreasePattern;
+import ovgu.creasy.origami.basic.CreasePattern;
 import ovgu.creasy.ui.ResizableCanvas;
 import ovgu.creasy.util.exporter.base.AbstractHistoryExporter;
 

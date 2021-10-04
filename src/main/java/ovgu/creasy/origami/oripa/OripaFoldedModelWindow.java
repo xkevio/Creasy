@@ -12,7 +12,7 @@ import oripa.domain.fold.halfedge.OrigamiModel;
 import oripa.domain.fold.halfedge.OrigamiModelFactory;
 import oripa.util.gui.ChildFrameManager;
 import oripa.view.foldability.FoldabilityCheckFrameFactory;
-import ovgu.creasy.origami.CreasePattern;
+import ovgu.creasy.origami.basic.CreasePattern;
 import ovgu.creasy.origami.oripa.ui.EstimationResultLauncher;
 
 import javax.swing.*;

@@ -5,6 +5,9 @@ import oripa.domain.fold.foldability.FoldabilityChecker;
 import oripa.domain.fold.halfedge.OrigamiModel;
 import oripa.domain.fold.halfedge.OrigamiModelFactory;
 import ovgu.creasy.geom.Vertex;
+import ovgu.creasy.origami.basic.Crease;
+import ovgu.creasy.origami.basic.CreasePattern;
+import ovgu.creasy.origami.basic.DiagramStep;
 import ovgu.creasy.origami.oripa.OripaTypeConverter;
 
 import java.util.*;
@@ -96,8 +99,7 @@ public class ExtendedCreasePattern {
             CreasePatternInterface cpOripa = OripaTypeConverter.convertToOripaCp(cp2);
             OrigamiModel model = new OrigamiModelFactory().createOrigamiModel(cpOripa, cpOripa.getPaperSize());
             if (foldabilityChecker.testLocalFlatFoldability(model)) {
-                ExtendedCreasePattern next = new ExtendedCreasePattern(new HashSet<>(), new HashSet<>(), new HashMap<>(), cp2); //new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp);
-                steps.add(new DiagramStep(this, next));
+                steps.add(new DiagramStep(this.toCreasePattern(), cp2));
             }
         });
         return steps;

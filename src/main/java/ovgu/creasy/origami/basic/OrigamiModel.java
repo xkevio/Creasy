@@ -1,4 +1,4 @@
-package ovgu.creasy.origami;
+package ovgu.creasy.origami.basic;
 
 public class OrigamiModel {
     private CreasePattern finishedCp;

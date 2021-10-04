@@ -16,7 +16,12 @@ import javafx.stage.Stage;
 import ovgu.creasy.Main;
 import ovgu.creasy.geom.Line;
 import ovgu.creasy.geom.Point;
-import ovgu.creasy.origami.*;
+import ovgu.creasy.origami.ExtendedCreasePattern;
+import ovgu.creasy.origami.ExtendedCreasePatternFactory;
+import ovgu.creasy.origami.basic.Crease;
+import ovgu.creasy.origami.basic.CreasePattern;
+import ovgu.creasy.origami.basic.DiagramStep;
+import ovgu.creasy.origami.basic.OrigamiModel;
 import ovgu.creasy.origami.oripa.OripaFoldedModelWindow;
 import ovgu.creasy.util.CreasePatternEditor;
 import ovgu.creasy.util.TextLogger;
@@ -600,7 +605,7 @@ public class MainWindow {
     private void drawSteps(List<DiagramStep> steps) {
         for (int i = 0; i < steps.size(); i++) {
             DiagramStep step = steps.get(i);
-            step.to.toCreasePattern().drawOnCanvas(stepsCanvasList.get(i),
+            step.to.drawOnCanvas(stepsCanvasList.get(i),
                     0.4, 0.4);
         }
     }

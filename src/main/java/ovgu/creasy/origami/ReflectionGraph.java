@@ -2,6 +2,8 @@ package ovgu.creasy.origami;
 
 import javafx.util.Pair;
 import ovgu.creasy.geom.Point;
+import ovgu.creasy.origami.basic.Crease;
+import ovgu.creasy.origami.basic.CreasePattern;
 
 import java.util.*;
 import java.util.stream.Collectors;

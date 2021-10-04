@@ -14,6 +14,8 @@ import oripa.domain.fold.subface.SplitFacesToSubFacesConverter;
 import oripa.domain.fold.subface.SubFacesFactory;
 import ovgu.creasy.geom.Point;
 import ovgu.creasy.geom.Vertex;
+import ovgu.creasy.origami.basic.Crease;
+import ovgu.creasy.origami.basic.CreasePattern;
 import ovgu.creasy.origami.oripa.OripaTypeConverter;
 
 import javax.vecmath.Vector2d;

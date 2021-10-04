@@ -1,6 +1,7 @@
 package ovgu.creasy.origami;
 
 import ovgu.creasy.geom.Vertex;
+import ovgu.creasy.origami.basic.Crease;
 
 import java.util.List;
 import java.util.Objects;

@@ -1,8 +1,7 @@
-package ovgu.creasy.origami;
+package ovgu.creasy.origami.basic;
 
 import ovgu.creasy.geom.Line;
 
-import java.util.Locale;
 import java.util.Objects;
 
 /**

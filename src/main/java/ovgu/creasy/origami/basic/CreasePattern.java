@@ -1,4 +1,4 @@
-package ovgu.creasy.origami;
+package ovgu.creasy.origami.basic;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;

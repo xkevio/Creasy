@@ -2,6 +2,7 @@ package ovgu.creasy.origami;
 
 import ovgu.creasy.geom.Line;
 import ovgu.creasy.geom.Vertex;
+import ovgu.creasy.origami.basic.Crease;
 
 import java.util.Collections;
 import java.util.Objects;

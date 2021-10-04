@@ -1,6 +1,6 @@
 package ovgu.creasy.util.exporter.base;
 
-import ovgu.creasy.origami.CreasePattern;
+import ovgu.creasy.origami.basic.CreasePattern;
 
 import java.io.File;
 
