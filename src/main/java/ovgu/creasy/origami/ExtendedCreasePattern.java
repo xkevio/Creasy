@@ -104,6 +104,30 @@ public class ExtendedCreasePattern {
         outsideReverseFold.addPatternEdge(0, 3, Crease.Type.MOUNTAIN);
         outsideReverseFold.addSimplifiedEdge(0,4, Crease.Type.VALLEY);
         patterns.add(outsideReverseFold);
+        SimplificationPattern swivelFold1 = new SimplificationPattern(
+                SimplificationPattern.VertexType.INTERNAL,
+                SimplificationPattern.VertexType.BORDER,
+                SimplificationPattern.VertexType.BORDER,
+                SimplificationPattern.VertexType.BORDER,
+                SimplificationPattern.VertexType.BORDER
+        );
+        swivelFold1.addPatternEdge(0,1, Crease.Type.MOUNTAIN);
+        swivelFold1.addPatternEdge(0,2, Crease.Type.MOUNTAIN);
+        swivelFold1.addPatternEdge(0,3, Crease.Type.VALLEY);
+        swivelFold1.addSimplifiedEdge(0,4, Crease.Type.MOUNTAIN);
+        patterns.add(swivelFold1);
+        SimplificationPattern swivelFold2 = new SimplificationPattern(
+                SimplificationPattern.VertexType.INTERNAL,
+                SimplificationPattern.VertexType.BORDER,
+                SimplificationPattern.VertexType.BORDER,
+                SimplificationPattern.VertexType.BORDER,
+                SimplificationPattern.VertexType.BORDER
+        );
+        swivelFold2.addPatternEdge(0,1, Crease.Type.VALLEY);
+        swivelFold2.addPatternEdge(0,2, Crease.Type.MOUNTAIN);
+        swivelFold2.addPatternEdge(0,3, Crease.Type.MOUNTAIN);
+        swivelFold2.addSimplifiedEdge(0,4, Crease.Type.MOUNTAIN);
+        patterns.add(swivelFold2);
 
         for (SimplificationPattern pattern : patterns) {
             List<SimplificationPattern.Match> matches = pattern.matches(this);
