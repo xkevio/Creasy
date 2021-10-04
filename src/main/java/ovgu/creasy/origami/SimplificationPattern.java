@@ -5,7 +5,6 @@ import ovgu.creasy.geom.Point;
 import ovgu.creasy.geom.Vertex;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SimplificationPattern {
     private final List<Edge> pattern = new ArrayList<>();
@@ -145,14 +144,17 @@ public class SimplificationPattern {
                 if (match.inverted) {
                     type = type.opposite();
                 }
-                findNewLine(simplified, v.getPoint(), type);
+                findNewLine(simplified, v.getPoint(), type, 0);
             }
         }
         simplified.removeAllLinearPoints();
         return simplified;
     }
 
-    private void findNewLine(CreasePattern cp, Point start, Crease.Type creaseType) {
+    private void findNewLine(CreasePattern cp, Point start, Crease.Type creaseType, int depth) {
+        if (depth > 100) {
+            return;
+        }
         double angle = cp.calculateNewAngle(start);
         Point end = new Point(start.getX()+Math.cos(angle)*600, start.getY()+Math.sin(angle)*600);
         Line newLine = new Line(start, end);
@@ -170,6 +172,13 @@ public class SimplificationPattern {
         }
         nearestIntersection = cp.getNearPoint(nearestIntersection);
         Crease c = new Crease(new Line(start, nearestIntersection), creaseType);
+        for (Point point : cp.getPoints()) {
+            if (point.distance(start) > 0.00001 && point.distance(nearestIntersection) > 0.0000001 && c.getLine().contains(point)) {
+                c = new Crease(new Line(start, point), creaseType);
+                nearestIntersection = point;
+                intersectionCrease = null;
+            }
+        }
         cp.addCrease(c);
 
         if (intersectionCrease != null) {
@@ -183,7 +192,7 @@ public class SimplificationPattern {
                 cp.addCrease(new Crease(new Line(intersectionCrease.getLine().getEnd(), nearestIntersection), intersectionCrease.getType()));
             }
             if (cp.getAdjacentCreases(nearestIntersection).stream().noneMatch(crease -> crease.getType() == Crease.Type.EDGE)) {
-                findNewLine(cp, nearestIntersection, creaseType.opposite());
+                findNewLine(cp, nearestIntersection, creaseType.opposite(), depth+1);
             }
         }
     }
@@ -198,39 +207,7 @@ public class SimplificationPattern {
             validating.clear();
             matches.addAll(findMatches(vertex, 0, validating, validatingCreases, ecp, true));
         }
-        return matches.stream().filter(match -> validateMatch(match, ecp)).collect(Collectors.toList());
-    }
-
-    private boolean validateMatch(Match match, ExtendedCreasePattern ecp) {
-        Set<Vertex> vertices = new HashSet<>();
-        for (Map.Entry<Integer, Vertex> vertexEntry : match.vertices.entrySet()) {
-            Vertex v = vertexEntry.getValue();
-            if (v.getType() == Vertex.Type.VIRTUAL) {
-                List<ExtendedCrease> outgoingCreases = ecp.getAdjacencyLists().get(v);
-                Vertex v1 = outgoingCreases.get(0).getEndVertex();
-                Vertex v2 = outgoingCreases.get(1).getEndVertex();
-                vertices.add(v1);
-                vertices.add(v2);
-            }
-        }
-        for (Integer id : match.vertices.keySet()) {
-            if (this.vertexTypes.get(id) == VertexType.INTERNAL) {
-                var outgoing = this.patternOutgoingEdges.get(id);
-                Vertex originalVertex = match.vertices.get(id);
-                Vertex reflectionVertex = null;
-                for (Edge edge : outgoing) {
-                    Vertex refl = match.vertices.get(edge.end);
-                    if (refl.getType() == Vertex.Type.VIRTUAL) {
-                        if (reflectionVertex != null && reflectionVertex != refl){
-                            return false;
-                        }
-                        reflectionVertex = match.vertices.get(edge.end);
-                    }
-                }
-
-            }
-        }
-        return true;
+        return matches;
     }
 
     private List<Match> findMatches(Vertex vertex, int point, Set<Edge> validating,
