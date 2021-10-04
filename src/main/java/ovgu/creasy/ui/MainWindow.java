@@ -568,7 +568,7 @@ public class MainWindow {
         model = new OrigamiModel(cp);
         var ecps = createEcps(cp, randomizeEcpPaths);
         List<DiagramStep> possibleSteps = getSteps(ecps);
-        TextLogger.logText(possibleSteps + " possible step(s) were calculated", log);
+        TextLogger.logText(possibleSteps.size() + " possible step(s) were calculated", log);
         System.out.println("size = " + possibleSteps.size());
 
         // should be called when the algorithm is executed, aka once the amount of steps is known
