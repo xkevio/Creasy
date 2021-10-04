@@ -81,55 +81,7 @@ public class ExtendedCreasePattern {
             newcps.add(newcp);
         }
 
-        List<SimplificationPattern> patterns = new ArrayList<>();
-        SimplificationPattern insideReverseFold = new SimplificationPattern(
-                SimplificationPattern.VertexType.INTERNAL,
-                SimplificationPattern.VertexType.BORDER,
-                SimplificationPattern.VertexType.BORDER,
-                SimplificationPattern.VertexType.BORDER,
-                SimplificationPattern.VertexType.BORDER);
-        insideReverseFold.addPatternEdge(0, 1, Crease.Type.MOUNTAIN);
-        insideReverseFold.addPatternEdge(0, 2, Crease.Type.VALLEY);
-        insideReverseFold.addPatternEdge(0, 3, Crease.Type.MOUNTAIN);
-        insideReverseFold.addSimplifiedEdge(0,4, Crease.Type.MOUNTAIN);
-        patterns.add(insideReverseFold);
-        SimplificationPattern outsideReverseFold = new SimplificationPattern(
-                SimplificationPattern.VertexType.INTERNAL,
-                SimplificationPattern.VertexType.BORDER,
-                SimplificationPattern.VertexType.BORDER,
-                SimplificationPattern.VertexType.BORDER,
-                SimplificationPattern.VertexType.BORDER);
-        outsideReverseFold.addPatternEdge(0, 1, Crease.Type.MOUNTAIN);
-        outsideReverseFold.addPatternEdge(0, 2, Crease.Type.MOUNTAIN);
-        outsideReverseFold.addPatternEdge(0, 3, Crease.Type.MOUNTAIN);
-        outsideReverseFold.addSimplifiedEdge(0,4, Crease.Type.VALLEY);
-        patterns.add(outsideReverseFold);
-        SimplificationPattern swivelFold1 = new SimplificationPattern(
-                SimplificationPattern.VertexType.INTERNAL,
-                SimplificationPattern.VertexType.BORDER,
-                SimplificationPattern.VertexType.BORDER,
-                SimplificationPattern.VertexType.BORDER,
-                SimplificationPattern.VertexType.BORDER
-        );
-        swivelFold1.addPatternEdge(0,1, Crease.Type.MOUNTAIN);
-        swivelFold1.addPatternEdge(0,2, Crease.Type.MOUNTAIN);
-        swivelFold1.addPatternEdge(0,3, Crease.Type.VALLEY);
-        swivelFold1.addSimplifiedEdge(0,4, Crease.Type.MOUNTAIN);
-        patterns.add(swivelFold1);
-        SimplificationPattern swivelFold2 = new SimplificationPattern(
-                SimplificationPattern.VertexType.INTERNAL,
-                SimplificationPattern.VertexType.BORDER,
-                SimplificationPattern.VertexType.BORDER,
-                SimplificationPattern.VertexType.BORDER,
-                SimplificationPattern.VertexType.BORDER
-        );
-        swivelFold2.addPatternEdge(0,1, Crease.Type.VALLEY);
-        swivelFold2.addPatternEdge(0,2, Crease.Type.MOUNTAIN);
-        swivelFold2.addPatternEdge(0,3, Crease.Type.MOUNTAIN);
-        swivelFold2.addSimplifiedEdge(0,4, Crease.Type.MOUNTAIN);
-        patterns.add(swivelFold2);
-
-        for (SimplificationPattern pattern : patterns) {
+        for (SimplificationPattern pattern : KnownPatterns.allPatterns) {
             List<SimplificationPattern.Match> matches = pattern.matches(this);
             for (SimplificationPattern.Match match : matches) {
                 newcps.add(pattern.simplify(this, match));
