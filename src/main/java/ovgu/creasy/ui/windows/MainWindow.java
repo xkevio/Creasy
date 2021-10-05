@@ -812,7 +812,7 @@ public class MainWindow {
     private void onReloadCP() {
         CreasePattern reloadClone = cp.copy();
 
-        resetGUI();
+        resetGUI(false);
         cp = reloadClone;
         cp.removeAllLinearPoints();
         setupUI(null, filePath);
@@ -826,10 +826,9 @@ public class MainWindow {
      * with a loaded file.
      * Useful for resetting state.
      */
-    private void resetGUI() {
+    private void resetGUI(boolean disable) {
         mainCanvas.setCp(null);
         mainCanvas.getGraphicsContext2D().clearRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
-        mainCanvas.setShowPoints(false);
         ((Stage) mainCanvas.getScene().getWindow()).setTitle(Main.APPLICATION_TITLE);
 
         historyLabel.setText("History (0 steps)");
@@ -837,15 +836,19 @@ public class MainWindow {
         steps.getChildren().clear();
         history.getChildren().clear();
 
-        foldedModelMenuItem.setDisable(true);
-        zoomInMenuItem.setDisable(true);
-        zoomOutMenuItem.setDisable(true);
-        exportMenu.setDisable(true);
-        saveMenuItem.setDisable(true);
+        if (disable) {
+            mainCanvas.setShowPoints(false);
 
-        creaseEditor.setDisable(true);
-        boxes.setDisable(true);
-        showPointsCheck.setSelected(false);
+            foldedModelMenuItem.setDisable(true);
+            zoomInMenuItem.setDisable(true);
+            zoomOutMenuItem.setDisable(true);
+            exportMenu.setDisable(true);
+            saveMenuItem.setDisable(true);
+
+            creaseEditor.setDisable(true);
+            boxes.setDisable(true);
+            showPointsCheck.setSelected(false);
+        }
 
         stepsCanvasList.clear();
         historyCanvasList.clear();
@@ -859,6 +862,9 @@ public class MainWindow {
         TextLogger.logText("-----------------", log);
     }
 
+    private void resetGUI() {
+        resetGUI(true);
+    }
 
     public void setHostServices(HostServices hostServices) {
         this.hostServices = hostServices;
