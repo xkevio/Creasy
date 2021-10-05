@@ -566,17 +566,13 @@ public class MainWindow {
         return possibleSteps.stream().toList();
     }
 
-    private void setupUI(InputStream is, String filePath) {
-        setupUI(is, filePath, true);
-    }
-
     /**
      * Loads a Crease Pattern, displays it on the canvases and
      * initializes variables
      * @param is the InputStream that is the crease pattern file
      * @param filePath what is displayed in the title bar of the window
      */
-    private void setupUI(InputStream is, String filePath, boolean createCP) {
+    private void setupUI(InputStream is, String filePath) {
 
         // initialize filePath and window title
 
@@ -586,7 +582,7 @@ public class MainWindow {
         // ----------------------------------
         // draw imported crease pattern on main canvas
 
-        if (createCP) cp = CreasePattern.createFromFile(is);
+        if (is != null) cp = CreasePattern.createFromFile(is);
 
         if (cp != null) {
             cp.drawOnCanvas(mainCanvas, 1, 1);
@@ -819,7 +815,7 @@ public class MainWindow {
         resetGUI();
         cp = reloadClone;
         cp.removeAllLinearPoints();
-        setupUI(null, filePath, false);
+        setupUI(null, filePath);
 
         TextLogger.logText("-----------------", log);
         TextLogger.logText("Reloading simplification algorithm with modified crease pattern...", log);
