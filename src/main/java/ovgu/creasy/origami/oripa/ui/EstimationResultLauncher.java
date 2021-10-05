@@ -20,7 +20,6 @@ public class EstimationResultLauncher {
         stage = new Stage();
         Scene scene = new Scene(oripaWindow.load());
         scene.getStylesheets().add(Main.STYLESHEET);
-        // stage.setResizable(false);
         stage.getIcons().add(Main.APPLICATION_ICON);
 
         stage.setTitle("Folded Origami - " + Main.APPLICATION_TITLE);

@@ -120,8 +120,8 @@ public class CreasePattern {
             removeAdjacentCrease(crease.getLine().getStart(), crease);
             removeAdjacentCrease(crease.getLine().getEnd(), crease);
         } else {
-            System.out.println("did not find ");
-            System.out.println(crease);
+            // System.out.println("did not find the following crease: ");
+            // System.out.println(crease);
         }
     }
 
@@ -169,7 +169,7 @@ public class CreasePattern {
                 }
             }
         }
-        System.out.println("Removing linear points");
+        // System.out.println("Removing linear points");
         creasesToRemove.forEach(this::removeCrease);
         creasesToAdd.forEach(this::addCrease);
         return creasesToAdd.size();
@@ -183,8 +183,8 @@ public class CreasePattern {
         Line revLine = new Line(crease.getLine().getEnd(), crease.getLine().getStart());
         for (Crease oldCrease : creases) {
             if (oldCrease.getLine().equals(crease.getLine()) || oldCrease.getLine().equals(revLine)) {
-                System.out.println("Found duplicate line>");
-                //oldCrease.setType(crease.getType());
+                // System.out.println("Found duplicate line>");
+                // oldCrease.setType(crease.getType());
                 return;
             }
         }
@@ -408,7 +408,7 @@ public class CreasePattern {
             angles.add(angle);
         }
 
-        System.out.println(angles);
+        // System.out.println(angles);
         double currentMax = 0;
         int maxIndex = 0;
         for (int i = 0; i < angles.size(); i++) {

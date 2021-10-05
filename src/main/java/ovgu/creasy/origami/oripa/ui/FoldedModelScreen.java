@@ -336,7 +336,7 @@ public class FoldedModelScreen extends Canvas {
 
         }
         long time1 = System.currentTimeMillis();
-        System.out.println("render time = " + (time1 - time0) + "ms");
+        // System.out.println("render time = " + (time1 - time0) + "ms");
         if (logger != null) {
             TextLogger.logText("(render time = " + (time1 - time0) + "ms)", logger);
         }

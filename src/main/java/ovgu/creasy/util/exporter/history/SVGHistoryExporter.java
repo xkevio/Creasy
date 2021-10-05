@@ -5,7 +5,6 @@ import javafx.stage.FileChooser;
 import org.jfree.svg.SVGGraphics2D;
 import ovgu.creasy.origami.basic.CreasePattern;
 import ovgu.creasy.ui.elements.CreasePatternCanvas;
-import ovgu.creasy.ui.elements.ResizableCanvas;
 import ovgu.creasy.util.exporter.base.AbstractHistoryExporter;
 
 import java.awt.*;

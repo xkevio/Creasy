@@ -147,6 +147,13 @@ public class CreasePatternEditor {
         return gridPoint;
     }
 
+    /**
+     * Converts the given Line to a Crease, checks for intersections, splices the line
+     * and creates new Creases if intersection is found and finally adds those to the crease pattern
+     * @param creasePattern the crease pattern to add the line to
+     * @param addLine the line that will be added or turned into smaller lines
+     * @param type the crease type
+     */
     public static void addCrease(CreasePattern creasePattern, Line addLine, Crease.Type type) {
         HashMap<Crease, List<Line>> lineStore = new HashMap<>();
 
@@ -167,7 +174,6 @@ public class CreasePatternEditor {
 
         List<Line> lines = addLine.splicedLines();
         lines.forEach(newLines -> {
-            System.out.println(newLines);
             Crease newCrease = new Crease(newLines, type);
             creasePattern.addCrease(newCrease);
         });

@@ -12,7 +12,6 @@ import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.util.Matrix;
 import ovgu.creasy.origami.basic.CreasePattern;
 import ovgu.creasy.ui.elements.CreasePatternCanvas;
-import ovgu.creasy.ui.elements.ResizableCanvas;
 import ovgu.creasy.util.exporter.base.AbstractHistoryExporter;
 
 import java.awt.*;
@@ -72,7 +71,7 @@ public class PDFHistoryExporter extends AbstractHistoryExporter {
                 contentStream.transform(translate);
                 contentStream.drawForm(xObject);
 
-                drawText((i + 1) + ". step", 25, 500, contentStream);
+                drawText("step " + (i + 1), 25, 500, contentStream);
 
                 if (i == 0) {
                     drawText("Made with Creasy", 300, 500, contentStream);

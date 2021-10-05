@@ -560,6 +560,7 @@ public class MainWindow {
         return ecps;
     }
 
+    // TODO probably shouldn't be in this class either
     private List<DiagramStep> getSteps(List<ExtendedCreasePattern> ecps) {
         Set<DiagramStep> possibleSteps = new HashSet<>();
         ecps.forEach(cp -> possibleSteps.addAll(cp.possibleSteps()));
@@ -594,10 +595,14 @@ public class MainWindow {
 
         model = new OrigamiModel(cp);
 
+        long start = System.nanoTime();
+
         List<ExtendedCreasePattern> eCps = createEcps(cp, randomizeEcpPaths);
         List<DiagramStep> possibleSteps = getSteps(eCps);
 
-        TextLogger.logText(possibleSteps.size() + " possible step(s) were calculated", log);
+        long end = System.nanoTime() - start;
+
+        TextLogger.logText(possibleSteps.size() + " possible step(s) were calculated in " + (end / 1e6) + " ms", log);
 
         // ----------------------------------
         // create needed canvases and draw the steps on them
@@ -765,7 +770,6 @@ public class MainWindow {
             canvas.getCp().drawOnCanvas(historyCanvasList.get(i), 0.4, 0.4);
 
             if (canvas.isSelected()) {
-                System.out.println("is selected");
                 activeHistory = historyCanvasList.get(i);
                 activeHistory.markAsCurrentlySelected();
             }

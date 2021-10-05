@@ -70,7 +70,7 @@ public class ExtendedCreasePattern {
     private List<DiagramStep> calculatePossibleSteps() {
         List<DiagramStep> steps = new ArrayList<>();
         HashSet<List<ExtendedReflectionPath>> removableCreases = new HashSet<>();
-        System.out.println("finding simple folds");
+        // System.out.println("finding simple folds");
         for (Vertex vertex : vertices) {
 
             removableCreases.addAll(findSimpleFolds(vertex).stream().map(Collections::singletonList)
@@ -92,6 +92,7 @@ public class ExtendedCreasePattern {
         }
 
         FoldabilityChecker foldabilityChecker = new FoldabilityChecker();
+
         newcps.stream().distinct().forEach(cp -> {
             CreasePattern cp2 = new CreasePattern();
             cp.getCreases().forEach(cp2::addCrease);

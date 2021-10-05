@@ -3,7 +3,7 @@ package ovgu.creasy.util.exporter.cp;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
-import ovgu.creasy.ui.elements.ResizableCanvas;
+import ovgu.creasy.ui.elements.CreasePatternCanvas;
 import ovgu.creasy.util.exporter.base.AbstractCreasePatternExporter;
 
 import javax.imageio.ImageIO;
@@ -13,9 +13,9 @@ import java.io.IOException;
 
 public class PNGCreasePatternExporter extends AbstractCreasePatternExporter {
 
-    private ResizableCanvas resizableCanvas;
+    private final CreasePatternCanvas resizableCanvas;
 
-    public PNGCreasePatternExporter(ResizableCanvas resizableCanvas) {
+    public PNGCreasePatternExporter(CreasePatternCanvas resizableCanvas) {
         this.resizableCanvas = resizableCanvas;
     }
 
