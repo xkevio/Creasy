@@ -33,15 +33,22 @@ This allows you to put together the generated folding sequences as you like and 
 ## Installation
 **JDK 16 or above** is needed to run or compile Creasy.
 
-You can either download a pre-built binary (`.jar`) from the [releases page](https://github.com/xkevio/Creasy/releases) or compile manually.
-If you choose to compile Creasy yourself, you will also need `maven`.
+You can either download a pre-built binary (`.jar`) from the [releases page](https://github.com/xkevio/Creasy/releases) or compile manually with `maven`.
+If you choose to compile Creasy yourself, you will also need to download **[Oripa 1.45](https://github.com/oripa/oripa/releases/tag/v1.45_release)**.
 
 - Clone the repository with `git clone git@github.com:xkevio/Creasy.git`
 - Open the project in your IDE or head into the main directory
+- Create a `lib` folder inside Creasy and move the `oripa-1.45.jar` inside
+- Execute the following command (this will add **Oripa 1.45** to the local `maven` repo): 
+```
+mvn install:install-file -Dfile=lib/oripa-1.45.jar -DgroupId=oripa -DartifactId=oripa -Dversion=1.45 -Dpackaging=jar -DgeneratePom=true
+```
+
 - Execute the command `mvn clean package` either in your IDE or terminal
 
 This will generate a `target` folder inside of the cloned directory which contains an executable `.jar` file.
 
+You may now also delete the `lib` folder as it is no longer needed for future building.
 ## Features
 - Simplifying crease patterns according to the aforementioned algorithm as far as possible
 - Putting the generated folding sequences together in whatever order you like
