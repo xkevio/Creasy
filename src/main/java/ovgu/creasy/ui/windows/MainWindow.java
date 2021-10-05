@@ -818,6 +818,7 @@ public class MainWindow {
 
         resetGUI();
         cp = reloadClone;
+        cp.removeAllLinearPoints();
         setupUI(null, filePath, false);
 
         TextLogger.logText("-----------------", log);
@@ -855,6 +856,7 @@ public class MainWindow {
 
         cp = null;
         wasSaved = false;
+        pairs.clear();
 
         grid.reset();
 
