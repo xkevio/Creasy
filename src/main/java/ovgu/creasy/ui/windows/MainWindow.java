@@ -366,6 +366,7 @@ public class MainWindow {
 
         historyCanvasList = new ArrayList<>();
         stepsCanvasList = new ArrayList<>();
+        pairs = new HashMap<>();
 
         TextLogger.logText("Starting up... Welcome to " + Main.APPLICATION_TITLE + " " + Main.VERSION + "!", log);
     }
@@ -565,21 +566,35 @@ public class MainWindow {
         return possibleSteps.stream().toList();
     }
 
+    private void setupUI(InputStream is, String filePath) {
+        setupUI(is, filePath, true);
+    }
+
     /**
      * Loads a Crease Pattern, displays it on the canvases and
      * initializes variables
      * @param is the InputStream that is the crease pattern file
      * @param filePath what is displayed in the title bar of the window
      */
-    private void setupUI(InputStream is, String filePath) {
+    private void setupUI(InputStream is, String filePath, boolean createCP) {
+
+        // initialize filePath and window title
+
         this.filePath = filePath;
         ((Stage) mainCanvas.getScene().getWindow()).setTitle(filePath + "* - " + Main.APPLICATION_TITLE);
 
-        cp = CreasePattern.createFromFile(is);
+        // ----------------------------------
+        // draw imported crease pattern on main canvas
+
+        if (createCP) cp = CreasePattern.createFromFile(is);
+
         if (cp != null) {
             cp.drawOnCanvas(mainCanvas, 1, 1);
             TextLogger.logText("Crease Pattern successfully loaded!", log);
         }
+
+        // ----------------------------------
+        // initialize OrigamiModel and execute algorithm -- generate extended crease patterns / folding sequences
 
         model = new OrigamiModel(cp);
 
@@ -588,14 +603,19 @@ public class MainWindow {
 
         TextLogger.logText(possibleSteps.size() + " possible step(s) were calculated", log);
 
+        // ----------------------------------
+        // create needed canvases and draw the steps on them
         // should be called when the algorithm is executed, aka once the amount of steps is known
-        pairs = new HashMap<>();
+
         createCPCanvases(stepsCanvasList, steps, possibleSteps.size());
 
         drawSteps(possibleSteps);
         drawHistory(cp, history, historyLabel);
 
+        // ----------------------------------
         // after reading the file, if the file is valid:
+        // enable all the previously disabled functions
+
         foldedModelMenuItem.setDisable(false);
         zoomInMenuItem.setDisable(false);
         zoomOutMenuItem.setDisable(false);
@@ -792,33 +812,16 @@ public class MainWindow {
         mainCanvas.getCp().drawOnCanvas(mainCanvas);
     }
 
-    // very similar to setupUI, find better way
     @FXML
     private void onReloadCP() {
-        historyLabel.setText("History (0 steps)");
+        CreasePattern reloadClone = cp.copy();
 
-        steps.getChildren().clear();
-        history.getChildren().clear();
-
-        stepsCanvasList.clear();
-        historyCanvasList.clear();
+        resetGUI();
+        cp = reloadClone;
+        setupUI(null, filePath, false);
 
         TextLogger.logText("-----------------", log);
         TextLogger.logText("Reloading simplification algorithm with modified crease pattern...", log);
-
-        cp = mainCanvas.getCp();
-        cp.removeAllLinearPoints();
-        model = new OrigamiModel(cp);
-
-        var ecps = createEcps(cp, randomizeEcpPaths);
-        var possibleSteps = getSteps(ecps);
-        TextLogger.logText(possibleSteps.size() + " possible step(s) were calculated", log);
-
-        pairs = new HashMap<>();
-        createCPCanvases(stepsCanvasList, steps, possibleSteps.size());
-
-        drawSteps(possibleSteps);
-        drawHistory(cp, history, historyLabel);
     }
 
     /**

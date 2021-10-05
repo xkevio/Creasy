@@ -90,14 +90,12 @@ public class CreasePattern {
                 point1.setX(Double.parseDouble(st.sval));
                 st.nextToken();
                 point1.setY(Double.parseDouble(st.sval));
-                // point1.toString();
 
                 // read data for point 2
                 st.nextToken();
                 point2.setX(Double.parseDouble(st.sval));
                 st.nextToken();
                 point2.setY(Double.parseDouble(st.sval));
-                // point2.toString();
 
                 // create line with data
                 Line line = new Line(point1, point2);
