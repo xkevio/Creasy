@@ -7,7 +7,7 @@ import java.util.List;
 
 public class KnownPatterns {
     public static final List<SimplificationPattern> allPatterns = new ArrayList<>();
-    public static SimplificationPattern insideReverseFold = new SimplificationPattern(
+    public static final SimplificationPattern insideReverseFold = new SimplificationPattern(
         SimplificationPattern.VertexType.INTERNAL,
         SimplificationPattern.VertexType.BORDER,
         SimplificationPattern.VertexType.BORDER,
