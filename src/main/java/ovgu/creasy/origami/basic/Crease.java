@@ -54,6 +54,10 @@ public class Crease {
         this.highlighted = false;
     }
 
+    public Crease reversed() {
+        return new Crease(this.line.reversed(), this.type);
+    }
+
     public Line getLine() {
         return line;
     }

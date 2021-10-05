@@ -142,6 +142,10 @@ public class Line {
         return Objects.equals(start, line.start) && Objects.equals(end, line.end);
     }
 
+    public boolean equalsOrReversed(Line other) {
+        return this.equals(other) || this.equals(other.reversed());
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(start, end);
@@ -157,5 +161,9 @@ public class Line {
                }
                """.formatted(start.toString().indent(4),
                              end.toString().indent(4));
+    }
+
+    public Line reversed() {
+        return new Line(this.end, this.start);
     }
 }

@@ -67,6 +67,7 @@ public class CreasePattern {
             st.wordChars('.', '.');
             st.wordChars('-', '-');
             st.wordChars('E', 'E');
+            st.wordChars('e', 'e');
 
             st.whitespaceChars(' ', ' ');
             st.whitespaceChars('\t', '\t');
@@ -119,9 +120,6 @@ public class CreasePattern {
         if (creases.remove(crease)) {
             removeAdjacentCrease(crease.getLine().getStart(), crease);
             removeAdjacentCrease(crease.getLine().getEnd(), crease);
-        } else {
-            // System.out.println("did not find the following crease: ");
-            // System.out.println(crease);
         }
     }
 
@@ -135,19 +133,32 @@ public class CreasePattern {
         }
     }
 
+    /**
+     * removes all Points that lie on straight lines, replacing the 2 (or more) collinear line segments
+     * with a new one
+     */
     public void removeAllLinearPoints() {
-        int removedCreases = 0;
-        int newRemovedCreases;
-        do {
-            newRemovedCreases = removeLinearPoints();
-            removedCreases += newRemovedCreases;
-        } while (newRemovedCreases > 0);
-        System.out.println("simplified " + removedCreases);
+        Point linearPoint = findNextLinearPoint();
+        while (linearPoint != null) {
+            collapseLinearPoint(linearPoint);
+            linearPoint = findNextLinearPoint();
+        }
     }
 
-    public int removeLinearPoints() {
-        Set<Crease> creasesToRemove = new HashSet<>();
-        Set<Crease> creasesToAdd = new HashSet<>();
+    private void collapseLinearPoint(Point linearPoint) {
+        var adj = getAdjacentCreases(linearPoint);
+        Crease crease1 = adj.get(0);
+        Crease crease2 = adj.get(1);
+        Point start = crease1.getLine().getOppositePoint(linearPoint);
+        Point end = crease2.getLine().getOppositePoint(linearPoint);
+        removeCrease(crease1);
+        removeCrease(crease1.reversed());
+        removeCrease(crease2);
+        removeCrease(crease2.reversed());
+        addCrease(new Crease(new Line(start,end), crease1.getType()));
+    }
+
+    private Point findNextLinearPoint() {
         for (Point point : getPoints()) {
             var adj = getAdjacentCreases(point);
             if (adj.size() == 2) {
@@ -160,19 +171,11 @@ public class CreasePattern {
                 Point end = crease2.getLine().getOppositePoint(point);
                 Line l = new Line(start, end);
                 if (l.contains(point)) {
-                    creasesToRemove.add(crease1);
-                    creasesToRemove.add(crease2);
-                    creasesToRemove.add(new Crease(new Line(crease1.getLine().getEnd(), crease1.getLine().getStart()), crease1.getType()));
-                    creasesToRemove.add(new Crease(new Line(crease2.getLine().getEnd(), crease2.getLine().getStart()), crease2.getType()));
-                    creasesToAdd.add(new Crease(l, crease1.getType()));
-                    break;
+                    return point;
                 }
             }
         }
-        // System.out.println("Removing linear points");
-        creasesToRemove.forEach(this::removeCrease);
-        creasesToAdd.forEach(this::addCrease);
-        return creasesToAdd.size();
+        return null;
     }
 
     public void addCrease(Crease crease) {
@@ -180,11 +183,9 @@ public class CreasePattern {
         if (crease.getLine().getStart().distance(crease.getLine().getEnd()) < 0.00001) {
             return;
         }
-        Line revLine = new Line(crease.getLine().getEnd(), crease.getLine().getStart());
         for (Crease oldCrease : creases) {
-            if (oldCrease.getLine().equals(crease.getLine()) || oldCrease.getLine().equals(revLine)) {
-                // System.out.println("Found duplicate line>");
-                // oldCrease.setType(crease.getType());
+            if (oldCrease.getLine().equalsOrReversed(crease.getLine())) {
+                // duplicate lines would mess with the flatfoldability
                 return;
             }
         }
@@ -245,8 +246,8 @@ public class CreasePattern {
      * @param crease the Crease of which the start and end point get added or replaced
      */
     private void addOrMergePoints(Crease crease) {
-        crease.getLine().setStart(addPoint(crease.getLine().getStart()));
-        crease.getLine().setEnd(addPoint(crease.getLine().getEnd()));
+        crease.getLine().setStart(getNearPointOrAdd(crease.getLine().getStart()));
+        crease.getLine().setEnd(getNearPointOrAdd(crease.getLine().getEnd()));
     }
 
     /**
@@ -255,7 +256,7 @@ public class CreasePattern {
      * @param p the point to be added and returned if no other point is closer
      * @return a very near Point if one exists (distance <= EPS) or p
      */
-    private Point addPoint(Point p) {
+    private Point getNearPointOrAdd(Point p) {
         Optional<Point> nearPoint = points.stream().filter(point -> point.distance(p) <= EPS).findAny();
         if (nearPoint.isPresent()) {
             return nearPoint.get();
@@ -382,33 +383,27 @@ public class CreasePattern {
         return copy;
     }
 
-    public double calculateNewAngle(Point point) {
-        List<Double> angles = new ArrayList<>();
-        List<Crease> outgoingCreases = adjacentCreases.get(point);
-        for (int i = 0; i < outgoingCreases.size(); i++) {
-            Crease crease = outgoingCreases.get(i);
+    /**
+     *
+     * @return a list of creases starting in p, sorted by angle. The creases can have the start and end
+     * flipped from how they appear in the cp, meaning not all creases from this list have to be in getCreases()
+     */
+    public List<Crease> getOutgoingCreases(Point p) {
+        List<Crease> adjacentCreases = this.adjacentCreases.get(p);
+        for (int i = 0; i < adjacentCreases.size(); i++) {
+            Crease crease = adjacentCreases.get(i);
             // flip crease if it doesnt start in point
-            if (crease.getLine().getEnd().equals(point)) {
-                outgoingCreases.add(i, new Crease(
-                        new Line(crease.getLine().getEnd(), crease.getLine().getStart()),
-                        crease.getType()));
-                outgoingCreases.remove(i+1);
+            if (crease.getLine().getEnd().equals(p)) {
+                adjacentCreases.add(i, crease.reversed());
+                adjacentCreases.remove(i+1);
             }
         }
-        // double biggestAngle = 0.0;
+        return adjacentCreases;
+    }
 
-        for (int i = 0; i < outgoingCreases.size(); i++) {
-            Crease crease = outgoingCreases.get(i);
-            Crease nextCrease = outgoingCreases.get((i+1)%outgoingCreases.size());
-
-            double angle = crease.getLine().getClockwiseAngle() - nextCrease.getLine().getClockwiseAngle();
-            while (angle<0) {
-                angle += Math.PI * 2;
-            }
-            angles.add(angle);
-        }
-
-        // System.out.println(angles);
+    public double calculateNewAngle(Point point) {
+        List<Crease> outgoingCreases = getOutgoingCreases(point);
+        List<Double> angles = createAngleList(outgoingCreases);
         double currentMax = 0;
         int maxIndex = 0;
         for (int i = 0; i < angles.size(); i++) {
@@ -429,8 +424,22 @@ public class CreasePattern {
                 sum += angles.get(i);
             }
         }
-        // c_k.angle?
         return outgoingCreases.get(maxIndex).getLine().getClockwiseAngle() - (Math.PI - sum);
+    }
+
+    private List<Double> createAngleList(List<Crease> outgoingCreases) {
+        List<Double> angles = new ArrayList<>();
+        for (int i = 0; i < outgoingCreases.size(); i++) {
+            Crease crease = outgoingCreases.get(i);
+            Crease nextCrease = outgoingCreases.get((i+1)% outgoingCreases.size());
+
+            double angle = crease.getLine().getClockwiseAngle() - nextCrease.getLine().getClockwiseAngle();
+            while (angle<0) {
+                angle += Math.PI * 2;
+            }
+            angles.add(angle);
+        }
+        return angles;
     }
 
     @Override

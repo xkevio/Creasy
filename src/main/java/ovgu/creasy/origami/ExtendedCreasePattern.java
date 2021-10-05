@@ -80,7 +80,7 @@ public class ExtendedCreasePattern {
         for (List<ExtendedReflectionPath> removablePathList : removableCreases) {
             CreasePattern newcp = this.cp.copy();
             removablePathList.forEach(p -> p.getCreases().forEach(newcp::removeCrease));
-            newcp.removeLinearPoints();
+            newcp.removeAllLinearPoints();
             newcps.add(newcp);
         }
 
