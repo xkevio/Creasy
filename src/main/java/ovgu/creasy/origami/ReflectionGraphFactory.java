@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class ReflectionGraphFactory {
     private static final double EPS = 0.0000001;
-    private final Map<Crease, Collection<Crease>> reflectionCreases;
+    private final Map<Crease, HashSet<Crease>> reflectionCreases;
     private final CreasePattern cp;
 
     public ReflectionGraphFactory(CreasePattern cp) {
@@ -67,8 +67,8 @@ public class ReflectionGraphFactory {
      *
      * @return A collection of all connected subgraphs of the Reflection graph
      */
-    public Collection<ReflectionGraph> getAllReflectionGraphs() {
-        Collection<ReflectionGraph> reflectionGraphs = new ArrayList<>();
+    public List<ReflectionGraph> getAllReflectionGraphs() {
+        List<ReflectionGraph> reflectionGraphs = new ArrayList<>();
         Set<Crease> done = new HashSet<>();
 
         // Iterate over all creases and fina all creases connected through reflection Creases
@@ -79,7 +79,7 @@ public class ReflectionGraphFactory {
             }
             ReflectionGraph graph = new ReflectionGraph(cp);
             graph.addCrease(crease);
-            List<Collection<Crease>> newCreases = new ArrayList<>();
+            List<HashSet<Crease>> newCreases = new ArrayList<>();
             do {
                 newCreases.clear();
                 List<Crease> originalCreases = new ArrayList<>();
@@ -88,6 +88,7 @@ public class ReflectionGraphFactory {
                         continue;
                     }
                     done.add(connectedCrease);
+
                     var refCreases = getReflectionCreases(connectedCrease);
                     newCreases.add(refCreases);
                     originalCreases.add(connectedCrease);
@@ -97,7 +98,7 @@ public class ReflectionGraphFactory {
                     break;
                 }
                 for (int i = 0; i < newCreases.size(); i++) {
-                    Collection<Crease> newCrease = newCreases.get(i);
+                    HashSet<Crease> newCrease = newCreases.get(i);
                     graph.addAllCreases(newCrease, originalCreases.get(i));
                 }
             } while (!newCreases.isEmpty());
@@ -137,7 +138,7 @@ public class ReflectionGraphFactory {
         reflectionCreases.get(crease2).add(crease1);
     }
 
-    private Collection<Crease> getReflectionCreases(Crease crease) {
+    private HashSet<Crease> getReflectionCreases(Crease crease) {
         if (reflectionCreases.containsKey(crease)) {
             return reflectionCreases.get(crease);
         }

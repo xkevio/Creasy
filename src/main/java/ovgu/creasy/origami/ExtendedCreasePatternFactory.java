@@ -59,7 +59,7 @@ public class ExtendedCreasePatternFactory {
         Map<Vertex, List<ExtendedCrease>> adjacencyLists = createAdjacencyLists(inactiveExtendedCreases);
 
         // set of all reflection graphs
-        Collection<ReflectionGraph> reflectionGraphs = reflGraphFactory.getAllReflectionGraphs();
+        List<ReflectionGraph> reflectionGraphs = reflGraphFactory.getAllReflectionGraphs();
 
         for (ReflectionGraph reflectionGraph : reflectionGraphs) {
             // set of local maximum reflection paths in reflectionGraph
@@ -206,7 +206,7 @@ public class ExtendedCreasePatternFactory {
         return vertices;
     }
 
-    private ReflectionPath getGlobalMaximum(Collection<ReflectionPath> reflectionPaths) {
+    private ReflectionPath getGlobalMaximum(List<ReflectionPath> reflectionPaths) {
         return reflectionPaths.stream().max(Comparator.comparingInt(ReflectionPath::length)).orElse(null);
     }
 }
