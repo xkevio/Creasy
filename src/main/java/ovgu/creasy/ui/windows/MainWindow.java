@@ -814,12 +814,17 @@ public class MainWindow {
 
     @FXML
     private void onReloadCP() {
-        CreasePattern reloadClone = cp.copy();
-
-        resetGUI(false);
-        cp = reloadClone;
         cp.removeAllLinearPoints();
-        setupUI(null, filePath);
+        cp.drawOnCanvas(mainCanvas);
+
+        steps.getChildren().clear();
+        stepsCanvasList.clear();
+
+        List<ExtendedCreasePattern> eCps = createEcps(cp, randomizeEcpPaths);
+        List<DiagramStep> possibleSteps = getSteps(eCps);
+
+        createCPCanvases(stepsCanvasList, steps, possibleSteps.size());
+        drawSteps(possibleSteps);
 
         TextLogger.logText("-----------------", log);
         TextLogger.logText("Reloading simplification algorithm with modified crease pattern...", log);
@@ -830,7 +835,7 @@ public class MainWindow {
      * with a loaded file.
      * Useful for resetting state.
      */
-    private void resetGUI(boolean disable) {
+    private void resetGUI() {
         mainCanvas.setCp(null);
         mainCanvas.getGraphicsContext2D().clearRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
         ((Stage) mainCanvas.getScene().getWindow()).setTitle(Main.APPLICATION_TITLE);
@@ -840,19 +845,17 @@ public class MainWindow {
         steps.getChildren().clear();
         history.getChildren().clear();
 
-        if (disable) {
-            mainCanvas.setShowPoints(false);
+        mainCanvas.setShowPoints(false);
 
-            foldedModelMenuItem.setDisable(true);
-            zoomInMenuItem.setDisable(true);
-            zoomOutMenuItem.setDisable(true);
-            exportMenu.setDisable(true);
-            saveMenuItem.setDisable(true);
+        foldedModelMenuItem.setDisable(true);
+        zoomInMenuItem.setDisable(true);
+        zoomOutMenuItem.setDisable(true);
+        exportMenu.setDisable(true);
+        saveMenuItem.setDisable(true);
 
-            creaseEditor.setDisable(true);
-            boxes.setDisable(true);
-            showPointsCheck.setSelected(false);
-        }
+        creaseEditor.setDisable(true);
+        boxes.setDisable(true);
+        showPointsCheck.setSelected(false);
 
         stepsCanvasList.clear();
         historyCanvasList.clear();
@@ -864,10 +867,6 @@ public class MainWindow {
         grid.reset();
 
         TextLogger.logText("-----------------", log);
-    }
-
-    private void resetGUI() {
-        resetGUI(true);
     }
 
     public void setHostServices(HostServices hostServices) {
