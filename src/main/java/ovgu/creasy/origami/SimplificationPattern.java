@@ -128,9 +128,10 @@ public class SimplificationPattern {
                 omittedLines.addAll(e.getExtendedReflectionPath().getCreases());
                 omittedLines.add(new Crease(e.asLine(), e.getType()));
                 omittedLines.add(new Crease(new Line(e.getEndVertex().getPoint(), e.getStartVertex().getPoint()), e.getType()));
-            } else {
-                System.out.println(edge);
             }
+//            else {
+//                System.out.println(edge);
+//            }
         }
         for (Crease crease : ecp.toCreasePattern().getCreases()  ) {
             if (!omittedLines.contains(crease)){

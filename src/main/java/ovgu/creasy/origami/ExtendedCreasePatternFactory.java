@@ -126,7 +126,7 @@ public class ExtendedCreasePatternFactory {
 
     private ReflectionPath chooseRandom(List<ReflectionPath> a) {
         int i = r.nextInt(a.size());
-        System.out.println("chose nr " + i);
+        // System.out.println("chose nr " + i);
         return a.get(i);
     }
 
