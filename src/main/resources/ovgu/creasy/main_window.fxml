@@ -75,9 +75,9 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Examples">
                <items>
-                   <MenuItem mnemonicParsing="false" onAction="#onLoadExampleBird" text="Bird" />
-                   <MenuItem mnemonicParsing="false" onAction="#onLoadExamplePenguin" text="Penguin" />
-                   <MenuItem mnemonicParsing="false" onAction="#onLoadExampleCrane" text="Crane" />
+                   <MenuItem mnemonicParsing="false" onAction="#onLoadExample" text="Bird" />
+                   <MenuItem mnemonicParsing="false" onAction="#onLoadExample" text="Penguin" />
+                   <MenuItem mnemonicParsing="false" onAction="#onLoadExample" text="Crane" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
@@ -223,7 +223,7 @@
                                     <VBox alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="10.0">
                                        <children>
                                           <CheckBox fx:id="showPointsCheck" mnemonicParsing="false" onAction="#onShowPoints" text="Show points" />
-                                          <CheckBox mnemonicParsing="false" text="Snap to grid" fx:id="snapToGrid"/>
+                                          <CheckBox fx:id="snapToGrid" mnemonicParsing="false" text="Snap to grid" />
                                           <CheckBox mnemonicParsing="false" onAction="#onLiveReload" text="Live reload">
                                              <tooltip>
                                                 <Tooltip text="Whether the crease pattern should be reloaded after a change or after clicking on the reload button" />

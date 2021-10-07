@@ -2,6 +2,7 @@ package ovgu.creasy.ui.windows;
 
 import javafx.application.HostServices;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -40,6 +41,12 @@ import static ovgu.creasy.ui.elements.ResizableCanvas.CANVAS_HEIGHT;
 import static ovgu.creasy.ui.elements.ResizableCanvas.CANVAS_WIDTH;
 
 public class MainWindow {
+
+    public static HashMap<String, String> EXAMPLES = new HashMap<>(Map.of(
+            "Bird", "example/bird.cp",
+            "Penguin", "example/penguin_hideo_komatsu.cp",
+            "Crane", "example/crane.cp"
+    ));
 
     @FXML
     private ToggleGroup edit;
@@ -505,27 +512,15 @@ public class MainWindow {
     // -------------------------
     // Loading example files
     @FXML
-    private void onLoadExampleBird() {
+    private void onLoadExample(ActionEvent event) {
         resetGUI();
-        TextLogger.logText("Import: example/bird.cp", log);
-        InputStream is = Main.class.getResourceAsStream("example/bird.cp");
-        setupUI(is, "example/bird.cp");
-    }
 
-    @FXML
-    private void onLoadExamplePenguin() {
-        resetGUI();
-        TextLogger.logText("Import: example/penguin_hideo_komatsu.cp", log);
-        InputStream is = Main.class.getResourceAsStream("example/penguin_hideo_komatsu.cp");
-        setupUI(is, "example/penguin_hideo_komatsu.cp");
-    }
+        String example = ((MenuItem) event.getSource()).getText();
+        String filePath = EXAMPLES.get(example);
 
-    @FXML
-    private void onLoadExampleCrane() {
-        resetGUI();
-        TextLogger.logText("Import: example/crane.cp", log);
-        InputStream is = Main.class.getResourceAsStream("example/crane.cp");
-        setupUI(is, "example/crane.cp");
+        TextLogger.logText("Import: " + filePath, log);
+        InputStream is = Main.class.getResourceAsStream(filePath);
+        setupUI(is, filePath);
     }
     // -------------------------
 
