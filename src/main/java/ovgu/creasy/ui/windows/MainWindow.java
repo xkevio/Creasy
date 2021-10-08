@@ -788,13 +788,15 @@ public class MainWindow {
 
     @FXML
     private void onReloadCP() {
-        cp.removeAllLinearPoints();
-        cp.drawOnCanvas(mainCanvas);
+        CreasePattern mainCP = mainCanvas.getCp();
+
+        mainCP.removeAllLinearPoints();
+        mainCP.drawOnCanvas(mainCanvas);
 
         steps.getChildren().clear();
         stepsCanvasList.clear();
 
-        List<ExtendedCreasePattern> eCps = ExtendedCreasePattern.createECPs(cp, randomizeEcpPaths);
+        List<ExtendedCreasePattern> eCps = ExtendedCreasePattern.createECPs(mainCP, randomizeEcpPaths);
         List<DiagramStep> possibleSteps = ExtendedCreasePattern.getSteps(eCps);
 
         createCPCanvases(stepsCanvasList, steps, possibleSteps.size());
