@@ -60,6 +60,23 @@ public class ExtendedCreasePattern {
             '}';
     }
 
+    public static List<ExtendedCreasePattern> createECPs(CreasePattern cp, boolean randomized) {
+        List<ExtendedCreasePattern> ECPs;
+        if (randomized) {
+            ECPs = new ExtendedCreasePatternFactory().createRandomizedEcps(cp, 10);
+        } else {
+            ECPs = new ArrayList<>();
+            ECPs.add(new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp));
+        }
+        return ECPs;
+    }
+
+    public static List<DiagramStep> getSteps(List<ExtendedCreasePattern> eCPs) {
+        Set<DiagramStep> possibleSteps = new HashSet<>();
+        eCPs.forEach(cp -> possibleSteps.addAll(cp.possibleSteps()));
+        return possibleSteps.stream().toList();
+    }
+
     public List<DiagramStep> possibleSteps() {
         if (this.possibleSteps == null) {
             this.possibleSteps = calculatePossibleSteps();

@@ -18,7 +18,6 @@ import ovgu.creasy.Main;
 import ovgu.creasy.geom.Line;
 import ovgu.creasy.geom.Point;
 import ovgu.creasy.origami.ExtendedCreasePattern;
-import ovgu.creasy.origami.ExtendedCreasePatternFactory;
 import ovgu.creasy.origami.basic.Crease;
 import ovgu.creasy.origami.basic.CreasePattern;
 import ovgu.creasy.origami.basic.DiagramStep;
@@ -542,26 +541,6 @@ public class MainWindow {
         CreasePatternHelpWindow.open();
     }
 
-
-    // TODO probably shouldn't be in this class
-    private List<ExtendedCreasePattern> createEcps(CreasePattern cp, boolean randomized) {
-        List<ExtendedCreasePattern> ecps;
-        if (randomized) {
-            ecps = new ExtendedCreasePatternFactory().createRandomizedEcps(cp, 10);
-        } else {
-            ecps = new ArrayList<>();
-            ecps.add(new ExtendedCreasePatternFactory().createExtendedCreasePattern(cp));
-        }
-        return ecps;
-    }
-
-    // TODO probably shouldn't be in this class either
-    private List<DiagramStep> getSteps(List<ExtendedCreasePattern> ecps) {
-        Set<DiagramStep> possibleSteps = new HashSet<>();
-        ecps.forEach(cp -> possibleSteps.addAll(cp.possibleSteps()));
-        return possibleSteps.stream().toList();
-    }
-
     /**
      * Loads a Crease Pattern, displays it on the canvases and
      * initializes variables
@@ -592,8 +571,8 @@ public class MainWindow {
 
         long start = System.nanoTime();
 
-        List<ExtendedCreasePattern> eCps = createEcps(cp, randomizeEcpPaths);
-        List<DiagramStep> possibleSteps = getSteps(eCps);
+        List<ExtendedCreasePattern> eCps = ExtendedCreasePattern.createECPs(cp, randomizeEcpPaths);
+        List<DiagramStep> possibleSteps = ExtendedCreasePattern.getSteps(eCps);
 
         long end = System.nanoTime() - start;
 
@@ -712,8 +691,8 @@ public class MainWindow {
                 CreasePattern currentStep = c.getCp();
 
                 currentStep.drawOnCanvas(mainCanvas);
-                List<ExtendedCreasePattern> eCps = createEcps(currentStep, randomizeEcpPaths);
-                List<DiagramStep> possibleSteps = getSteps(eCps);
+                List<ExtendedCreasePattern> eCps = ExtendedCreasePattern.createECPs(currentStep, randomizeEcpPaths);
+                List<DiagramStep> possibleSteps = ExtendedCreasePattern.getSteps(eCps);
 
                 if (c.getParent().equals(steps)) {
                     drawHistory(currentStep, history, historyLabel);
@@ -815,8 +794,8 @@ public class MainWindow {
         steps.getChildren().clear();
         stepsCanvasList.clear();
 
-        List<ExtendedCreasePattern> eCps = createEcps(cp, randomizeEcpPaths);
-        List<DiagramStep> possibleSteps = getSteps(eCps);
+        List<ExtendedCreasePattern> eCps = ExtendedCreasePattern.createECPs(cp, randomizeEcpPaths);
+        List<DiagramStep> possibleSteps = ExtendedCreasePattern.getSteps(eCps);
 
         createCPCanvases(stepsCanvasList, steps, possibleSteps.size());
         drawSteps(possibleSteps);
