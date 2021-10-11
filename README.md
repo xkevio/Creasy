@@ -3,7 +3,13 @@
   <br>
   <h1 align="center">Creasy: Turn Crease Patterns into Instructions</h1>
 </p>
-
+<p align="center">
+  <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/xkevio/Creasy">
+  <img alt="GitHub issues" src="https://img.shields.io/github/issues/xkevio/Creasy">
+  <img alt="GitHub" src="https://img.shields.io/github/license/xkevio/Creasy">
+  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/xkevio/Creasy">
+</p>
+  
 Creasy is a software tailored to computational origami which implements an algorithm that turns **flat-foldable** crease patterns into folding sequences / instructions.
 This algorithm is based on the works of
 - Hugo A. Akitaya
