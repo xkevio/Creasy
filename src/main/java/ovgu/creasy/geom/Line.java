@@ -75,6 +75,10 @@ public class Line {
         return new Point(end.getX() - start.getX(), end.getY() - start.getY());
     }
 
+    /**
+     * @return clockwise angle of this line, relative to a Line parallel to the y axis through the starting point
+     * of this line
+     */
     public double getClockwiseAngle() {
         return getStart().clockwiseAngle(getEnd());
     }

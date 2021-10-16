@@ -57,10 +57,10 @@ public class ReflectionGraph {
         return adjacentLinesInReflectionGraph == 1;
     }
 
-    public void addAllCreases(Collection<Crease> creases, Crease originateFrom) {
-        for (Crease crease : creases) {
-            addCrease(crease);
-            addCreasePair(new Pair<>(originateFrom, crease));
+    public void addReflectionCreases(Crease crease, Collection<Crease> reflectionCreases) {
+        for (Crease reflectionCrease : reflectionCreases) {
+            addCrease(reflectionCrease);
+            addCreasePair(new Pair<>(crease, reflectionCrease));
         }
     }
 

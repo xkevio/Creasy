@@ -401,8 +401,21 @@ public class CreasePattern {
         return adjacentCreases;
     }
 
-    public double calculateNewAngle(Point point) {
-        List<Crease> outgoingCreases = getOutgoingCreases(point);
+    /**
+     * Calculates the angle that a new Crease would need to have, such that
+     * when the new Crease is added, the point p is made flatfoldable. The angle
+     * is calculated relative to a line parallel to the y axis through p.
+     *
+     * Should only be called when p is not flatfoldable due to having an
+     * uneven number of adjacent lines, otherwise the returned angle might not
+     * result in p being flatfoldable
+     *
+     * Algorithm 2 in the paper, in section 4.2 (page 35)
+     * @param p Point to be made flatfoldable
+     * @return angle of the crease that needs to be added
+     */
+    public double calculateNewAngle(Point p) {
+        List<Crease> outgoingCreases = getOutgoingCreases(p);
         List<Double> angles = createAngleList(outgoingCreases);
         double currentMax = 0;
         int maxIndex = 0;
@@ -414,7 +427,6 @@ public class CreasePattern {
         }
 
         double sum = 0;
-        // biggestAngle = currentMax;
         if (maxIndex % 2 == 0) {
             for (int i = 0; i < maxIndex; i += 2) {
                 sum += angles.get(i);
@@ -440,6 +452,15 @@ public class CreasePattern {
             angles.add(angle);
         }
         return angles;
+    }
+
+    /**
+     *
+     * @param p Point in the Crease Pattern
+     * @return true if the Point is adjacent to an Edge Line, false if not
+     */
+    public boolean isEdgePoint(Point p) {
+        return getAdjacentCreases(p).stream().anyMatch(crease -> crease.getType() == Crease.Type.EDGE);
     }
 
     @Override

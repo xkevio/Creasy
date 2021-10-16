@@ -11,18 +11,15 @@ import java.util.*;
  */
 public class ReflectionGraphFactory {
     private static final double EPS = 0.0000001;
-    private final Map<Crease, HashSet<Crease>> reflectionCreases;
+    private final Map<Crease, Set<Crease>> cachedReflectionCreases;
     private final CreasePattern cp;
 
     public ReflectionGraphFactory(CreasePattern cp) {
         this.cp = cp;
-        this.reflectionCreases = new HashMap<>();
-        for (Point point : cp.getPoints()) {
-            if (cp.getAdjacentCreases(point).stream().anyMatch(crease -> crease.getType() == Crease.Type.EDGE)) {
-                continue;
-            }
-            findReflectionCreases(cp.getAdjacentCreases(point), point);
-        }
+        this.cachedReflectionCreases = new HashMap<>();
+        cp.getPoints().stream()
+                .filter(p -> !cp.isEdgePoint(p))
+                .forEach(p -> findReflectionCreases(cp.getAdjacentCreases(p), p));
     }
 
     /**
@@ -40,6 +37,7 @@ public class ReflectionGraphFactory {
             }
             double alternatingAngle = 0;
             int j = (i + 1) % adjacentCreases.size();
+
             // iterate over all creases but adjacentCreases[i], starting at i+1 and wrapping
             // around to the beginning when the end of the array is reached
             while (j != i) {
@@ -52,6 +50,7 @@ public class ReflectionGraphFactory {
                 } else {
                     alternatingAngle -= angle;
                 }
+
                 // see 3.1.1 for definition of reflection creases
                 if (Math.abs(alternatingAngle) <= EPS
                         && adjacentCreases.get(i).getType() == adjacentCreases.get(j).getType().opposite()) {
@@ -69,42 +68,36 @@ public class ReflectionGraphFactory {
      */
     public List<ReflectionGraph> getAllReflectionGraphs() {
         List<ReflectionGraph> reflectionGraphs = new ArrayList<>();
-        Set<Crease> done = new HashSet<>();
+        Set<Crease> processedCreases = new HashSet<>();
 
-        // Iterate over all creases and fina all creases connected through reflection Creases
+        // Iterate over all creases and find all creases connected through reflection Creases
         for (Crease crease : cp.getCreases()) {
             // Edge creases are skipped because they do not represent an actual fold
-            if (crease.getType()== Crease.Type.EDGE || done.contains(crease)) {
+            if (crease.getType()== Crease.Type.EDGE || processedCreases.contains(crease)) {
                 continue;
             }
-            ReflectionGraph graph = new ReflectionGraph(cp);
-            graph.addCrease(crease);
-            List<HashSet<Crease>> newCreases = new ArrayList<>();
-            do {
-                newCreases.clear();
-                List<Crease> originalCreases = new ArrayList<>();
-                for (Crease connectedCrease : graph.getCreases()) {
-                    if (done.contains(connectedCrease)) {
-                        continue;
-                    }
-                    done.add(connectedCrease);
-
-                    var refCreases = getReflectionCreases(connectedCrease);
-                    newCreases.add(refCreases);
-                    originalCreases.add(connectedCrease);
-
-                }
-                if (newCreases.isEmpty()) {
-                    break;
-                }
-                for (int i = 0; i < newCreases.size(); i++) {
-                    HashSet<Crease> newCrease = newCreases.get(i);
-                    graph.addAllCreases(newCrease, originalCreases.get(i));
-                }
-            } while (!newCreases.isEmpty());
+            ReflectionGraph graph = makeReflectionGraphStartingAt(crease, processedCreases);
             reflectionGraphs.add(graph);
         }
         return reflectionGraphs;
+    }
+
+    private ReflectionGraph makeReflectionGraphStartingAt(Crease crease, Set<Crease> processedCreases) {
+        ReflectionGraph graph = new ReflectionGraph(cp);
+        graph.addCrease(crease);
+        Map<Crease, Set<Crease>> newReflectionCreases = new HashMap<>();
+        do {
+            newReflectionCreases.clear();
+
+            graph.getCreases().stream()
+                    .filter(connectedCrease -> !processedCreases.contains(connectedCrease))
+                    .forEach(connectedCrease -> newReflectionCreases.put(connectedCrease, getReflectionCreases(connectedCrease)));
+            newReflectionCreases.forEach(graph::addReflectionCreases);
+
+            processedCreases.addAll(newReflectionCreases.keySet());
+        } while (!newReflectionCreases.isEmpty());
+
+        return graph;
     }
 
     /**
@@ -128,19 +121,20 @@ public class ReflectionGraphFactory {
     }
 
     private void addReflectionCrease(Crease crease1, Crease crease2) {
-        if (!reflectionCreases.containsKey(crease1)) {
-            reflectionCreases.put(crease1, new HashSet<>());
+        if (!cachedReflectionCreases.containsKey(crease1)) {
+            cachedReflectionCreases.put(crease1, new HashSet<>());
         }
-        reflectionCreases.get(crease1).add(crease2);
-        if (!reflectionCreases.containsKey(crease2)) {
-            reflectionCreases.put(crease2, new HashSet<>());
+        cachedReflectionCreases.get(crease1).add(crease2);
+
+        if (!cachedReflectionCreases.containsKey(crease2)) {
+            cachedReflectionCreases.put(crease2, new HashSet<>());
         }
-        reflectionCreases.get(crease2).add(crease1);
+        cachedReflectionCreases.get(crease2).add(crease1);
     }
 
-    private HashSet<Crease> getReflectionCreases(Crease crease) {
-        if (reflectionCreases.containsKey(crease)) {
-            return reflectionCreases.get(crease);
+    private Set<Crease> getReflectionCreases(Crease crease) {
+        if (cachedReflectionCreases.containsKey(crease)) {
+            return cachedReflectionCreases.get(crease);
         }
         return new HashSet<>();
     }

@@ -30,7 +30,8 @@ public class ExtendedCrease {
         this.end = end;
         this.type = type;
         this.active = active;
-        this.extendedReflectionPath = new ExtendedReflectionPath(start, end, Collections.singletonList(new Crease(new Line(start.getPoint(), end.getPoint()), type)));
+        this.extendedReflectionPath = new ExtendedReflectionPath(start, end,
+                Collections.singletonList(new Crease(new Line(start.getPoint(), end.getPoint()), type)));
     }
 
     public void setExtendedReflectionPath(ExtendedReflectionPath extendedReflectionPath) {
@@ -42,7 +43,8 @@ public class ExtendedCrease {
     }
 
     public boolean isComplete() {
-        return getExtendedReflectionPath().getStart().getType() == Vertex.Type.BORDER && getExtendedReflectionPath().getEnd().getType() == Vertex.Type.BORDER;
+        return getExtendedReflectionPath().getStart().getType() == Vertex.Type.BORDER
+                && getExtendedReflectionPath().getEnd().getType() == Vertex.Type.BORDER;
     }
 
     public Vertex getStartVertex() {
