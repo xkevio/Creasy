@@ -39,6 +39,8 @@ This allows you to put together the generated folding sequences as you like and 
 ## Installation
 **JDK 16 or above** is needed to run or compile Creasy.
 
+We tried to bundle **JavaFX** in the `.jar` but this does not seem to work on some systems, so make sure you have it installed aswell!
+
 You can either download a pre-built binary (`.jar`) from the [releases page](https://github.com/xkevio/Creasy/releases) or compile manually with `maven`.
 If you choose to compile Creasy yourself, you will also need to download **[Oripa 1.45](https://github.com/oripa/oripa/releases/tag/v1.45_release)**.
 
